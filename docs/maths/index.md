@@ -4,7 +4,7 @@ Welcome to the Mathematics section. Here you will find notes on various Quantita
 
 ## Topics
 
-- [Number System](/maths/Number System)
-- [Algebra](/maths/Algebra) (Coming Soon)
-- [Trigonometry](/maths/Trigonometry) (Coming Soon)
-- [Geometry](/maths/Geometry) (Coming Soon)
+- Number System
+- Algebra (Coming Soon)
+- Trigonometry (Coming Soon)
+- Geometry (Coming Soon)
