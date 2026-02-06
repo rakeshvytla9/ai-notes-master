@@ -169,3 +169,145 @@ To remember how many primes are in each range of 10:
 *   **70-80:** 3 (71, 73, 79)
 *   **80-90:** 2 (83, 89)
 *   **90-100:** 1 (97)
+
+
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System (Class 2)
+**Sub-Topic:** Classification of Numbers (Part 2) & Properties
+**Instructor:** Rahul Teotia Sir
+
+---
+
+## 🔢 **1. Co-Prime Numbers (Sah-Abhajya Sankhya)**
+
+*   **Definition:** A pair of numbers is called Co-Prime if their **Highest Common Factor (HCF) is 1**.
+*   **Key Concept:** They do **not** necessarily need to be prime numbers themselves. The only requirement is that they have no common factor other than 1.
+
+**Examples:**
+*   **(2, 4):** Not Co-Prime (HCF is 2).
+*   **(3, 4):** ✅ **Co-Prime** (HCF is 1). Note that 4 is not a prime number.
+*   **(5, 7):** ✅ **Co-Prime** (HCF is 1).
+*   **(17, 23):** ✅ **Co-Prime** (HCF is 1).
+
+---
+
+## ♊ **2. Twin Prime Numbers (Judwa Abhajya Sankhya)**
+
+*   **Definition:** A pair of **prime numbers** that have a **difference of 2**.
+*   **Condition:** Both numbers in the pair **MUST** be prime.
+
+**List of Twin Primes between 1 and 100 (Total 8 Pairs):**
+1.  (3, 5)
+2.  (5, 7)
+3.  (11, 13)
+4.  (17, 19)
+5.  (29, 31)
+6.  (41, 43)
+7.  (59, 61)
+8.  (71, 73)
+
+> **Note:** Pairs like (87, 89) are NOT twin primes because 87 is not a prime number (divisible by 3 and 29).
+
+---
+
+## 🧱 **3. Composite Numbers (Bhajya/Sanyukt Sankhya)**
+
+*   **Definition:** Numbers that have **more than 2 factors**.
+*   **Meaning:** The number is divisible by 1, itself, and at least one other number.
+
+**Key Facts:**
+*   **1** is neither Prime nor Composite.
+*   **Smallest Composite Number:** **4** (Factors: 1, 2, 4).
+*   **Smallest Odd Composite Number:** **9** (Factors: 1, 3, 9).
+
+---
+
+## 🌟 **4. Perfect Numbers (Uttam Sankhya)**
+
+*   **Definition:** A number is a Perfect Number if the **sum of all its factors (excluding the number itself)** is equal to the number.
+
+**Examples:**
+*   **6:** Factors are 1, 2, 3, 6.
+    *   Sum (excluding 6): $1 + 2 + 3 = 6$. ✅ **Perfect Number**.
+*   **28:** Factors are 1, 2, 4, 7, 14, 28.
+    *   Sum (excluding 28): $1 + 2 + 4 + 7 + 14 = 28$. ✅ **Perfect Number**.
+*   **Other Examples:** 496, 8128.
+
+> **Observation:** Perfect numbers generally end with the digit **6** or **8**.
+
+---
+
+## 🧮 **5. Mathematical Operations & Properties**
+
+### **A. Operations on Odd and Even Numbers**
+
+| Operation | Result | Example |
+| :--- | :--- | :--- |
+| **Addition (+)** | | |
+| Odd + Odd | **Even** | $3 + 5 = 8$ |
+| Odd + Even | **Odd** | $3 + 4 = 7$ |
+| Even + Even | **Even** | $4 + 6 = 10$ |
+| **Multiplication (×)** | | |
+| Odd × Odd | **Odd** | $3 \times 5 = 15$ |
+| Odd × Even | **Even** | $7 \times 4 = 28$ |
+| Even × Even | **Even** | $4 \times 6 = 24$ |
+
+### **B. Operations on Rational and Irrational Numbers**
+
+**1. Addition (+):**
+*   **Rational + Rational = Rational**
+    *   Example: $2/5 + 3/5 = 1$
+*   **Rational + Irrational = Irrational**
+    *   Example: $2 + \sqrt{3}$
+*   **Irrational + Irrational = Rational OR Irrational**
+    *   *Result is Irrational:* $\sqrt{3} + \sqrt{7}$
+    *   *Result is Rational:* $(3 + \sqrt{2}) + (3 - \sqrt{2}) = 6$
+
+**2. Multiplication (×):**
+*   **Rational × Rational = Rational**
+*   **Rational × Irrational = Rational OR Irrational**
+    *   If Rational number is **0**: $0 \times \sqrt{5} = 0$ (**Rational**)
+    *   If Rational number is **non-zero**: $2 \times \sqrt{3} = 2\sqrt{3}$ (**Irrational**)
+*   **Irrational × Irrational = Rational OR Irrational**
+    *   *Result is Irrational:* $\sqrt{3} \times \sqrt{7} = \sqrt{21}$
+    *   *Result is Rational:* $\sqrt{3} \times \sqrt{3} = 3$
+
+---
+
+## 📉 **6. Concept of Nth Root**
+
+For a number in the form $\sqrt[m]{n}$ or $(n)^{1/m}$:
+*   **Rational:** It is a rational number ONLY if $n$ can be written as the power of an integer equal to the root (i.e., $n = x^m$).
+    *   Example: $\sqrt[3]{27} = (3^3)^{1/3} = 3$ (Rational).
+*   **Irrational:** It is irrational unless $n$ is the $m$-th power of an integer.
+    *   Example: $\sqrt[3]{36}$ cannot be simplified to an integer, so it is Irrational.
+
+---
+
+## ❓ **7. Important Exam Concepts & Questions**
+
+### **The Inequality Rule ($3^N$ vs $N^3$)**
+For the inequality **$3^N > N^3$**:
+*   If $N=1$: $3^1 > 1^3$ (3 > 1) ✅ True
+*   If $N=2$: $3^2 > 2^3$ (9 > 8) ✅ True
+*   If $N=3$: $3^3 > 3^3$ (27 > 27) ❌ False
+*   If $N=4$: $3^4 > 4^3$ (81 > 64) ✅ True
+*   **Conclusion:** This holds true for all natural numbers **except N = 3**.
+
+### **Rational Division Rule**
+If a positive integer is divided by another positive integer ($p/q$), the result is **always a Rational Number**.
+*   Example: $3/7$, $5/2$ (2.5), $6/2$ (3). All are rational.
+
+### **Power Operations with Signs**
+If $x$ is a positive even integer (e.g., 2) and $y$ is a negative odd integer (e.g., -1):
+*   $x^y = 2^{-1} = \frac{1}{2}$
+*   **Result:** This forms a **Rational Number**.
+
+### **Pi ($\pi$) Clarification**
+*   **$\pi$** is an **Irrational Number** (Non-terminating, non-recurring).
+*   **$22/7$** is a **Rational Number** ($p/q$ form).
+*   $3.14$ is a **Rational Number** (Terminating decimal).
+
+### **Square of a Prime Number**
+The square of a prime number ($p^2$) has exactly three factors: 1, $p$, and $p^2$. Therefore, it is always a **Composite Number**.
