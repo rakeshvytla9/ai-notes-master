@@ -311,3 +311,206 @@ If $x$ is a positive even integer (e.g., 2) and $y$ is a negative odd integer (e
 
 ### **Square of a Prime Number**
 The square of a prime number ($p^2$) has exactly three factors: 1, $p$, and $p^2$. Therefore, it is always a **Composite Number**.
+
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System (Class 3)
+**Sub-Topic:** Unit Digit, Place Value, Face Value, & Factorials
+**Instructor:** Rahul Teotia Sir
+
+---
+
+## 📍 **1. Place Value and Face Value**
+
+### **A. Face Value (Jatiya Maan / Ankit Maan)**
+*   **Definition:** The Face Value of a digit is the digit itself, regardless of its position in the number.
+*   **Key Concept:** A person's face never changes; similarly, a digit's Face Value never changes.
+
+**Examples:**
+1.  **Integer:** In number $23456$:
+    *   Face Value of **2** is $2$.
+    *   Face Value of **5** is $5$.
+2.  **Decimal:** In number $2.345$:
+    *   Face Value of **2** is $2$.
+    *   Face Value of **3** is $3$.
+
+### **B. Place Value (Sthaniya Maan)**
+*   **Definition:** The value of a digit based on its position (place) in the number.
+
+#### **I. For Integers (Standard Numbers)**
+*   **Method:** Write the digit and append zeros equal to the number of digits to its right.
+
+**Example:** Number: $23456$
+*   **2:** $20000$ (4 digits after 2)
+*   **3:** $3000$ (3 digits after 3)
+*   **4:** $400$
+*   **5:** $50$
+*   **6:** $6$ (Unit digit's Place Value and Face Value are always the same).
+
+#### **II. For Decimals**
+*   **Method:**
+    *   **Left of Decimal:** Calculated as standard integers.
+    *   **Right of Decimal:** Write the decimal point, add zeros for gaps between the point and the target digit, then write the digit.
+
+**Example:** Number: $1482.3795$
+*   **Left Side (Integers):**
+    *   PV of $2 = 2$
+    *   PV of $8 = 80$
+    *   PV of $4 = 400$
+*   **Right Side (Decimals):**
+    *   PV of **3** = $.3$ (or $3/10$)
+    *   PV of **7** = $.07$ (or $7/100$)
+    *   PV of **9** = $.009$ (or $9/1000$)
+    *   PV of **5** = $.0005$ (or $5/10000$)
+
+> **Important Fact:** **Zero (0)** is the only digit whose Place Value and Face Value are always the same (Zero), regardless of where it is placed.
+
+---
+
+## 🔢 **2. Factorials**
+
+*   **Symbol:** $!$ or $\lfloor$
+*   **Definition:** $n! = n \times (n-1) \times (n-2) \times \dots \times 1$
+*   **Important Value:** $0! = 1$
+
+**Standard Values:**
+*   $1! = 1$
+*   $2! = 2$
+*   $3! = 6$
+*   $4! = 24$
+*   $5! = 120$
+*   $6! = 720$
+
+### **Key Rules for Factorials:**
+1.  **Unit Digit Rule:** For any factorial $n!$ where **$n \geq 5$**, the Unit Digit is always **0**.
+    *   *Reason:* $5!$ contains $5 \times 4$ (and $5 \times 2$), which creates a zero at the end. All subsequent factorials contain $5!$, so they carry the zero.
+2.  **Divisibility Rule:** If you divide $n!$ by 10 (where $n \geq 5$), the Remainder is **0**.
+
+---
+
+## 0️⃣ **3. Calculation of Number of Zeros in a Factorial**
+
+To find the number of trailing zeros (zeros at the end) of any factorial ($n!$), we need to count how many times **5** appears as a factor in that number.
+*(Concept: A zero is made by a pair of $2 \times 5$. In factorials, 2s are abundant, so the number of 5s determines the number of zeros).*
+
+### **Formula:**
+$$ \text{Number of Zeros} = \left\lfloor \frac{n}{5} \right\rfloor + \left\lfloor \frac{n}{25} \right\rfloor + \left\lfloor \frac{n}{125} \right\rfloor + \dots $$
+*(Where $\lfloor x \rfloor$ is the integer part of the division, ignoring remainders).*
+
+### **Method (Successive Division):**
+1.  Divide the number $n$ by **5**. Write the **Quotient**.
+2.  If the quotient is $\geq 5$, divide **that quotient** by 5 again.
+3.  Repeat until the quotient is less than 5.
+4.  **Sum of all Quotients** = Total Zeros.
+
+**Examples:**
+*   **For $19!$:**
+    *   $19 \div 5 = \mathbf{3}$ (Quotient). Stop.
+    *   **Result:** 3 Zeros.
+*   **For $100!$:**
+    *   $100 \div 5 = \mathbf{20}$
+    *   $20 \div 5 = \mathbf{4}$
+    *   Total: $20 + 4 = \mathbf{24}$ Zeros.
+
+---
+
+## 🧮 **4. Unit Digit (Ikai ka Ank)**
+
+The Unit Digit is the last digit of a number.
+
+### **A. Direct Multiplication Series**
+To find the unit digit of a multiplication series, multiply only the unit digits of the numbers.
+
+**Example:** $213 \times 512 \times 661$
+*   Step 1: Take unit digits $\rightarrow 3, 2, 1$
+*   Step 2: Multiply $\rightarrow 3 \times 2 \times 1 = 6$
+*   **Unit Digit = 6**
+
+#### **Shortcut Rules for Multiplication:**
+1.  **The "5 & Even" Rule:** If the series contains a **5** and at least one **Even number**:
+    *   **Unit Digit = 0**
+    *   *Reason:* $5 \times 2 = 10$ (Zero created).
+2.  **The "5 & All Odd" Rule:** If the series contains a **5** and **ALL other numbers are Odd**:
+    *   **Unit Digit = 5**
+
+---
+
+### **B. Unit Digit of Powers ($x^n$)**
+
+The rule depends on the base digit (Unit digit of the base number).
+
+#### **Category 1: 0, 1, 5, 6 (No Change)**
+*   If the base ends in **0, 1, 5, or 6**, the unit digit remains the same regardless of the power.
+    *   $...0^n \rightarrow 0$
+    *   $...1^n \rightarrow 1$
+    *   $...5^n \rightarrow 5$
+    *   $...6^n \rightarrow 6$
+
+#### **Category 2: 4 and 9 (Cyclicity of 2)**
+Check if the power ($n$) is **Odd** or **Even**.
+
+| Base Digit | Power = Odd | Power = Even |
+| :--- | :--- | :--- |
+| **4** | **4** (e.g., $4^1 = 4$) | **6** (e.g., $4^2 = 16$) |
+| **9** | **9** (e.g., $9^1 = 9$) | **1** (e.g., $9^2 = 81$) |
+
+#### **Category 3: 2, 3, 7, 8 (Cyclicity of 4)**
+These digits repeat their unit digit pattern every 4 powers.
+
+**General Algorithm for 2, 3, 7, 8:**
+1.  **Divide the Power by 4.**
+2.  **Check the Remainder ($R$).**
+    *   If $R = 1 \rightarrow$ Use Power 1
+    *   If $R = 2 \rightarrow$ Use Power 2
+    *   If $R = 3 \rightarrow$ Use Power 3
+    *   **If $R = 0$ (Perfectly Divisible) $\rightarrow$ Use Power 4**
+3.  Calculate the unit digit using the new power.
+
+**Examples:**
+*   **$2^{728}$:**
+    *   Divide power 728 by 4 $\rightarrow$ Remainder is 0.
+    *   Use Power 4 $\rightarrow 2^4 = 16$.
+    *   **Unit Digit = 6**.
+*   **$7^{49}$:**
+    *   Divide power 49 by 4 $\rightarrow$ Remainder is 1.
+    *   Use Power 1 $\rightarrow 7^1 = 7$.
+    *   **Unit Digit = 7**.
+
+---
+
+## ❓ **Important Exam Questions (Solved)**
+
+**Q1. Find the sum of face values of 9 and 6 in 907364.**
+*   Face Value of 9 = 9
+*   Face Value of 6 = 6
+*   Sum = $9 + 6 = 15$
+
+**Q2. Find the difference between Place Value and Face Value of 7 in 329075.**
+*   Place Value of 7 = 70
+*   Face Value of 7 = 7
+*   Difference = $70 - 7 = 63$
+
+**Q3. Sum of Place Value of 7 and Place Value of 8 in 2079.16385.**
+*   PV of 7 (Integer side) = 70
+*   PV of 8 (Decimal side) = .0008 (3 zeros because 8 is the 4th digit after point)
+*   Sum = **70.0008**
+
+**Q4. Find the digit at the hundredth place value of 19!**
+*   To find the digit at the hundredth place, we check for trailing zeros.
+*   **Formula:** $19 \div 5 = 3$ (Quotient).
+*   There are 3 trailing zeros.
+*   The number ends in ...000.
+*   The digits are Unit (0), Tens (0), **Hundredth (0)**.
+*   **Answer:** 0
+
+**Q5. Find the unit digit of $(515)^{1083} + (1095)^{83}$.**
+*   Base ends in 5 $\rightarrow$ Unit digit is **5**.
+*   Base ends in 5 $\rightarrow$ Unit digit is **5**.
+*   Sum $= 5 + 5 = 10$.
+*   **Unit Digit = 0**.
+
+**Q6. Find the unit digit of $(618)^{49}$.**
+*   Base is 8 (Cyclicity 4).
+*   Divide power 49 by 4 $\rightarrow$ Remainder = 1.
+*   Calculation: $8^1 = 8$.
+*   **Unit Digit = 8**.
