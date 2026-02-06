@@ -1,12 +1,29 @@
 import { defineConfig } from 'vitepress'
+import fs from 'fs'
+import path from 'path'
+
+function getSidebarItems(dir: string) {
+  // process.cwd() is the project root when running 'vitepress dev docs'
+  const fullPath = path.join(process.cwd(), 'docs', dir)
+
+  if (!fs.existsSync(fullPath)) {
+    return []
+  }
+
+  return fs.readdirSync(fullPath)
+    .filter(file => file.endsWith('.md') && file !== 'index.md')
+    .map(file => {
+      const name = file.replace('.md', '')
+      return { text: name, link: `/${dir}/${name}` }
+    })
+}
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "SSC Notes",
   description: "Study Material for SSC Exams",
-  base: "/ssc-notes/", // Important for GitHub Pages
+  base: "/ssc-notes/",
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Maths', link: '/maths/' },
@@ -19,10 +36,25 @@ export default defineConfig({
       '/maths/': [
         {
           text: 'Mathematics',
-          items: [
-            { text: 'Number System', link: '/maths/Number System' },
-            // Add more files here as you create them
-          ]
+          items: getSidebarItems('maths')
+        }
+      ],
+      '/reasoning/': [
+        {
+          text: 'Reasoning',
+          items: getSidebarItems('reasoning')
+        }
+      ],
+      '/english/': [
+        {
+          text: 'English',
+          items: getSidebarItems('english')
+        }
+      ],
+      '/ga/': [
+        {
+          text: 'General Awareness',
+          items: getSidebarItems('ga')
         }
       ]
     },
