@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import fs from 'fs'
 import path from 'path'
+import mathjax3 from 'markdown-it-mathjax3'
 
 function getSidebarItems(dir: string) {
   // process.cwd() is the project root when running 'vitepress dev docs'
@@ -23,6 +24,13 @@ export default defineConfig({
   title: "SSC Notes",
   description: "Study Material for SSC Exams",
   base: "/ssc-notes/",
+
+  markdown: {
+    config: (md) => {
+      md.use(mathjax3)
+    }
+  },
+
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
