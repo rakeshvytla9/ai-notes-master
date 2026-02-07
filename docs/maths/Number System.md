@@ -514,3 +514,182 @@ These digits repeat their unit digit pattern every 4 powers.
 *   Divide power 49 by 4 $\rightarrow$ Remainder = 1.
 *   Calculation: $8^1 = 8$.
 *   **Unit Digit = 8**.
+
+
+Here are the comprehensive study notes for **Number System (Class 4): Unit Digit Practice & Advanced Concepts** from the SSC Foundation Nayak Batch.
+
+---
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System (Class 4)
+**Sub-Topic:** Unit Digit (Practice Questions & Advanced Logic)
+**Instructor:** Rahul Teotia Sir
+
+---
+
+## 🧮 **1. Prime Number Product Rules**
+
+A key strategy in unit digit questions involves identifying specific numbers (like 2 and 5) that dictate the final digit.
+
+### **A. Product of Odd Prime Numbers**
+*   **Question:** Find the unit digit of the product of all **odd** prime numbers.
+*   **Series:** $3 \times 5 \times 7 \times 11 \times 13 \dots$
+*   **Logic:** The series contains the number **5**. It contains **only odd** numbers (since 2 is the only even prime and it is excluded).
+*   **Rule:** $5 \times \text{Odd Number} = \text{Unit Digit } 5$.
+*   **Answer:** **5**
+
+### **B. Product of All Prime Numbers**
+*   **Question:** Find the unit digit of the product of all prime numbers (e.g., from 1 to 99999).
+*   **Series:** $2 \times 3 \times 5 \times 7 \times 11 \dots$
+*   **Logic:** The series contains **2** (even) and **5**.
+*   **Rule:** $2 \times 5 = 10$. Any number multiplied by 10 will end in 0.
+*   **Answer:** **0**
+
+### **C. Product of All Even Numbers**
+*   **Question:** Find the unit digit of the product of all even numbers.
+*   **Series:** $2 \times 4 \times 6 \times 8 \times 10 \times \dots$
+*   **Logic:** The series contains numbers ending in 0 (10, 20, 30...).
+*   **Answer:** **0**
+
+---
+
+## 📊 **2. Logical & Percentage Based Questions**
+
+**Q. What percent of numbers from 101 to 1000 have a unit digit of 9?**
+*   **Total Numbers:** $1000 - 100 = 900$ numbers.
+*   **Concept:** In any consecutive set of 10 integers (e.g., 1-10), every digit (0-9) appears at the unit place exactly once.
+*   **Calculation:**
+    *   Number of times '9' appears: $\frac{900}{10} = 90$ times.
+    *   Percentage: $\frac{90}{900} \times 100 = 10\%$.
+*   **General Rule:** In a range that is a multiple of 10, every unit digit appears exactly **10%** of the time.
+
+---
+
+## 🔢 **3. Algebra & Number Representation**
+
+**Q. Two-Digit Number Ratio Problem**
+*   **Given:** The ratio between a two-digit number and the sum of its digits is **5:1**.
+*   **Representation:**
+    *   Two-digit number: $10x + y$ (where $x$ is tens digit, $y$ is unit digit).
+    *   Sum of digits: $x + y$.
+*   **Equation:** $\frac{10x + y}{x + y} = \frac{5}{1}$
+*   **Solving:**
+    *   $10x + y = 5x + 5y$
+    *   $5x = 4y \implies \frac{x}{y} = \frac{4}{5}$
+*   **Condition Check:** The problem states the unit digit is 1 more than the tens digit. Here $y=5, x=4 \implies 5 - 4 = 1$. (Condition satisfied).
+*   **Question:** Find the unit digit.
+*   **Answer:** **5**
+
+---
+
+## 🔁 **4. Advanced Power Cycle Questions**
+
+### **A. Finding Unknowns in Expressions**
+
+**Q. If the unit digit of $433 \times 456 \times 43N$ is $(N+2)$, find $N$.**
+*   **Unit Digit Calculation:**
+    *   Take unit digits: $3 \times 6 \times N$
+    *   $18 \times N \rightarrow 8 \times N$
+*   **Condition:** Unit Digit of $(8 \times N) = N + 2$.
+*   **Method:** Use Options.
+    *   If $N=1$: $8(1)=8 \neq 1+2$
+    *   If $N=8$: $8(8)=64 (4) \neq 8+2 (0)$
+    *   If $N=6$: $8(6)=48 (8)$ and $6+2=8$. **(Match!)**
+*   **Answer:** **6**
+
+**Q. The last digit of $(34x)^{43}$ and $(34x)^{44}$ are 7 and 1 respectively. Find x.**
+*   **Logic:**
+    *   $x^{43}$ ends in 7. Since $43 \div 4$ gives remainder 3, this means $x^3$ ends in 7.
+    *   $x^{44}$ ends in 1. Since 44 is divisible by 4, this means $x^4$ ends in 1.
+*   **Check Digits:**
+    *   Only **3** and **7** have cyclicity where $x^3$ could end in a different number.
+    *   Check $x=3$: $3^3 = 27$ (Ends in 7) ✅. $3^4 = 81$ (Ends in 1) ✅.
+*   **Answer:** **x = 3**
+
+**Q. Unit digit of $(12345k)^{72}$ is 6. Find k.**
+*   **Logic:** Power 72 is divisible by 4. So we are looking for a digit $k$ where $k^4$ ends in 6.
+*   **Check Options:**
+    *   If $k=6$: $6^n$ always ends in 6. ✅
+    *   If $k=8$: $8^4$ ends in 6 (Even numbers 2, 4, 8 to power 4 end in 6). ✅
+    *   If $k=2$: $2^4 = 16$. ✅
+*   **Answer:** **All of these.**
+
+---
+
+## 🔄 **5. Expressions with Simplification**
+
+**Q. Find Unit Digit: $\frac{12^{55}}{3^{11}} + \frac{8^{48}}{16^{18}}$**
+
+*   **Step 1: Simplify Bases**
+    *   $12 = 3 \times 4$. So, $12^{55} = 3^{55} \times 4^{55}$.
+    *   Term 1: $\frac{3^{55} \times 4^{55}}{3^{11}} = 3^{(55-11)} \times 4^{55} = 3^{44} \times 4^{55}$.
+
+*   **Step 2: Simplify Term 2**
+    *   $8 = 2^3 \implies 8^{48} = (2^3)^{48} = 2^{144}$.
+    *   $16 = 2^4 \implies 16^{18} = (2^4)^{18} = 2^{72}$.
+    *   Term 2: $\frac{2^{144}}{2^{72}} = 2^{(144-72)} = 2^{72}$.
+
+*   **Step 3: Calculate Unit Digits**
+    *   **$3^{44}$:** Power 44 is div by 4. $3^4 \rightarrow 1$.
+    *   **$4^{55}$:** Power is Odd. $4^{\text{odd}} \rightarrow 4$.
+    *   **$2^{72}$:** Power 72 is div by 4. $2^4 \rightarrow 6$.
+
+*   **Final Calc:** $(1 \times 4) + 6 = 4 + 6 = 10$.
+*   **Answer:** **0**
+
+---
+
+## ➕ **6. Summation Formulas & Unit Digits**
+
+### **A. Sum of First n Natural Numbers**
+*   **Formula:** $\frac{n(n+1)}{2}$
+
+### **B. Sum of Squares of First n Natural Numbers**
+*   **Formula:** $\frac{n(n+1)(2n+1)}{6}$
+
+### **C. Sum of Cubes of First n Natural Numbers**
+*   **Formula:** $\left[\frac{n(n+1)}{2}\right]^2$
+
+**Q. Unit digit of $1^3 + 2^3 + \dots + 99^3$**
+*   This is the sum of cubes formula with $n=99$.
+*   Calculation: $\left[\frac{99 \times 100}{2}\right]^2 = [99 \times 50]^2$.
+*   The term inside ends in 0 ($9 \times 0$).
+*   $0^2 = 0$.
+*   **Answer:** **0**
+
+**Q. Unit digit of sum of first 111 Whole Numbers.**
+*   **Concept:** Whole numbers start from 0. The first 111 whole numbers are $0, 1, 2, \dots, 110$.
+*   **Logic:** We need the sum of $0 + 1 + \dots + 110$. Zero adds nothing, so effectively sum of first 110 natural numbers.
+*   **Formula:** $\frac{110 \times 111}{2} = 55 \times 111$.
+*   **Unit Digit:** $5 \times 1 = 5$.
+*   **Answer:** **5**
+
+**Q. Unit digit of $1^5 + 2^5 + \dots + 20^5$**
+*   **Concept:** Cyclicity of numbers is 4. Since $5 \div 4$ gives remainder 1, the power 5 behaves exactly like **Power 1**.
+*   **Reduced Problem:** Find unit digit of $1^1 + 2^1 + \dots + 20^1$.
+*   **Formula:** Sum of first 20 natural numbers = $\frac{20 \times 21}{2} = 10 \times 21 = 210$.
+*   **Answer:** **0**
+
+---
+
+## ➖ **7. Subtraction Rule (The "Borrow" Concept)**
+
+When subtracting unit digits, if the first digit is smaller than the second, you must **add 10** (borrow) to the first digit.
+
+**Q. Find Unit Digit: $(633)^{24} - (277)^{38} + (266)^{54}$**
+*   **Term 1:** $3^{24}$ (Power div by 4) $\rightarrow 3^4 \rightarrow 1$.
+*   **Term 2:** $7^{38}$ (Power/4 rem 2) $\rightarrow 7^2 = 49 \rightarrow 9$.
+*   **Term 3:** $6^{54}$ $\rightarrow$ Always 6.
+*   **Calculation:** $1 - 9 + 6$.
+*   **Order:** $1 + 6 = 7$. Then $7 - 9$.
+*   **Borrowing:** Since $7 < 9$, treat 7 as 17.
+*   $17 - 9 = 8$.
+*   **Answer:** **8**
+
+**Q. Find Unit Digit: $(164)^{169} + (333)^{337} - (727)^{726}$**
+*   **Term 1:** $4^{169}$ (Odd Power) $\rightarrow 4$.
+*   **Term 2:** $3^{337}$ (Power/4 rem 1) $\rightarrow 3^1 = 3$.
+*   **Term 3:** $7^{726}$ (Power/4 rem 2) $\rightarrow 7^2 = 49 \rightarrow 9$.
+*   **Calculation:** $4 + 3 - 9 \Rightarrow 7 - 9$.
+*   **Borrowing:** $17 - 9 = 8$.
+*   **Answer:** **8**
