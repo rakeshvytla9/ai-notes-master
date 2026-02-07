@@ -1,4 +1,4 @@
 # ssc-notes
 
 ## 🌐 Quick Links
-* **Official Website:** [https://github.com/rakeshvytla9/ssc-notes/]
+* **Official Website:** [https://rakeshvytla9.github.io/ssc-notes/]
