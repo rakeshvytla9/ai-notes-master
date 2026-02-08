@@ -23,9 +23,15 @@ export default {
                 checkbox.className = 'toc-checkbox';
                 checkbox.id = `toc-cb-${index}`;
                 checkbox.checked = false;
-                // No stopPropagation needed here since it's not inside the link anymore
-                // But it's good practice anyway
-                checkbox.onclick = (e) => e.stopPropagation();
+
+                // Ensure it's on top and stop any propagation
+                checkbox.style.position = 'relative';
+                checkbox.style.zIndex = '10';
+
+                checkbox.onclick = (e) => {
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                };
 
                 parent.prepend(checkbox);
             });
