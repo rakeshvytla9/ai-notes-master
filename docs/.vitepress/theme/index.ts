@@ -21,13 +21,25 @@ export default {
                     h('button', {
                         class: 'ai-button',
                         onClick: () => {
-                            const docContent = document.querySelector('.vp-doc')?.innerText || '';
-                            // Truncate to avoid URL length limits while keeping significant content
-                            const truncated = docContent.substring(0, 5000);
+                            // 1. Get the raw text from the document body only (avoiding nav/sidebar)
+                            const container = document.querySelector('.vp-doc');
+                            if (!container) return;
+
+                            let docContent = container.innerText;
+
+                            // 2. Clean up major whitespace/newlines to save space in URL
+                            docContent = docContent.replace(/\s+/g, ' ').trim();
+
+                            // 3. Truncate to a safe limit for URLs (approx 1500 chars)
+                            // This ensures the encoded URL stays under most browser/server limits (~2k-4k total)
+                            const truncated = docContent.slice(0, 1500);
+
                             const title = page.value.title || 'this topic';
-                            const prompt = `I am studying ${title} for SSC Exams. Here are my notes:\n\n${truncated}\n\nPlease generate a 10-question practice quiz with multiple-choice options and detailed explanations based on these specific notes for SSC CGL level. Focus on the core concepts mentioned.`;
+                            const prompt = `I am studying ${title} for SSC Exams. Based on these notes: "${truncated}...", please generate a 10-question SSC CGL level MCQ quiz with explanations.`;
 
                             const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+
+                            // 4. Open in a new tab
                             window.open(url, '_blank');
                         }
                     }, '✨ Practice with AI')
