@@ -11,8 +11,9 @@ export default {
         const router = useRouter()
 
         const injectCheckboxes = () => {
-            // Target 'On this page' (TOC) links
             const tocLinks = document.querySelectorAll('.outline-link');
+            if (tocLinks.length === 0) return;
+
             tocLinks.forEach((link, index) => {
                 if (link.querySelector('.toc-checkbox')) return;
 
@@ -20,25 +21,35 @@ export default {
                 checkbox.type = 'checkbox';
                 checkbox.className = 'toc-checkbox';
                 checkbox.id = `toc-cb-${index}`;
-                checkbox.checked = false; // Unclicked by default
-                checkbox.onclick = (e) => e.stopPropagation(); // Don't trigger navigation
+                checkbox.checked = false;
+                checkbox.onclick = (e) => e.stopPropagation();
 
                 link.prepend(checkbox);
             });
 
-            // Remove legacy checkboxes if they exist (cleanup for smooth transition)
             document.querySelectorAll('.section-checkbox, .section-checkbox-label, .sidebar-checkbox').forEach(el => el.remove());
         }
 
         onMounted(() => {
             injectCheckboxes();
-            setTimeout(injectCheckboxes, 500);
-            setTimeout(injectCheckboxes, 1500);
+
+            // Watch for TOC changes (common in VitePress as you scroll or navigate)
+            const observer = new MutationObserver(() => {
+                injectCheckboxes();
+            });
+
+            const aside = document.querySelector('.aside-container');
+            if (aside) {
+                observer.observe(aside, { childList: true, subtree: true });
+            }
+
+            // Fallback for initial load
+            setTimeout(injectCheckboxes, 1000);
+            setTimeout(injectCheckboxes, 3000);
         })
 
         watch(() => router.route.path, () => {
-            setTimeout(injectCheckboxes, 200)
-            setTimeout(injectCheckboxes, 1000)
+            setTimeout(injectCheckboxes, 500)
         })
 
         return h(DefaultTheme.Layout, null, {
