@@ -19,8 +19,8 @@ function getSidebarItems(dir: string) {
 }
 
 export default defineConfig({
-  title: "SSC Notes",
-  description: "Study Material for SSC Exams",
+  title: "AI Notes Master",
+  description: "Advanced AI-Powered Study Material",
   base: "/ssc-notes/",
 
   // High-end aesthetic defaults

@@ -1,7 +1,7 @@
 {
-  "name": "ssc-notes",
+  "name": "ai-notes-master",
   "version": "1.0.0",
-  "description": "Comprehensive SSC Exam Study Notes Website built with VitePress",
+  "description": "Advanced AI-Powered Notes Maker and Study Platform",
   "main": "index.js",
   "scripts": {
     "docs:dev": "vitepress dev docs",
