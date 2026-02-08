@@ -4,7 +4,6 @@ import path from 'path'
 import mathjax3 from 'markdown-it-mathjax3'
 
 function getSidebarItems(dir: string) {
-  // process.cwd() is the project root when running 'vitepress dev docs'
   const fullPath = path.join(process.cwd(), 'docs', dir)
 
   if (!fs.existsSync(fullPath)) {
@@ -19,11 +18,14 @@ function getSidebarItems(dir: string) {
     })
 }
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "SSC Notes",
   description: "Study Material for SSC Exams",
   base: "/ssc-notes/",
+
+  // High-end aesthetic defaults
+  appearance: 'dark',
+  lastUpdated: true,
 
   markdown: {
     config: (md) => {
@@ -32,6 +34,17 @@ export default defineConfig({
   },
 
   themeConfig: {
+    // New Feature: Local Search
+    search: {
+      provider: 'local'
+    },
+
+    // New Feature: Edit Link
+    editLink: {
+      pattern: 'https://github.com/rakeshvytla9/ssc-notes/edit/main/docs/:path',
+      text: 'Edit this page on GitHub'
+    },
+
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Maths', link: '/maths/' },
@@ -69,6 +82,11 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/rakeshvytla9/ssc-notes' }
-    ]
+    ],
+
+    footer: {
+      message: 'Released under the ISC License.',
+      copyright: 'Copyright © 2024-present Rakesh Mohan'
+    }
   }
 })

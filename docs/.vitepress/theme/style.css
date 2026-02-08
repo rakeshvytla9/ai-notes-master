@@ -1,8 +1,51 @@
 /* docs/.vitepress/theme/style.css */
 
+/* Aesthetic Deep Black Theme Variables */
+:root {
+  --vp-c-brand: #3e8fb0;
+  --vp-c-brand-light: #52a1c2;
+  --vp-c-brand-lighter: #66b3d4;
+  --vp-c-brand-dark: #2a7d9e;
+  --vp-c-brand-darker: #166b8c;
+}
+
+.dark {
+  --vp-c-bg: #050505;
+  --vp-c-bg-alt: #0a0a0a;
+  --vp-c-bg-soft: #121212;
+  --vp-c-bg-mute: #1a1a1a;
+
+  --vp-c-default-1: #ffffff;
+  --vp-c-default-2: rgba(255, 255, 255, 0.7);
+  --vp-c-default-3: rgba(255, 255, 255, 0.5);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #3e8fb0 0%, #907aa9 100%);
+
+  --vp-c-divider-light: rgba(255, 255, 255, 0.05);
+  --vp-c-divider-dark: rgba(255, 255, 255, 0.1);
+}
+
+/* Glassmorphism for Nav & Sidebar */
+.VPNav {
+  background-color: rgba(5, 5, 5, 0.8) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.VPSidebar {
+  background-color: #050505 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Smooth content transitions */
+.VPDoc {
+  transition: color 0.5s, background-color 0.5s;
+}
+
 /* Print-specific styles */
 @media print {
-  /* Hide UI elements that are not needed in a printed document */
+
   .VPNav,
   .VPSidebar,
   .VPLocalNav,
@@ -14,7 +57,6 @@
     display: none !important;
   }
 
-  /* Ensure content takes full width and has proper margins */
   .VPContent {
     padding: 0 !important;
     margin: 0 !important;
@@ -26,45 +68,34 @@
     padding: 0 !important;
   }
 
-  .container {
-    margin: 0 !important;
-    padding: 0 !important;
-    max-width: 100% !important;
-  }
-
-  /* Optional: Adjust font sizes for print if needed */
   body {
-    font-size: 12pt;
-    line-height: 1.5;
+    background-color: white !important;
+    color: black !important;
+    font-size: 11pt;
   }
-
-  /* Force display of links or keep them as is? Standard is to show text only. */
-  a:after {
-    content: " (" attr(href) ")";
-    font-size: 0.8em;
-  }
-
-  /* Ensure math rendering is preserved (MathJax usually handles this well) */
 }
 
-/* Custom Print Button Style (Hidden by default, shown on screen only) */
+/* Print Button Styling */
 .print-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
   background-color: var(--vp-c-brand);
-  color: white;
+  color: white !important;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  margin-bottom: 20px;
-  text-decoration: none;
-  transition: opacity 0.2s;
+  margin-bottom: 24px;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .print-button:hover {
-  opacity: 0.8;
+  filter: brightness(1.2);
+  transform: translateY(-1px);
 }
 
 @media print {
