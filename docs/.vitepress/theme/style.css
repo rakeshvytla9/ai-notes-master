@@ -1,0 +1,74 @@
+/* docs/.vitepress/theme/style.css */
+
+/* Print-specific styles */
+@media print {
+  /* Hide UI elements that are not needed in a printed document */
+  .VPNav,
+  .VPSidebar,
+  .VPLocalNav,
+  .VPAside,
+  .VPFooter,
+  .edit-link,
+  .prev-next,
+  .VPLastUpdated {
+    display: none !important;
+  }
+
+  /* Ensure content takes full width and has proper margins */
+  .VPContent {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .VPDoc {
+    padding: 0 !important;
+  }
+
+  .container {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Optional: Adjust font sizes for print if needed */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  /* Force display of links or keep them as is? Standard is to show text only. */
+  a:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+  }
+
+  /* Ensure math rendering is preserved (MathJax usually handles this well) */
+}
+
+/* Custom Print Button Style (Hidden by default, shown on screen only) */
+.print-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--vp-c-brand);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.print-button:hover {
+  opacity: 0.8;
+}
+
+@media print {
+  .print-button {
+    display: none !important;
+  }
+}
