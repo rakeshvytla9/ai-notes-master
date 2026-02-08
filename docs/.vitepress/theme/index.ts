@@ -11,47 +11,23 @@ export default {
         const router = useRouter()
 
         const injectCheckboxes = () => {
-            // Target document headers
-            const container = document.querySelector('.vp-doc') || document.querySelector('main');
-            if (container) {
-                const headers = container.querySelectorAll('h2, h3')
-                headers.forEach((header, index) => {
-                    if (header.querySelector('.section-checkbox')) return
-
-                    const checkbox = document.createElement('input')
-                    checkbox.type = 'checkbox'
-                    checkbox.className = 'section-checkbox'
-                    checkbox.id = `section-cb-${index}`
-                    checkbox.checked = true
-
-                    const label = document.createElement('label')
-                    label.htmlFor = checkbox.id
-                    label.className = 'section-checkbox-label'
-                    label.innerText = ' [Select for AI]'
-
-                    header.prepend(checkbox)
-                    header.appendChild(label)
-                })
-            }
-
-            // Target sidebar items (Sidepanel)
-            const sidebarItems = document.querySelectorAll('.VPSidebarItem.level-1, .VPSidebarItem.level-2');
-            sidebarItems.forEach((item, index) => {
-                if (item.querySelector('.sidebar-checkbox')) return;
+            // Target 'On this page' (TOC) links
+            const tocLinks = document.querySelectorAll('.outline-link');
+            tocLinks.forEach((link, index) => {
+                if (link.querySelector('.toc-checkbox')) return;
 
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.className = 'sidebar-checkbox';
-                checkbox.id = `sidebar-cb-${index}`;
-                checkbox.checked = true;
-                checkbox.style.marginRight = '8px';
-                checkbox.style.cursor = 'pointer';
+                checkbox.className = 'toc-checkbox';
+                checkbox.id = `toc-cb-${index}`;
+                checkbox.checked = false; // Unclicked by default
+                checkbox.onclick = (e) => e.stopPropagation(); // Don't trigger navigation
 
-                const textContainer = item.querySelector('.text') || item.querySelector('a');
-                if (textContainer) {
-                    textContainer.prepend(checkbox);
-                }
+                link.prepend(checkbox);
             });
+
+            // Remove legacy checkboxes if they exist (cleanup for smooth transition)
+            document.querySelectorAll('.section-checkbox, .section-checkbox-label, .sidebar-checkbox').forEach(el => el.remove());
         }
 
         onMounted(() => {
@@ -79,18 +55,24 @@ export default {
                         class: 'ai-button-mini',
                         title: 'Practice with AI',
                         onClick: () => {
-                            const checkboxes = document.querySelectorAll('.section-checkbox:checked')
+                            const checkboxes = document.querySelectorAll('.toc-checkbox:checked')
                             let context = ''
 
                             if (checkboxes.length > 0) {
                                 checkboxes.forEach(cb => {
-                                    const header = cb.parentElement
-                                    if (!header) return
-                                    context += `\n### ${header.textContent}\n`
-                                    let sibling = header.nextElementSibling
-                                    while (sibling && !['H1', 'H2', 'H3'].includes(sibling.tagName)) {
-                                        context += (sibling as HTMLElement).innerText + ' '
-                                        sibling = sibling.nextElementSibling
+                                    const link = cb.parentElement as HTMLAnchorElement
+                                    if (!link || !link.hash) return
+
+                                    const headerId = decodeURIComponent(link.hash.substring(1))
+                                    const header = document.getElementById(headerId)
+
+                                    if (header) {
+                                        context += `\n### ${header.textContent}\n`
+                                        let sibling = header.nextElementSibling
+                                        while (sibling && !['H1', 'H2', 'H3'].includes(sibling.tagName)) {
+                                            context += (sibling as HTMLElement).innerText + ' '
+                                            sibling = sibling.nextElementSibling
+                                        }
                                     }
                                 })
                             } else {
@@ -98,7 +80,7 @@ export default {
                                 if (selection && selection.length > 10) {
                                     context = selection
                                 } else {
-                                    alert('⚠️ Please check the boxes for the sections you need questions on, or highlight some text first!');
+                                    alert('⚠️ Please select topics from the "On this page" section or highlight some text first!');
                                     return;
                                 }
                             }

@@ -48,7 +48,8 @@
 
 @media (max-width: 960px) {
   .header-actions {
-    display: none; /* Hide in mobile header to avoid clutter */
+    display: none;
+    /* Hide in mobile header to avoid clutter */
   }
 }
 
@@ -141,36 +142,20 @@
   box-shadow: 0 8px 20px rgba(62, 143, 176, 0.4);
 }
 
-/* Checkbox Styling */
-.section-checkbox {
-  margin-right: 12px;
-  width: 20px;
-  height: 20px;
+/* TOC Checkbox Styling */
+.toc-checkbox {
+  margin-right: 8px;
+  width: 14px;
+  height: 14px;
   cursor: pointer;
   accent-color: var(--vp-c-brand);
   vertical-align: middle;
+  flex-shrink: 0;
 }
 
-.section-checkbox-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--vp-c-brand-light);
-  margin-left: 8px;
-  vertical-align: middle;
-  cursor: pointer;
-  background-color: rgba(62, 143, 176, 0.1);
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-/* Sidebar Checkbox */
-.sidebar-checkbox {
-  accent-color: var(--vp-c-brand);
-  transform: scale(0.9);
-}
-
-.VPSidebarItem.level-1 .sidebar-checkbox {
-  margin-top: 2px;
+.outline-link {
+  display: flex !important;
+  align-items: center;
 }
 
 /* Print-specific styles */
