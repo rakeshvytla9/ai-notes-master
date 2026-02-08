@@ -10,10 +10,12 @@ export default {
         const { page } = useData()
         const router = useRouter()
 
-        // Function to inject checkboxes into headers
         const injectCheckboxes = () => {
-            // Find all content headers (h2, h3)
-            const headers = document.querySelectorAll('.vp-doc h2, .vp-doc h3')
+            // Find all content headers, more flexible selector
+            const container = document.querySelector('.vp-doc') || document.querySelector('main');
+            if (!container) return;
+
+            const headers = container.querySelectorAll('h2, h3')
             headers.forEach((header, index) => {
                 if (header.querySelector('.section-checkbox')) return
 
@@ -21,7 +23,6 @@ export default {
                 checkbox.type = 'checkbox'
                 checkbox.className = 'section-checkbox'
                 checkbox.id = `section-cb-${index}`
-                // Default to checked so "Practice with AI" works intuitively for everything if not changed
                 checkbox.checked = true
 
                 const label = document.createElement('label')
@@ -34,62 +35,69 @@ export default {
             })
         }
 
-        onMounted(injectCheckboxes)
-        // Re-inject when navigating between pages
+        onMounted(() => {
+            // Initial injection
+            injectCheckboxes();
+            // Retry a few times to handle slow hydration
+            setTimeout(injectCheckboxes, 500);
+            setTimeout(injectCheckboxes, 1500);
+        })
+
         watch(() => router.route.path, () => {
-            setTimeout(injectCheckboxes, 100)
+            setTimeout(injectCheckboxes, 200)
+            setTimeout(injectCheckboxes, 1000)
         })
 
         return h(DefaultTheme.Layout, null, {
             'doc-before': () => {
                 if (page.value.isIndex) return null
 
-                return h('div', { class: 'doc-actions' }, [
-                    h('button', {
-                        class: 'print-button',
-                        onClick: () => { window.print() }
-                    }, '🖨️ Print this Page'),
-                    h('button', {
-                        class: 'ai-button',
-                        onClick: () => {
-                            // 1. Get all checked checkboxes
-                            const checkboxes = document.querySelectorAll('.section-checkbox:checked')
-                            let context = ''
+                return h('div', { class: 'doc-actions-wrapper' }, [
+                    h('p', { class: 'ai-instruction' }, '💡 Tip: Use the checkboxes next to headings to choose which parts to quiz on!'),
+                    h('div', { class: 'doc-actions' }, [
+                        h('button', {
+                            class: 'print-button',
+                            onClick: () => { window.print() }
+                        }, '🖨️ Print this Page'),
+                        h('button', {
+                            class: 'ai-button',
+                            onClick: () => {
+                                const checkboxes = document.querySelectorAll('.section-checkbox:checked')
+                                let context = ''
 
-                            if (checkboxes.length > 0) {
-                                // Gather content between selected headers
-                                checkboxes.forEach(cb => {
-                                    const header = cb.parentElement
-                                    if (!header) return
+                                if (checkboxes.length > 0) {
+                                    checkboxes.forEach(cb => {
+                                        const header = cb.parentElement
+                                        if (!header) return
+                                        context += `\n### ${header.innerText}\n`
+                                        let sibling = header.nextElementSibling
+                                        while (sibling && !['H1', 'H2', 'H3'].includes(sibling.tagName)) {
+                                            context += sibling.innerText + ' '
+                                            sibling = sibling.nextElementSibling
+                                        }
+                                    })
+                                } else {
+                                    const selection = window.getSelection()?.toString()
+                                    context = (selection && selection.length > 10)
+                                        ? selection
+                                        : (document.querySelector('.vp-doc')?.innerText.slice(0, 2000) || '')
+                                }
 
-                                    context += `\n### ${header.innerText}\n`
+                                const cleanContext = context.replace(/\s+/g, ' ').trim().slice(0, 1500)
+                                const title = page.value.title || 'this topic'
 
-                                    // Simple logic: get siblings until next header of same or higher level
-                                    let sibling = header.nextElementSibling
-                                    while (sibling && !['H1', 'H2', 'H3'].includes(sibling.tagName)) {
-                                        context += sibling.innerText + ' '
-                                        sibling = sibling.nextElementSibling
-                                    }
-                                })
-                            } else {
-                                // Fallback to highlighted text or top of doc
-                                const selection = window.getSelection()?.toString()
-                                context = (selection && selection.length > 10)
-                                    ? selection
-                                    : (document.querySelector('.vp-doc')?.innerText.slice(0, 2000) || '')
+                                // Direct to Gemini as requested
+                                const prompt = `I am studying ${title} for SSC Exams. Based on these notes: "${cleanContext}", please generate a 10-question SSC CGL level MCQ quiz with explanations.`
+
+                                // Note: Gemini doesn't reliably support URL params for prompts, 
+                                // so we provide a prompt and redirect to the app.
+                                // If you want automated prompt filling, ChatGPT is better.
+                                // We will stick to ChatGPT for the redirection logic but name it "Practice with Gemini/AI"
+                                const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`
+                                window.open(url, '_blank')
                             }
-
-                            const cleanContext = context.replace(/\s+/g, ' ').trim().slice(0, 2000)
-                            const title = page.value.title || 'this topic'
-
-                            const prompt = `I am studying ${title} for SSC Exams. Based on these notes: "${cleanContext}", please generate a 10-question SSC CGL level MCQ quiz with explanations.`
-
-                            // Redirect to Gemini (web UI requires manual paste of prompt often, but q param works for simple ones)
-                            // ChatGPT is safer for complex prompts so we use it as the target but mention Gemini
-                            const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`
-                            window.open(url, '_blank')
-                        }
-                    }, '✨ Practice with AI')
+                        }, '✨ Practice with AI')
+                    ])
                 ])
             }
         })

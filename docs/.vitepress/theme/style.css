@@ -39,13 +39,24 @@
 }
 
 /* Document Actions Container */
+.doc-actions-wrapper {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.ai-instruction {
+  font-size: 13px;
+  color: var(--vp-c-brand-light);
+  margin-bottom: 12px;
+  font-style: italic;
+  opacity: 0.9;
+}
+
 .doc-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--vp-c-divider);
 }
 
 /* Base Button Style */
@@ -93,26 +104,27 @@
 /* Checkbox Styling */
 .section-checkbox {
   margin-right: 12px;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   accent-color: var(--vp-c-brand);
   vertical-align: middle;
 }
 
 .section-checkbox-label {
-  font-size: 0.45em;
-  font-weight: 400;
-  color: var(--vp-c-text-2);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--vp-c-brand-light);
   margin-left: 8px;
   vertical-align: middle;
   cursor: pointer;
-  opacity: 0.6;
+  background-color: rgba(62, 143, 176, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
 .section-checkbox-label:hover {
-  opacity: 1;
-  color: var(--vp-c-brand);
+  background-color: rgba(62, 143, 176, 0.2);
 }
 
 /* Print-specific styles */
@@ -126,7 +138,7 @@
   .edit-link,
   .prev-next,
   .VPLastUpdated,
-  .doc-actions,
+  .doc-actions-wrapper,
   .section-checkbox,
   .section-checkbox-label {
     display: none !important;
