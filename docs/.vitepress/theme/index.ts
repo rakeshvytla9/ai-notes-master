@@ -30,16 +30,14 @@ export default {
                 checkbox.style.cursor = 'pointer';
                 checkbox.style.position = 'relative';
 
-                const stopHandler = (e: Event) => {
+                checkbox.onclick = (e) => {
                     e.stopPropagation();
-                    // We don't preventDefault so the checkbox still toggles
                 };
 
-                // Catch interaction at the earliest possible stage
-                checkbox.addEventListener('click', stopHandler, { capture: true });
-                checkbox.addEventListener('mousedown', stopHandler, { capture: true });
-
-                parent.prepend(checkbox);
+                const label = document.createElement('label');
+                label.htmlFor = checkbox.id;
+                label.appendChild(checkbox);
+                parent.prepend(label);
             });
 
             document.querySelectorAll('.section-checkbox, .section-checkbox-label, .sidebar-checkbox').forEach(el => el.remove());
@@ -48,15 +46,12 @@ export default {
         onMounted(() => {
             injectCheckboxes();
 
-            // Watch for TOC changes (common in VitePress as you scroll or navigate)
             const observer = new MutationObserver(() => {
                 injectCheckboxes();
             });
 
-            const aside = document.querySelector('.aside-container');
-            if (aside) {
-                observer.observe(aside, { childList: true, subtree: true });
-            }
+            // Target body to catch mobile TOC and other dynamic changes
+            observer.observe(document.body, { childList: true, subtree: true });
 
             // Fallback for initial load
             setTimeout(injectCheckboxes, 1000);

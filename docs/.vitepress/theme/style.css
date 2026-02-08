@@ -143,8 +143,16 @@
 }
 
 /* TOC Checkbox Styling */
-.toc-checkbox {
+.toc-checkbox-label {
+  display: inline-flex;
+  align-items: center;
   margin-right: 8px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.toc-checkbox {
+  margin: 0;
   width: 14px;
   height: 14px;
   cursor: pointer;

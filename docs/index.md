@@ -11,7 +11,7 @@ hero:
       link: /maths/
     - theme: alt
       text: GitHub
-      link: https://github.com/rakeshvytla9/ssc-notes
+      link: https://github.com/rakeshvytla9/ai-notes-master
 
 features:
   - title: Mathematics
