@@ -3,7 +3,7 @@
 A modern, fast, and aesthetic notes maker and study platform built with [VitePress](https://vitepress.dev/). Designed for advanced study management with integrated AI quiz generation and print-optimized layouts.
 
 ## 🌐 Official Website
-**Live at:** [https://rakeshvytla9.github.io/ssc-notes/](https://rakeshvytla9.github.io/ssc-notes/)
+**Live at:** [https://rakeshvytla9.github.io/ssc-notes/](https://rakeshvytla9.github.io/ai-notes-master/)
 
 ---
 
