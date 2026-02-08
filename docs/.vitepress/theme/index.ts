@@ -118,7 +118,7 @@ export default {
                                 }
                             }
 
-                            const cleanContext = context.replace(/\s+/g, ' ').trim().slice(0, 1500)
+                            const cleanContext = context.replace(/\s+/g, ' ').trim().slice(0, 6000)
                             const title = page.value.title || 'this topic'
                             const prompt = `I am studying ${title} for SSC Exams. Based on these notes: "${cleanContext}", please generate a 10-question SSC CGL level MCQ quiz with explanations.`
 
