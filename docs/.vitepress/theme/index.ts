@@ -11,7 +11,6 @@ export default {
         const router = useRouter()
 
         const injectCheckboxes = () => {
-            // Find all content headers, more flexible selector
             const container = document.querySelector('.vp-doc') || document.querySelector('main');
             if (!container) return;
 
@@ -36,9 +35,7 @@ export default {
         }
 
         onMounted(() => {
-            // Initial injection
             injectCheckboxes();
-            // Retry a few times to handle slow hydration
             setTimeout(injectCheckboxes, 500);
             setTimeout(injectCheckboxes, 1500);
         })
@@ -52,8 +49,8 @@ export default {
             'doc-before': () => {
                 if (page.value.isIndex) return null
 
-                return h('div', { class: 'doc-actions-wrapper' }, [
-                    h('p', { class: 'ai-instruction' }, '💡 Tip: Use the checkboxes next to headings to choose which parts to quiz on!'),
+                return h('div', { class: 'doc-actions-wrapper sticky-actions' }, [
+                    h('p', { class: 'ai-instruction' }, '💡 Tip: Choose topics with the checkboxes next to headings!'),
                     h('div', { class: 'doc-actions' }, [
                         h('button', {
                             class: 'print-button',
@@ -78,21 +75,19 @@ export default {
                                     })
                                 } else {
                                     const selection = window.getSelection()?.toString()
-                                    context = (selection && selection.length > 10)
-                                        ? selection
-                                        : (document.querySelector('.vp-doc')?.innerText.slice(0, 2000) || '')
+                                    if (selection && selection.length > 10) {
+                                        context = selection
+                                    } else {
+                                        // Show validation alert if nothing is selected
+                                        alert('⚠️ Please check the boxes for the sections you need questions on, or highlight some text first!');
+                                        return;
+                                    }
                                 }
 
                                 const cleanContext = context.replace(/\s+/g, ' ').trim().slice(0, 1500)
                                 const title = page.value.title || 'this topic'
-
-                                // Direct to Gemini as requested
                                 const prompt = `I am studying ${title} for SSC Exams. Based on these notes: "${cleanContext}", please generate a 10-question SSC CGL level MCQ quiz with explanations.`
 
-                                // Note: Gemini doesn't reliably support URL params for prompts, 
-                                // so we provide a prompt and redirect to the app.
-                                // If you want automated prompt filling, ChatGPT is better.
-                                // We will stick to ChatGPT for the redirection logic but name it "Practice with Gemini/AI"
                                 const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`
                                 window.open(url, '_blank')
                             }

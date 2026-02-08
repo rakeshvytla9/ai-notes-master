@@ -38,17 +38,32 @@
   border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Document Actions Container */
-.doc-actions-wrapper {
-  margin-bottom: 32px;
-  padding-bottom: 16px;
+/* Sticky Actions Wrapper */
+.sticky-actions {
+  position: sticky;
+  top: var(--vp-nav-height);
+  z-index: 100;
+  background-color: rgba(5, 5, 5, 0.95);
+  backdrop-filter: blur(8px);
+  margin-left: -32px;
+  margin-right: -32px;
+  padding: 16px 32px;
   border-bottom: 1px solid var(--vp-c-divider);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Adjust mobile padding if needed */
+@media (max-width: 960px) {
+  .sticky-actions {
+    margin-left: -24px;
+    margin-right: -24px;
+  }
 }
 
 .ai-instruction {
   font-size: 13px;
   color: var(--vp-c-brand-light);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   font-style: italic;
   opacity: 0.9;
 }
@@ -123,10 +138,6 @@
   border-radius: 4px;
 }
 
-.section-checkbox-label:hover {
-  background-color: rgba(62, 143, 176, 0.2);
-}
-
 /* Print-specific styles */
 @media print {
 
@@ -138,7 +149,7 @@
   .edit-link,
   .prev-next,
   .VPLastUpdated,
-  .doc-actions-wrapper,
+  .sticky-actions,
   .section-checkbox,
   .section-checkbox-label {
     display: none !important;
