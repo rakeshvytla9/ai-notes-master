@@ -153,9 +153,16 @@
   flex-shrink: 0;
 }
 
-.outline-link {
+.VPDocAsideOutline li {
   display: flex !important;
   align-items: center;
+  list-style: none;
+  /* Ensure no bullets if any */
+}
+
+.outline-link {
+  flex: 1;
+  /* Allow link to take remaining space */
 }
 
 /* Print-specific styles */

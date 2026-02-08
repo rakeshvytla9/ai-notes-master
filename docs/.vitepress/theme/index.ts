@@ -15,16 +15,19 @@ export default {
             if (tocLinks.length === 0) return;
 
             tocLinks.forEach((link, index) => {
-                if (link.querySelector('.toc-checkbox')) return;
+                const parent = link.parentElement;
+                if (!parent || parent.querySelector('.toc-checkbox')) return;
 
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.className = 'toc-checkbox';
                 checkbox.id = `toc-cb-${index}`;
                 checkbox.checked = false;
+                // No stopPropagation needed here since it's not inside the link anymore
+                // But it's good practice anyway
                 checkbox.onclick = (e) => e.stopPropagation();
 
-                link.prepend(checkbox);
+                parent.prepend(checkbox);
             });
 
             document.querySelectorAll('.section-checkbox, .section-checkbox-label, .sidebar-checkbox').forEach(el => el.remove());
@@ -71,7 +74,7 @@ export default {
 
                             if (checkboxes.length > 0) {
                                 checkboxes.forEach(cb => {
-                                    const link = cb.parentElement as HTMLAnchorElement
+                                    const link = (cb as HTMLElement).nextElementSibling as HTMLAnchorElement
                                     if (!link || !link.hash) return
 
                                     const headerId = decodeURIComponent(link.hash.substring(1))
