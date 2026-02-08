@@ -1,7 +1,7 @@
 {
   "name": "ssc-notes",
   "version": "1.0.0",
-  "description": "",
+  "description": "Comprehensive SSC Exam Study Notes Website built with VitePress",
   "main": "index.js",
   "scripts": {
     "docs:dev": "vitepress dev docs",
