@@ -24,15 +24,20 @@ export default {
                 checkbox.id = `toc-cb-${index}`;
                 checkbox.checked = false;
 
-                // Ensure visibility and reachability
-                checkbox.style.zIndex = '100';
-                checkbox.style.pointerEvents = 'auto';
+                // Aggressive visibility and reachability
+                checkbox.style.zIndex = '9999';
+                checkbox.style.pointerEvents = 'all';
                 checkbox.style.cursor = 'pointer';
+                checkbox.style.position = 'relative';
 
-                // Use capture to stop propagation before it reaches the link
-                checkbox.addEventListener('click', (e) => {
+                const stopHandler = (e: Event) => {
                     e.stopPropagation();
-                }, { capture: true });
+                    // We don't preventDefault so the checkbox still toggles
+                };
+
+                // Catch interaction at the earliest possible stage
+                checkbox.addEventListener('click', stopHandler, { capture: true });
+                checkbox.addEventListener('mousedown', stopHandler, { capture: true });
 
                 parent.prepend(checkbox);
             });
