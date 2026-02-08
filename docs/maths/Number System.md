@@ -693,3 +693,210 @@ When subtracting unit digits, if the first digit is smaller than the second, you
 *   **Calculation:** $4 + 3 - 9 \Rightarrow 7 - 9$.
 *   **Borrowing:** $17 - 9 = 8$.
 *   **Answer:** **8**
+
+
+Here are the comprehensive study notes for **Number System (Class 5): Unit Digit (Factorials) & Divisibility Rules** from the SSC Foundation Nayak Batch.
+
+---
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System (Class 5)
+**Sub-Topic:** Unit Digit (Factorial Based) & Divisibility Rules
+**Instructor:** Rahul Teotia Sir
+**Date:** 06-12-2024
+
+---
+
+## 🗓️ **SSC Exam Calendar 2025 (Important Dates)**
+The class started with a discussion on the newly released SSC 2025 Tentative Calendar.
+
+| Exam Name | Notification Date | Exam Month (2025) |
+| :--- | :--- | :--- |
+| **Selection Post Phase XIII** | 16 Apr 2025 | June - July |
+| **SSC CGL 2025** | 22 Apr 2025 | June - July |
+| **SSC CHSL 2025** | 27 May 2025 | July - Aug |
+| **SSC CPO (SI in Delhi Police)** | 16 May 2025 | July - Aug |
+| **SSC MTS 2025** | 26 June 2025 | Sept - Oct |
+| **Delhi Police Constable** | 02 Sept 2025 | Nov - Dec |
+| **SSC GD 2026** | 14 Nov 2025 | Mar - Apr (2026) |
+
+---
+
+## 🧮 **1. Unit Digit - Factorial Based Concepts**
+
+### **A. Basic Factorial Rule**
+*   **Fact:** For any factorial $n!$ where **$n \geq 5$**, the Unit Digit is always **0**.
+    *   *Reason:* $5! = 120$. It contains the pair $(2 \times 5)$ which produces a zero at the end. All subsequent factorials ($6!, 7! \dots$) are multiples of $5!$.
+*   **Values to Remember:**
+    *   $1! = 1$
+    *   $2! = 2$
+    *   $3! = 6$
+    *   $4! = 24$ (Unit digit 4)
+    *   $5! = 120$ (Unit digit 0)
+
+### **B. Factorials in Powers (The "Power 4" Rule)**
+*   **Rule:** If the **exponent (power)** is a factorial **$n!$ where $n \geq 4$**, the exponent is perfectly divisible by 4.
+*   **Application:** In unit digit calculations, if the power is perfectly divisible by 4, we replace the power with **4**.
+    *   Example: Find unit digit of $(32)^{123!}$.
+    *   Since $123!$ is divisible by 4, this becomes $2^4 = 16$. **Unit digit = 6**.
+
+---
+
+## 📝 **Practice Questions: Unit Digit**
+
+**Q1. Find the unit digit in $129!$.**
+*   Since $129 \geq 5$, the unit digit is **0**.
+
+**Q2. Find the unit digit of $1! + 2! + 3! + 4! + 5! + \dots + 1000!$.**
+*   $1! = 1$
+*   $2! = 2$
+*   $3! = 6$
+*   $4! = 24$ (Unit digit 4)
+*   $5!$ onwards = 0
+*   Sum of unit digits: $1 + 2 + 6 + 4 + 0 + \dots = 13$.
+*   **Unit Digit = 3**.
+
+**Q3. If $N = 1! - 2! + 3! - 4! + \dots + 47! - 48! + 49! - 50! + 51!$, find unit digit of $N^N$.**
+*   Calculate unit digit of base $N$:
+    *   $1! = 1$
+    *   $-2! = -2$
+    *   $+3! = +6$
+    *   $-4! = -4$ (ends in 4)
+    *   $+5!$ onwards is 0.
+    *   Sum: $1 - 2 + 6 - 4 = 1$.
+*   So, $N$'s unit digit is 1.
+*   $1^{\text{any power}} = 1$.
+*   **Answer: 1**.
+
+**Q4. Find unit digit of $(35!)^{35!}$.**
+*   Base is $35!$, which ends in 0.
+*   $0^{\text{any power}} = 0$.
+*   **Answer: 0**.
+
+**Q5. Find unit digit of $(32)^{123!} \times (53)^{124!} \times (24)^{124!}$.**
+*   All powers are factorials $\geq 4$, so they are divisible by 4. Replace powers with 4.
+*   Expression becomes: $2^4 \times 3^4 \times 4^4$.
+*   $2^4 = 16 \rightarrow 6$.
+*   $3^4 = 81 \rightarrow 1$.
+*   $4^4 = 256 \rightarrow 6$.
+*   $6 \times 1 \times 6 = 36 \rightarrow$ **6**.
+
+**Q6. Find unit digit of $888^{9235!} + 222^{9235!} + 666^{2359!} + 999^{9999!}$.**
+*   Powers are large factorials ($\geq 4$), so use power 4.
+*   $8^4 + 2^4 + 6^4 + 9^4$.
+*   $8^4$ ends in 6.
+*   $2^4$ ends in 6.
+*   $6^n$ always ends in 6.
+*   $9^4$ (even power) ends in 1.
+*   Sum: $6 + 6 + 6 + 1 = 19$.
+*   **Unit Digit = 9**.
+
+**Q7. Find unit digit of $(1!)^{1!} + (2!)^{2!} + (3!)^{3!} + \dots + (100!)^{100!}$.**
+*   $1!^1 = 1^1 = 1$.
+*   $2!^2 = 2^2 = 4$.
+*   $3!^6 = 6^6 \rightarrow 6$.
+*   $4!^{24} = (24)^{24} \rightarrow 4^{\text{even}} \rightarrow 6$.
+*   $5!$ onwards base ends in 0, so result is 0.
+*   Sum: $1 + 4 + 6 + 6 = 17$.
+*   **Unit Digit = 7**.
+
+---
+
+## ➗ **2. Divisibility Rules (Vibhajita ke Niyam)**
+
+### **A. Rule for Powers of 2 (2, 4, 8, 16...)**
+The rule depends on checking the **last digits** of the number.
+
+| Number | Power form | Rule: Check Last 'n' Digits |
+| :--- | :--- | :--- |
+| **2** | $2^1$ | Check **Last 1 digit**. Must be even or div by 2. |
+| **4** | $2^2$ | Check **Last 2 digits**. Must be div by 4. |
+| **8** | $2^3$ | Check **Last 3 digits**. Must be div by 8. |
+| **16** | $2^4$ | Check **Last 4 digits**. Must be div by 16. |
+
+### **B. Rule for Powers of 5 (5, 25...)**
+| Number | Rule |
+| :--- | :--- |
+| **5** | Last digit must be **0** or **5**. |
+| **25** | Last 2 digits must be divisible by 25 (00, 25, 50, 75). |
+| **10** | Last digit must be **0**. (Combination of 2 and 5). |
+
+### **C. Rule for 3 and 9 (Sum of Digits)**
+*   **Rule for 3:** The **sum of all digits** of the number must be divisible by 3.
+*   **Rule for 9:** The **sum of all digits** of the number must be divisible by 9.
+    *   *Note:* Any number divisible by 9 is always divisible by 3, but the reverse is not always true.
+
+### **D. Rule for Composite Numbers (Co-Prime Factors)**
+If a composite number $N$ can be broken into two **co-prime** factors $a$ and $b$ ($N = a \times b$, HCF(a,b)=1), then for a number to be divisible by $N$, it must be divisible by **both** $a$ and $b$.
+
+*   **6:** Divisible by **2** AND **3**.
+*   **12:** Divisible by **3** AND **4**.
+*   **14:** Divisible by **2** AND **7**.
+*   **48:** Divisible by **16** AND **3**.
+*   **72:** Divisible by **8** AND **9**.
+*   **88:** Divisible by **8** AND **11**.
+*   **99:** Divisible by **9** AND **11**.
+
+### **E. Rule for 11**
+*   **Method:**
+    1.  Find the sum of digits at **odd places**.
+    2.  Find the sum of digits at **even places**.
+    3.  Take the **difference** between the two sums.
+*   **Condition:** If the difference is **0** or a **multiple of 11** (11, 22, 33...), the number is divisible by 11.
+    *   *Formula:* $(a+c+e+\dots) - (b+d+f+\dots) = 0 \text{ or } 11k$.
+
+---
+
+## 📝 **Practice Questions: Divisibility**
+
+**Q1. Which of the following numbers is divisible by both 2 and 5?**
+*   **Rule:** Divisible by 2 and 5 means divisible by 10. Last digit must be 0.
+*   **Option (a) 63840** is the only one ending in 0.
+
+**Q2. Which of the following is divisible by 3?**
+*   Check sum of digits for options.
+*   Option (a) 7345932: $7+3+4+5+9+3+2 = 33$. (33 is div by 3). **Correct**.
+
+**Q3. If $436P5$ is divisible by 3, largest value of P?**
+*   Sum of digits: $4+3+6+5+P = 18 + P$.
+*   Since 18 is already div by 3, $P$ must be div by 3.
+*   Possible single-digit values for P: 0, 3, 6, 9.
+*   **Largest Value = 9**.
+
+**Q4. A number is divisible by 3 only if:**
+*   **Answer:** The sum of its digits is divisible by 3.
+
+**Q5. Find the largest number $23a68b$ divisible by 3 but NOT by 9.**
+*   Check options from largest to smallest.
+*   **(d) 239688:** Sum = 36 (Div by 9) ❌
+*   **(c) 239685:** Sum = 33 (Div by 3, Not div by 9) ✅. This is the largest valid option.
+*   *(Note: Option b also satisfies condition but c is larger).*
+
+**Q6. Which number is divisible by 4?**
+*   Rule: Last 2 digits div by 4.
+*   (d) ...5**36**. Since 36 is divisible by 4, this is the answer.
+
+**Q7. What is the largest digit in place of '*' for $2365*4$ to be divisible by 4?**
+*   Last two digits: $*4$.
+*   Possible values for *: 0, 2, 4, 6, 8. (04, 24, 44, 64, 84 are div by 4).
+*   **Largest = 8**.
+
+**Q8. If P is divisible by 2 and Q is divisible by 3, which statement is true?**
+*   P is a multiple of 2, Q is a multiple of 3.
+*   **True Statement:** $P \times Q$ is divisible by 6. (Because $2 \times 3 = 6$).
+
+**Q9. The number 4,29,714 is divisible by:**
+*   **Check 5:** Last digit is 4 (not 0 or 5). Not div by 5. Options A, B eliminated.
+*   **Check 4:** Last digits 14. Not div by 4. Option C eliminated.
+*   **Check 3 & 6:**
+    *   Sum: $4+2+9+7+1+4 = 27$ (Div by 3).
+    *   Even number? Yes (Ends in 4). So div by 2.
+    *   Div by 2 and 3 $\implies$ Div by 6.
+*   **Answer:** 3 and 6.
+
+**Q10. Which number is divisible by 6?**
+*   Must be even (div by 2) and sum of digits div by 3.
+*   (d) is odd (ends in 3) ❌.
+*   Check sums for others.
+*   **(c) 438750:** Ends in 0 (Even). Sum: $4+3+8+7+5+0 = 27$ (Div by 3). ✅
+
