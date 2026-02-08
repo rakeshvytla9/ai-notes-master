@@ -23,6 +23,10 @@ export default {
                 checkbox.className = 'toc-checkbox';
                 checkbox.id = `toc-cb-${index}`;
                 checkbox.checked = false;
+                // Store the target hash directly to avoid traversal issues
+                if (link instanceof HTMLAnchorElement) {
+                    checkbox.dataset.targetHash = link.hash;
+                }
 
                 // Aggressive visibility and reachability
                 checkbox.style.zIndex = '9999';
@@ -82,11 +86,11 @@ export default {
 
                             if (checkboxes.length > 0) {
                                 checkboxes.forEach(cb => {
-                                    // Traverse up to label, then to next sibling (the link)
-                                    const link = (cb.parentElement as HTMLElement).nextElementSibling as HTMLAnchorElement
-                                    if (!link || !link.hash) return
+                                    // Read directly from data attribute - robust and traversal-free
+                                    const hash = (cb as HTMLElement).dataset.targetHash
+                                    if (!hash) return
 
-                                    const headerId = decodeURIComponent(link.hash.substring(1))
+                                    const headerId = decodeURIComponent(hash.substring(1))
                                     const header = document.getElementById(headerId)
 
                                     if (header) {
