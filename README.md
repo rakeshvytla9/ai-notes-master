@@ -1,14 +1,14 @@
 # 📚 AI Notes Master
 
-A modern, fast, and aesthetic notes maker and study platform built with [VitePress](https://vitepress.dev/). Designed for advanced study management with integrated AI quiz generation and print-optimized layouts.
+A modern, fast, and aesthetic notes maker and study platform built with [VitePress](https://vitepress.dev/). Designed for comprehensive study material with AI-assisted practice and print-optimized layouts.
 
 ## 🌐 Official Website
-**Live at:** [https://rakeshvytla9.github.io/ssc-notes/](https://rakeshvytla9.github.io/ai-notes-master/)
+**Live at:** [https://rakeshvytla9.github.io/ai-notes-master/](https://rakeshvytla9.github.io/ai-notes-master/)
 
 ---
 
 ## ✨ Features
-- **AI Practice Quizzes:** Selective section-based quiz generation powered by Gemini/ChatGPT.
+- **AI Practice Quizzes:** Generate targeted quizzes from any topic by selecting it in the Table of Contents.
 - **Aesthetic Dark Mode:** A themed deep-black interface designed for long study hours.
 - **Smart Search:** Localized search to find formulas and topics instantly.
 - **Math LaTeX Support:** Beautifully rendered mathematical equations via MathJax.
@@ -23,7 +23,7 @@ A modern, fast, and aesthetic notes maker and study platform built with [VitePre
 ## 🛠️ How to Make Notes
 1. Create a new `.md` file in the appropriate folder (e.g., `docs/maths/Algebra.md`).
 2. Add your content using standard Markdown.
-3. Use the **[Select for AI]** checkboxes on the live site to generate quizzes from your new notes.
+3. Use the checkboxes in the **On this page** section on the live site to select topics for AI quizzes.
 4. Commit and push:
    ```bash
    git add .
