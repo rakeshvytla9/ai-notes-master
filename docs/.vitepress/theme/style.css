@@ -43,6 +43,55 @@
   transition: color 0.5s, background-color 0.5s;
 }
 
+/* Document Actions Container */
+.doc-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+/* Base Button Style */
+.print-button,
+.ai-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+/* Print Button Styling */
+.print-button {
+  background-color: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1) !important;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.print-button:hover {
+  background-color: var(--vp-c-bg-mute);
+  transform: translateY(-1px);
+}
+
+/* AI Button Styling */
+.ai-button {
+  background: linear-gradient(135deg, #3e8fb0 0%, #907aa9 100%);
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ai-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
 /* Print-specific styles */
 @media print {
 
@@ -53,7 +102,8 @@
   .VPFooter,
   .edit-link,
   .prev-next,
-  .VPLastUpdated {
+  .VPLastUpdated,
+  .doc-actions {
     display: none !important;
   }
 
@@ -64,42 +114,9 @@
     max-width: 100% !important;
   }
 
-  .VPDoc {
-    padding: 0 !important;
-  }
-
   body {
     background-color: white !important;
     color: black !important;
     font-size: 11pt;
-  }
-}
-
-/* Print Button Styling */
-.print-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: var(--vp-c-brand);
-  color: white !important;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-bottom: 24px;
-  border: none;
-  font-family: inherit;
-  font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.print-button:hover {
-  filter: brightness(1.2);
-  transform: translateY(-1px);
-}
-
-@media print {
-  .print-button {
-    display: none !important;
   }
 }

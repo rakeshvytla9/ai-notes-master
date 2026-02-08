@@ -11,23 +11,25 @@ export default {
 
         return h(DefaultTheme.Layout, null, {
             'doc-before': () => {
-                // Skip buttons on index pages if desired, but good for topics
                 if (page.value.isIndex) return null
-
-                const title = page.value.title || 'this topic'
-                const prompt = encodeURIComponent(`I am studying ${title} for SSC Exams. Please generate a 10-question practice quiz with multiple-choice options and detailed explanations based on this topic for SSC CGL level.`)
-                const aiUrl = `https://chatgpt.com/?q=${prompt}`
 
                 return h('div', { class: 'doc-actions' }, [
                     h('button', {
                         class: 'print-button',
                         onClick: () => { window.print() }
                     }, '🖨️ Print this Page'),
-                    h('a', {
+                    h('button', {
                         class: 'ai-button',
-                        href: aiUrl,
-                        target: '_blank',
-                        rel: 'noopener noreferrer'
+                        onClick: () => {
+                            const docContent = document.querySelector('.vp-doc')?.innerText || '';
+                            // Truncate to avoid URL length limits while keeping significant content
+                            const truncated = docContent.substring(0, 5000);
+                            const title = page.value.title || 'this topic';
+                            const prompt = `I am studying ${title} for SSC Exams. Here are my notes:\n\n${truncated}\n\nPlease generate a 10-question practice quiz with multiple-choice options and detailed explanations based on these specific notes for SSC CGL level. Focus on the core concepts mentioned.`;
+
+                            const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+                            window.open(url, '_blank');
+                        }
                     }, '✨ Practice with AI')
                 ])
             }
