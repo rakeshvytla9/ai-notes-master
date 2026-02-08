@@ -11,41 +11,39 @@ export default {
         const router = useRouter()
 
         const injectCheckboxes = () => {
-            const tocLinks = document.querySelectorAll('.outline-link');
-            if (tocLinks.length === 0) return;
+            try {
+                const tocLinks = document.querySelectorAll('.outline-link');
+                if (tocLinks.length === 0) return;
 
-            tocLinks.forEach((link, index) => {
-                const parent = link.parentElement;
-                if (!parent || parent.querySelector('.toc-checkbox')) return;
+                tocLinks.forEach((link, index) => {
+                    const parent = link.parentElement;
+                    if (!parent || parent.querySelector('.toc-checkbox')) return;
 
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'toc-checkbox';
-                checkbox.id = `toc-cb-${index}`;
-                checkbox.checked = false;
-                // Store the target hash directly to avoid traversal issues
-                if (link instanceof HTMLAnchorElement) {
-                    checkbox.dataset.targetHash = link.hash;
-                }
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'toc-checkbox';
+                    checkbox.id = `toc-cb-${index}`;
+                    checkbox.checked = false;
 
-                // Aggressive visibility and reachability
-                checkbox.style.zIndex = '9999';
-                checkbox.style.pointerEvents = 'all';
-                checkbox.style.cursor = 'pointer';
-                checkbox.style.position = 'relative';
+                    if (link instanceof HTMLAnchorElement) {
+                        checkbox.dataset.targetHash = link.hash;
+                    }
 
-                checkbox.onclick = (e) => {
-                    e.stopPropagation();
-                };
+                    checkbox.onclick = (e) => {
+                        e.stopPropagation();
+                    };
 
-                const label = document.createElement('label');
-                label.htmlFor = checkbox.id;
-                label.className = 'toc-checkbox-label';
-                label.appendChild(checkbox);
-                parent.prepend(label);
-            });
+                    const label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    label.className = 'toc-checkbox-label';
+                    label.appendChild(checkbox);
+                    parent.prepend(label);
+                });
 
-            document.querySelectorAll('.section-checkbox, .section-checkbox-label, .sidebar-checkbox').forEach(el => el.remove());
+                document.querySelectorAll('.section-checkbox, .section-checkbox-label, .sidebar-checkbox').forEach(el => el.remove());
+            } catch (e) {
+                console.error("TOC Injection Error:", e);
+            }
         }
 
         onMounted(() => {
@@ -95,8 +93,16 @@ export default {
 
                                     if (header) {
                                         context += `\n### ${header.textContent}\n`
+
+                                        const startLevel = parseInt(header.tagName.replace('H', '')) || 6
+
                                         let sibling = header.nextElementSibling
-                                        while (sibling && !['H1', 'H2', 'H3'].includes(sibling.tagName)) {
+                                        while (sibling) {
+                                            const tagName = sibling.tagName
+                                            if (/^H[1-6]$/.test(tagName)) {
+                                                const currentLevel = parseInt(tagName.replace('H', ''))
+                                                if (currentLevel <= startLevel) break
+                                            }
                                             context += (sibling as HTMLElement).innerText + ' '
                                             sibling = sibling.nextElementSibling
                                         }
