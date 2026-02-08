@@ -24,14 +24,15 @@ export default {
                 checkbox.id = `toc-cb-${index}`;
                 checkbox.checked = false;
 
-                // Ensure it's on top and stop any propagation
-                checkbox.style.position = 'relative';
-                checkbox.style.zIndex = '10';
+                // Ensure visibility and reachability
+                checkbox.style.zIndex = '100';
+                checkbox.style.pointerEvents = 'auto';
+                checkbox.style.cursor = 'pointer';
 
-                checkbox.onclick = (e) => {
+                // Use capture to stop propagation before it reaches the link
+                checkbox.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    e.stopImmediatePropagation();
-                };
+                }, { capture: true });
 
                 parent.prepend(checkbox);
             });
