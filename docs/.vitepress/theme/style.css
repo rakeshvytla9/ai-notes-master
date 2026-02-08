@@ -48,8 +48,17 @@
 
 @media (max-width: 960px) {
   .header-actions {
-    display: none;
-    /* Hide in mobile header to avoid clutter */
+    display: flex;
+    /* Unhide on mobile */
+    margin-left: 10px;
+    gap: 6px;
+  }
+
+  /* Optional: Compact buttons for very small screens */
+  .print-button-mini,
+  .ai-button-mini {
+    padding: 0 8px;
+    font-size: 12px;
   }
 }
 
