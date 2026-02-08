@@ -29,9 +29,7 @@ export default {
                         checkbox.dataset.targetHash = link.hash;
                     }
 
-                    checkbox.onclick = (e) => {
-                        e.stopPropagation();
-                    };
+                    checkbox.onclick = null; // Remove individual handler in favor of delegation
 
                     const label = document.createElement('label');
                     label.htmlFor = checkbox.id;
@@ -59,6 +57,16 @@ export default {
             // Fallback for initial load
             setTimeout(injectCheckboxes, 1000);
             setTimeout(injectCheckboxes, 3000);
+
+            // Global Event Delegation for Checkboxes
+            // This handles clicks on cloned elements (like mobile TOC) where listeners are lost
+            document.addEventListener('click', (e) => {
+                if ((e.target as HTMLElement).classList.contains('toc-checkbox')) {
+                    e.stopImmediatePropagation();
+                    e.stopPropagation();
+                    // Optional: Manually toggle if needed, but default behavior usually works if propagation stopped
+                }
+            }, true); // Use capture phase to catch it before any link handlers
         })
 
         watch(() => router.route.path, () => {
