@@ -12,7 +12,8 @@ export default {
 
         const injectCheckboxes = () => {
             try {
-                const tocLinks = document.querySelectorAll('.outline-link');
+                // Target both desktop and mobile (local nav) outline links
+                const tocLinks = document.querySelectorAll('.outline-link, .VPLocalNav .outline-link, .VPLocalNav a[href^="#"]');
                 if (tocLinks.length === 0) return;
 
                 tocLinks.forEach((link, index) => {

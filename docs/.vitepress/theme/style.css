@@ -160,6 +160,23 @@
   z-index: 100;
 }
 
+/* Ensure mobile/local nav checkboxes are visible and aligned */
+.VPLocalNav .toc-checkbox-label,
+.VPLocalNav .toc-checkbox {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Force flex layout on list items to align checkbox and link */
+.VPLocalNav li,
+.VPLocalNav .outline-link-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap;
+  /* efficient wrapping */
+}
+
 .toc-checkbox {
   margin: 0;
   width: 14px;
