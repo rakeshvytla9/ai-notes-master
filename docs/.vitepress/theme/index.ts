@@ -36,6 +36,7 @@ export default {
 
                 const label = document.createElement('label');
                 label.htmlFor = checkbox.id;
+                label.className = 'toc-checkbox-label';
                 label.appendChild(checkbox);
                 parent.prepend(label);
             });
@@ -81,7 +82,8 @@ export default {
 
                             if (checkboxes.length > 0) {
                                 checkboxes.forEach(cb => {
-                                    const link = (cb as HTMLElement).nextElementSibling as HTMLAnchorElement
+                                    // Traverse up to label, then to next sibling (the link)
+                                    const link = (cb.parentElement as HTMLElement).nextElementSibling as HTMLAnchorElement
                                     if (!link || !link.hash) return
 
                                     const headerId = decodeURIComponent(link.hash.substring(1))
