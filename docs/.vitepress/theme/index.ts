@@ -20,26 +20,33 @@ export default {
                     }, '🖨️ Print this Page'),
                     h('button', {
                         class: 'ai-button',
+                        title: 'Highlight some text first to quiz on specific parts!',
                         onClick: () => {
-                            // 1. Get the raw text from the document body only (avoiding nav/sidebar)
-                            const container = document.querySelector('.vp-doc');
-                            if (!container) return;
+                            // 1. Try to get selected text first (most targeted)
+                            let selectedText = window.getSelection()?.toString().trim();
+                            let context = '';
+                            let sourceDescription = '';
 
-                            let docContent = container.innerText;
+                            if (selectedText && selectedText.length > 10) {
+                                // If the user highlighted something, use that!
+                                context = selectedText;
+                                sourceDescription = 'the selected notes below';
+                            } else {
+                                // Fallback: Get the main document content
+                                const container = document.querySelector('.vp-doc');
+                                context = container ? container.innerText.replace(/\s+/g, ' ').trim() : '';
+                                sourceDescription = 'my study notes';
+                            }
 
-                            // 2. Clean up major whitespace/newlines to save space in URL
-                            docContent = docContent.replace(/\s+/g, ' ').trim();
-
-                            // 3. Truncate to a safe limit for URLs (approx 1500 chars)
-                            // This ensures the encoded URL stays under most browser/server limits (~2k-4k total)
-                            const truncated = docContent.slice(0, 1500);
+                            // 2. Truncate to a level that is safe for URLs (~2000 chars)
+                            const safeContext = context.slice(0, 2000);
 
                             const title = page.value.title || 'this topic';
-                            const prompt = `I am studying ${title} for SSC Exams. Based on these notes: "${truncated}...", please generate a 10-question SSC CGL level MCQ quiz with explanations.`;
+                            const prompt = `I am studying ${title} for SSC Exams. Please use ${sourceDescription} to generate a 10-question SSC CGL level MCQ quiz with explanations.\n\nNOTES:\n${safeContext}`;
 
                             const url = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
 
-                            // 4. Open in a new tab
+                            // 3. Open in a new tab
                             window.open(url, '_blank');
                         }
                     }, '✨ Practice with AI')
