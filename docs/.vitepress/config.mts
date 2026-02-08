@@ -21,7 +21,7 @@ function getSidebarItems(dir: string) {
 export default defineConfig({
   title: "AI Notes Master",
   description: "Advanced AI-Powered Study Material",
-  base: "/ssc-notes/",
+  base: "/ai-notes-master/",
 
   // High-end aesthetic defaults
   appearance: 'dark',
@@ -41,7 +41,7 @@ export default defineConfig({
 
     // New Feature: Edit Link
     editLink: {
-      pattern: 'https://github.com/rakeshvytla9/ssc-notes/edit/main/docs/:path',
+      pattern: 'https://github.com/rakeshvytla9/ai-notes-master/edit/main/docs/:path',
       text: 'Edit this page on GitHub'
     },
 
@@ -81,7 +81,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/rakeshvytla9/ssc-notes' }
+      { icon: 'github', link: 'https://github.com/rakeshvytla9/ai-notes-master' }
     ],
 
     footer: {
