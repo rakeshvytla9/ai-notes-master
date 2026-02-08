@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "AI Notes Master"
-  text: "Advanced AI-Powered Study Platform"
-  tagline: "Generate quizzes and print notes with one click"
+  text: "Comprehensive Study Material"
+  tagline: "Structured notes and AI-assisted practice for SSC Exams"
   actions:
     - theme: brand
       text: Start Studying
