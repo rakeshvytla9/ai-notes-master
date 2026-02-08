@@ -705,22 +705,7 @@ Here are the comprehensive study notes for **Number System (Class 5): Unit Digit
 **Instructor:** Rahul Teotia Sir
 **Date:** 06-12-2024
 
----
 
-## 🗓️ **SSC Exam Calendar 2025 (Important Dates)**
-The class started with a discussion on the newly released SSC 2025 Tentative Calendar.
-
-| Exam Name | Notification Date | Exam Month (2025) |
-| :--- | :--- | :--- |
-| **Selection Post Phase XIII** | 16 Apr 2025 | June - July |
-| **SSC CGL 2025** | 22 Apr 2025 | June - July |
-| **SSC CHSL 2025** | 27 May 2025 | July - Aug |
-| **SSC CPO (SI in Delhi Police)** | 16 May 2025 | July - Aug |
-| **SSC MTS 2025** | 26 June 2025 | Sept - Oct |
-| **Delhi Police Constable** | 02 Sept 2025 | Nov - Dec |
-| **SSC GD 2026** | 14 Nov 2025 | Mar - Apr (2026) |
-
----
 
 ## 🧮 **1. Unit Digit - Factorial Based Concepts**
 
