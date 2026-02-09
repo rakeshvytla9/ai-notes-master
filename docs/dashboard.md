@@ -1,5 +1,7 @@
 ---
-layout: false
+layout: doc
+aside: false
+pageClass: dashboard-mode
 ---
 
 <Dashboard />

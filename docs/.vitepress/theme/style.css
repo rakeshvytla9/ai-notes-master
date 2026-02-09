@@ -46,20 +46,47 @@
   margin-left: 20px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 900px) {
   .header-actions {
     display: flex;
-    /* Unhide on mobile */
-    margin-left: 10px;
-    gap: 6px;
+    /* Force flex on mobile */
+    gap: 5px;
   }
 
-  /* Optional: Compact buttons for very small screens */
-  .print-button-mini,
-  .ai-button-mini {
-    padding: 0 8px;
+  .header-actions .VPButton {
+    padding: 4px 8px;
     font-size: 12px;
   }
+}
+
+/* --- Dashboard Layout Overrides --- */
+.dashboard-mode .VPNav,
+.dashboard-mode .VPSidebar,
+.dashboard-mode .VPFooter,
+.dashboard-mode .VPLocalNav {
+  display: none !important;
+}
+
+.dashboard-mode .VPContent {
+  padding: 0 !important;
+}
+
+.dashboard-mode .VPDoc {
+  padding: 0 !important;
+  max-width: 100% !important;
+}
+
+.dashboard-mode .container {
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Optional: Compact buttons for very small screens */
+.print-button-mini,
+.ai-button-mini {
+  padding: 0 8px;
+  font-size: 12px;
 }
 
 .print-button-mini,
