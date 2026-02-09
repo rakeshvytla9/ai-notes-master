@@ -1,11 +1,14 @@
-// docs/.vitepress/theme/index.ts
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
 import { h, onMounted, watch } from 'vue'
 import { useData, useRouter } from 'vitepress'
+import Dashboard from './components/Dashboard.vue'
 
 export default {
     extends: DefaultTheme,
+    enhanceApp({ app }) {
+        app.component('Dashboard', Dashboard)
+    },
     Layout() {
         const { page } = useData()
         const router = useRouter()

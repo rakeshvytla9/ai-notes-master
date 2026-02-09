@@ -885,3 +885,188 @@ If a composite number $N$ can be broken into two **co-prime** factors $a$ and $b
 *   Check sums for others.
 *   **(c) 438750:** Ends in 0 (Even). Sum: $4+3+8+7+5+0 = 27$ (Div by 3). ✅
 
+
+Here are the comprehensive study notes for **Number System (Divisibility Rules - Part 02)** from the SSC Foundation Nayak Batch.
+
+---
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System
+**Sub-Topic:** Divisibility Rules (Part 2) - 7, 11, 13 & Practice
+**Instructor:** Rahul Teotia Sir
+**Date:** 09-12-2024
+
+---
+
+## 🔢 **1. Combined Divisibility Rule for 7, 11, and 13**
+
+The divisibility rule for **7, 11, and 13** is unique and involves creating groups of digits.
+
+### **The Grouping Method (Oscillator Method)**
+1.  Start from the **unit digit** (right side) and form groups (pairs) of **3 digits**.
+2.  Assign alternating signs to these groups starting with **positive (+)**, then **negative (-)**, then **positive (+)**, and so on.
+3.  Calculate the result.
+4.  If the final result is divisible by 7, the number is divisible by 7.
+5.  If the final result is divisible by 13, the number is divisible by 13.
+    *(Note: This method also works for 11, though 11 has a simpler specific rule).*
+
+### **Examples:**
+
+*   **Example 1: Check $245679$**
+    *   **Step 1:** Grouping from right $\rightarrow$ $(679)$ and $(245)$.
+    *   **Step 2:** Apply signs: $+679$ and $-245$.
+    *   **Step 3:** Calculate difference: $679 - 245 = 434$.
+    *   **Step 4:** Check divisibility of 434.
+        *   $434 \div 7 = 62$ (Divisible ✅).
+    *   **Result:** The number is divisible by 7.
+
+*   **Example 2: Check $24352$**
+    *   **Step 1:** Grouping $\rightarrow$ $(352)$ and $(24)$. *Note: Add leading zero to complete the pair if needed (024).*
+    *   **Step 2:** Apply signs: $+352$ and $-024$.
+    *   **Step 3:** Calculate difference: $352 - 24 = 328$.
+    *   **Step 4:** Check divisibility of 328 by 7.
+        *   $328 \div 7$ gives remainder.
+    *   **Result:** Not divisible by 7.
+
+*   **Example 3: Check $1339533$ for 13**
+    *   **Step 1:** Groups $\rightarrow$ $(533)$, $(339)$, $(001)$.
+    *   **Step 2:** Apply signs $\rightarrow$ $+533$, $-339$, $+001$.
+    *   **Step 3:** Calculation: $(533 + 1) - 339 = 534 - 339 = 195$.
+    *   **Step 4:** Check divisibility of 195 by 13.
+        *   $195 \div 13 = 15$ (Divisible ✅).
+    *   **Result:** The number is divisible by 13.
+
+---
+
+## 📝 **2. Practice Questions & Advanced Concepts**
+
+### **A. Divisibility by 6 (Rule: Divisible by 2 AND 3)**
+
+**Q10. Which of the following numbers is divisible by 6?**
+*   **Options:** (a) 128530 (b) 12581 (c) 438750 (d) 62233
+*   **Logic:**
+    1.  Must be Even (Eliminate b and d).
+    2.  Sum of digits must be divisible by 3.
+    *   Check (a): $1+2+8+5+3+0 = 19$ (Not div by 3).
+    *   Check (c): $4+3+8+7+5+0 = 27$ (Div by 3 ✅).
+*   **Answer:** **(c)**
+
+**Q11. For what minimum value of $n$ will $2^{2n} + 2n$ be exactly divisible by 6?**
+*   **Method:** Use Options (Substitution).
+*   **Try $n=1$:** $2^{2(1)} + 2(1) = 2^2 + 2 = 4 + 2 = 6$.
+*   Since 6 is divisible by 6, the minimum value is 1.
+*   **Answer:** **1**
+
+**Q12. Find minimum value of $k$ for which 7-digit number $249k876$ is divisible by 6.**
+*   **Even Check:** Ends in 6 (Pass).
+*   **Rule of 3:** Sum of digits $= 2+4+9+k+8+7+6 = 36 + k$.
+*   Since 36 is already divisible by 3, $k$ must be divisible by 3.
+*   Possible values for $k$: $0, 3, 6, 9$.
+*   **Minimum Value:** **0**.
+
+**Q13. If $87m6203m$ is divisible by 6, find sum of all possible values of $m$.**
+*   **Rule of 2:** $m$ must be Even ($0, 2, 4, 6, 8$).
+*   **Rule of 3:** Sum $= 8+7+m+6+2+0+3+m = 26 + 2m$.
+*   **Check Even values of $m$:**
+    *   If $m=0 \rightarrow 26$ (No)
+    *   If $m=2 \rightarrow 26+4=30$ (No)
+    *   If $m=4 \rightarrow 26+8=34$ (No)
+    *   If $m=6 \rightarrow 26+12=38$ (No)
+    *   If $m=8 \rightarrow 26+16=42$ (Yes, div by 3) - *Wait, re-calculation in video*:
+    *   *Correction from lecture:* Teacher re-calculated sum to be divisible at **m=2** and **m=8**.
+    *   Let's check: $26+2(2) = 30$ (Div by 3) ✅. $26+2(8)=42$ (Div by 3) ✅.
+*   Possible values: 2 and 8.
+*   **Sum:** $2 + 8 = 10$.
+
+---
+
+### **B. Divisibility by 8 and Combined Rules**
+
+**Q15. If $72864*\$$ is divisible by 8 and 5, find $*$ and $\$$.**
+*   **Rule of 5:** Last digit ($\$$) must be 0 or 5.
+*   **Rule of 8:** Last digit must be even. Therefore, **$\$ = 0$**.
+*   **Number becomes:** ...$4*0$.
+*   **Rule of 8 (Last 3 digits):** Check divisibility of $4*0$ by 8.
+    *   If $*=0 \rightarrow 400$ (Div by 8 ✅).
+    *   If $*=4 \rightarrow 440$ (Div by 8 ✅).
+    *   If $*=8 \rightarrow 480$ (Div by 8 ✅).
+*   **Answer:** From options, **4 and 0** is valid.
+
+**Q16. (Important) How many pairs of $(x, y)$ exist for $123456xy$ divisible by 8?**
+*   **Concept:** To be divisible by 8, the last 3 digits ($6xy$) must be divisible by 8.
+*   **Method:** Analyze the sequence of multiples of 8 in the 600 range.
+*   $600$ is divisible by 8. So pairs $(x,y)$ start from $00$.
+*   Sequence: $00, 08, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96$.
+*   **Count:** Total **13** pairs.
+
+---
+
+### **C. Divisibility by 9 (Sum of Digits)**
+
+**Q18. If $6428A83$ is divisible by 9, find A.**
+*   **Sum:** $6+4+2+8+A+8+3 = 31 + A$.
+*   Next multiple of 9 after 31 is 36.
+*   $31 + A = 36 \Rightarrow A = 5$.
+*   **Answer:** **5**
+
+**Q19. CDS Exam Question (Statement Analysis)**
+*   Number: $a_1 a_2 a_3 a_4 a_5$.
+*   **Statement 1:** Divisible by 9 if $a_1+a_2+a_3+a_4+a_5$ is divisible by 9. (✅ **True**, standard rule).
+*   **Statement 2:** Divisible by 9 if alternating sum ($a_1 - a_2...$) is div by 9. (❌ **False**, this looks like rule for 11).
+*   **Answer:** Only 1 is correct.
+
+---
+
+### **D. Divisibility by 11 (Alternating Sum)**
+
+**Rule:** (Sum of Odd place digits) - (Sum of Even place digits) = 0 or Multiple of 11.
+
+**Q20. Find P if $6954P$ is divisible by 11.**
+*   Odd places sum: $6 + 5 + P = 11 + P$
+*   Even places sum: $9 + 4 = 13$
+*   Difference: $(11 + P) - 13 = P - 2$.
+*   For divisibility, $P - 2 = 0 \Rightarrow P = 2$.
+*   **Answer:** **2**
+
+**Q21. Find $*$ if $6347*25$ is divisible by 11.**
+*   Odd places: $6 + 4 + * + 5 = 15 + *$
+*   Even places: $3 + 7 + 2 = 12$
+*   Difference: $(15 + *) - 12 = 3 + *$.
+*   To be divisible, $3 + * = 11$ (Next multiple of 11).
+*   $* = 8$.
+*   **Answer:** **8**
+
+**Q22. If $608xy0$ is divisible by 3 and 11, find $x, y$.**
+*   **Rule of 3:** $6+0+8+x+y+0 = 14 + x + y$. Must be div by 3.
+*   **Rule of 11:**
+    *   Odd Sum: $0 + x + 0 = x$
+    *   Even Sum: $y + 8 + 6 = y + 14$
+    *   Difference: $(y + 14) - x = 0$ or $11$.
+*   **Check Options:**
+    *   (a) 5, 6: $14+11=25$ (No div by 3).
+    *   (b) 5, 8: $14+13=27$ (Div by 3). Check 11: $(8+14)-5 = 17$ (No).
+    *   (c) 8, 5: $14+13=27$ (Div by 3). Check 11: $(5+14)-8 = 11$ (Yes).
+*   **Answer:** **Option (c) 8 and 5**.
+
+**Q23. (Advanced) Find sum of all possible values of $(a+b)$ for $4a067b$ divisible by 11.**
+*   Odd Sum: $b + 6 + a$
+*   Even Sum: $7 + 0 + 4 = 11$
+*   Difference: $(a + b + 6) - 11 = a + b - 5$.
+*   **Condition 1:** Result is 0.
+    *   $a + b - 5 = 0 \Rightarrow a + b = 5$.
+*   **Condition 2:** Result is 11.
+    *   $a + b - 5 = 11 \Rightarrow a + b = 16$.
+*   **Condition 3:** Result is 22.
+    *   $a + b - 5 = 22 \Rightarrow a + b = 27$ (Not possible as max sum of two digits is $9+9=18$).
+*   **Possible sums:** 5 and 16.
+*   **Total Sum of values:** $5 + 16 = 21$.
+*   **Answer:** **21**
+
+**Q24. CDS Question (Logic Check)**
+*   Given $ABCDE$ divisible by 11.
+*   Formula derived: $E - D + C - B + A$.
+*   **Analysis:** This is the exact Alternating Sum formula for a 5-digit number.
+*   **Conclusion:** The Alternating sum must be divisible by 11 (which includes 0).
+*   **Correct Option:** Both 1 and 2 can be drawn (Since statement implies result is divisible by 11 or equal to 0, which covers the rule). *Note: The specific answer depends on the exact framing of options regarding "0" vs "divisible by 11", but logic remains the alternating sum rule.*
+
+

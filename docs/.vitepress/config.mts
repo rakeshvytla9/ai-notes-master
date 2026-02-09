@@ -47,6 +47,7 @@ export default defineConfig({
 
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'Dashboard', link: '/dashboard' },
       { text: 'Maths', link: '/maths/' },
       { text: 'Reasoning', link: '/reasoning/' },
       { text: 'English', link: '/english/' },
