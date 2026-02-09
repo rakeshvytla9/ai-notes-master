@@ -10,8 +10,13 @@ export default {
         app.component('Dashboard', Dashboard)
     },
     Layout() {
-        const { page } = useData()
+        const { page, frontmatter } = useData()
         const router = useRouter()
+
+        // Custom Layout for Dashboard
+        if (frontmatter.value.layout === 'dashboard') {
+            return h(Dashboard)
+        }
 
         const injectCheckboxes = () => {
             try {

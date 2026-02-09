@@ -1,6 +1,5 @@
 ---
-layout: doc
-aside: false
+layout: dashboard
 pageClass: dashboard-mode
 ---
 
