@@ -5,3 +5,5 @@ dist
 .npm-cache
 docs/.vitepress/dist
 docs/.vitepress/cache
+.env
+.env.local

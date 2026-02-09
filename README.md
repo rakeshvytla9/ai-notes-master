@@ -32,10 +32,25 @@ A modern, fast, and aesthetic notes maker and study platform built with [VitePre
    ```
 
 ## 💻 Local Development
-```bash
-npm install
-npm run docs:dev
-```
+
+1. **Clone and Install:**
+    ```bash
+    git clone https://github.com/rakeshvytla9/ai-notes-master.git
+    cd ai-notes-master
+    npm install
+    ```
+
+2. **Configure API Key (YouTube Data API v3):**
+    - **Option A (Recommended):** Create a `.env` file in the root directory:
+      ```
+      VITE_YOUTUBE_API_KEY=your_api_key_here
+      ```
+    - **Option B (Manual):** Go to the **Dashboard -> Settings** tab in the running app and enter your key manually.
+
+3. **Run Dev Server:**
+    ```bash
+    npm run docs:dev
+    ```
 
 ---
 

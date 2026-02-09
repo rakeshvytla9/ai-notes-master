@@ -1070,3 +1070,320 @@ The divisibility rule for **7, 11, and 13** is unique and involves creating grou
 *   **Correct Option:** Both 1 and 2 can be drawn (Since statement implies result is divisible by 11 or equal to 0, which covers the rule). *Note: The specific answer depends on the exact framing of options regarding "0" vs "divisible by 11", but logic remains the alternating sum rule.*
 
 
+---
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System
+**Sub-Topic:** Divisibility Rules (Part 3) - Repetition Rules & Algebraic Divisibility
+**Instructor:** Rahul Teotia Sir
+**Date:** 10-12-2024
+
+---
+
+## 🔁 **1. Divisibility Rules for Repeated Numbers**
+
+Special divisibility rules apply when digits or groups of digits are repeated to form a number.
+
+### **A. Rule for 2-Digit Number Repeated 3 Times ($XYXYXY$)**
+*   **Format:** A 6-digit number formed by repeating a 2-digit number three times (e.g., $232323, 474747$).
+*   **Mathematical Proof:**
+    $$XYXYXY = XY0000 + XY00 + XY$$
+    $$= XY(10000 + 100 + 1)$$
+    $$= XY \times 10101$$
+*   **Factors of 10101:** $3 \times 7 \times 13 \times 37$
+*   **Conclusion:** Any number in the form $XYXYXY$ is always divisible by **3, 7, 13, 37** (and their products like 21, 111, etc.).
+
+### **B. Rule for 3-Digit Number Repeated 2 Times ($XYZXYZ$)**
+*   **Format:** A 6-digit number formed by repeating a 3-digit number two times (e.g., $611611, 321321$).
+*   **Mathematical Proof:**
+    $$XYZXYZ = XYZ000 + XYZ$$
+    $$= XYZ(1000 + 1)$$
+    $$= XYZ \times 1001$$
+*   **Factors of 1001:** $7 \times 11 \times 13$
+*   **Conclusion:** Any number in the form $XYZXYZ$ is always divisible by **7, 11, 13 and 1001**.
+
+### **C. General Repetition Concept**
+If a 2-digit number ($XY$) is repeated an even number of times (e.g., 2 times, 4 times, 6 times):
+*   **2 times ($XYXY$):** Divisible by 101.
+*   **3 times ($XYXYXY$):** Divisible by 3, 7, 13, 37.
+*   **Note:** If a specific number like $383838$ is given, check options carefully. It is divisible by 19 because $38$ is divisible by 19, but **not every** number of form $XYXYXY$ is divisible by 19.
+
+---
+
+## 🧮 **2. Cyclic Permutation Sum Rule**
+Consider three 3-digit numbers formed by cyclic permutation of digits $X, Y, Z$: **$XYZ, YZX, ZXY$**.
+*   **Sum Calculation:**
+    $$S = (100X + 10Y + Z) + (100Y + 10Z + X) + (100Z + 10X + Y)$$
+    $$S = 111X + 111Y + 111Z$$
+    $$S = 111(X + Y + Z)$$
+*   **Factors of 111:** $3 \times 37$.
+*   **Conclusion:** The sum of such numbers is always divisible by:
+    1.  **111**
+    2.  **3**
+    3.  **37**
+    4.  **Sum of digits $(X+Y+Z)$**
+
+---
+
+## 📝 **3. Algebraic Divisibility Properties**
+
+Rules regarding variables ($n$) representing natural numbers.
+
+| Expression | Condition | Divisible By | Example |
+| :--- | :--- | :--- | :--- |
+| **$n^3 - n$** | Product of 3 consecutive integers $(n-1)n(n+1)$ | **6** | $2^3 - 2 = 6$ |
+| **$n^5 - n$** | Fermat's Little Theorem | **5** (and 30) | $2^5 - 2 = 30$ |
+| **Product of 5 consecutive integers** | $(n-2)(n-1)n(n+1)(n+2)$ | **$120$** $(5!)$ | $1 \times 2 \times 3 \times 4 \times 5 = 120$ |
+
+---
+
+## ❓ **4. Important Exam Questions (Solved)**
+
+**Q1. A 6-digit number is formed by repeating a 3-digit number (e.g., 656656). This number is always divisible by:**
+*   **Concept:** Form $XYZXYZ$.
+*   **Divisors:** 7, 11, 13, 1001.
+*   **Option Selected:** Only 11 (from options given in exam context).
+
+**Q2. If $465781P$ is divisible by 12, find value of P.**
+*   **Rule for 12:** Must be divisible by 3 and 4.
+*   **Check 4:** Last two digits $1P$ must be divisible by 4. $P$ can be 2 ($12$) or 6 ($16$).
+*   **Check 3:** Sum of digits ($31 + P$) must be divisible by 3.
+    *   If $P=2 \rightarrow 33$ (Divisible).
+    *   If $P=6 \rightarrow 37$ (Not Divisible).
+*   **Answer:** **2**
+
+**Q3. Find smallest natural number $n$ such that $(n+1) \times n \times (n-1) \dots \times 1$ is divisible by 910.**
+*   **Concept:** The expression represents $(n+1)!$.
+*   **Factors of 910:** $91 \times 10 = 13 \times 7 \times 5 \times 2$.
+*   **Logic:** For a factorial to be divisible by 910, it must contain its largest prime factor, which is **13**.
+*   Therefore, the factorial must be at least $13!$.
+*   Condition: $(n+1)! = 13! \implies n+1 = 13 \implies n = 12$.
+*   **Answer:** **12**
+
+**Q4. Divisibility of $3^{50} + 9^{26} + 27^{18} + 9^{28} + 9^{29}$.**
+*   **Step 1:** Convert everything to base 3.
+    *   $3^{50} + (3^2)^{26} + (3^3)^{18} + (3^2)^{28} + (3^2)^{29}$
+    *   $= 3^{50} + 3^{52} + 3^{54} + 3^{56} + 3^{58}$
+*   **Step 2:** Factor out smallest power ($3^{50}$).
+    *   $= 3^{50} [1 + 3^2 + 3^4 + 3^6 + 3^8]$
+    *   $= 3^{50} [1 + 9 + 81 + 729 + 6561]$
+    *   $= 3^{50} [7381]$
+*   **Step 3:** Check divisibility of 7381.
+    *   Check 11: $(1+3+7) - (8+3) = 11 - 11 = 0$.
+*   **Answer:** Divisible by **11**.
+
+**Q5. Is $222^{333} + 333^{222}$ divisible by 2, 3, or 37? (UPSC CSAT 2024)**
+*   **Divisibility by 2:**
+    *   $222^{333}$ (Even number) ends in even digit.
+    *   $333^{222}$ (Odd number) ends in odd digit.
+    *   Even + Odd = Odd. **Not divisible by 2**.
+*   **Divisibility by 3 & 37:**
+    *   Both bases (222 and 333) are multiples of 111.
+    *   $111 = 3 \times 37$.
+    *   Since bases are divisible by 3 and 37, the sum is also divisible.
+*   **Answer:** Divisible by **3 and 37**.
+
+**Q6. Divisibility of $555^{777} + 777^{555}$.**
+*   **Divisibility by 37:** Both bases are multiples of 111 ($3 \times 37$), so divisible by 37.
+*   **Divisibility by 3:** Sum of digits of bases is divisible by 3, so divisible by 3.
+*   **Divisibility by 2:**
+    *   $555^{\dots}$ ends in 5 (Odd).
+    *   $777^{\dots}$ ends in 3 ($7^{4n+3} \rightarrow 343 \rightarrow 3$). (Odd).
+    *   Odd + Odd = Even. Divisible by 2.
+*   **Answer:** Divisible by **2, 3, and 37**.
+
+---
+
+## ⚡ **5. Concept of Common Factors ($x^n + a^n$)**
+Used in questions like $4^{61} + 4^{62} + 4^{63} + 4^{64}$.
+1.  Take the smallest power as common.
+    *   $4^{61}(1 + 4^1 + 4^2 + 4^3)$
+2.  Solve the bracket.
+    *   $4^{61}(1 + 4 + 16 + 64) = 4^{61}(85)$
+3.  Analyze factors.
+    *   $85 = 17 \times 5$.
+    *   Expression is divisible by 17, 5, and also 10 (since $4 \times 5 = 20$).
+
+---
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System (Class 6)
+**Sub-Topic:** Divisibility Rules (Combined Rules for 3, 7, 11, 13, etc.) & Practice
+**Instructor:** Rahul Teotia Sir
+**Date:** 11-12-2024
+
+---
+
+## 🧠 **1. Combined Divisibility Rules (Advanced Concepts)**
+
+### **A. Rule for 3, 7, and 11**
+If a number is divisible by **3, 7, and 11**, it must be divisible by their Least Common Multiple (LCM).
+*   **LCM (3, 7, 11) = $3 \times 7 \times 11 = 231$**.
+*   **Method to solve (for unknown digits like $235xy$):**
+    1.  Assume the unknown digits ($xy$) are the **smallest (00)** or **largest (99)** possible values.
+    2.  Divide this assumed number by **231**.
+    3.  Calculate the remainder.
+    4.  Adjust the number to make it perfectly divisible.
+        *   *If taking 00:* Add (Divisor - Remainder) to the number.
+        *   *If taking 99:* Subtract the Remainder from the number.
+
+### **B. Rule for 7, 11, and 13**
+If a number is divisible by **7, 11, and 13**, it must be divisible by their LCM.
+*   **LCM (7, 11, 13) = $7 \times 11 \times 13 = 1001$**.
+*   **Key Property:** Any **3-digit number ($abc$)** multiplied by **1001** results in the repetition of those three digits.
+    *   $abc \times 1001 = abcabc$
+*   **Application:** If a 6-digit number is divisible by 7, 11, and 13, it must be in the form **$abcabc$**.
+    *   Example: If $5z3x4y$ is divisible by 7, 11, 13:
+        *   Compare $5z3$ with $x4y$.
+        *   $x = 5$, $z = 4$, $y = 3$.
+
+---
+
+## 📝 **2. Practice Questions & Solutions**
+
+### **Type 1: Divisibility by 3, 7, 11 (The 231 Method)**
+
+**Q42. If the five-digit number $235xy$ is divisible by 3, 7, and 11, find $(3x - 4y)$.**
+*   **Logic:** Divisible by 231.
+*   **Step 1:** Assume smallest number $23500$.
+*   **Step 2:** $23500 \div 231$.
+    *   $231 \times 1 = 231$, Remainder = 4. Bring down 0 $\rightarrow$ 40. Bring down 0 $\rightarrow$ 400.
+    *   $231 \times 1 = 231$. Remainder = $400 - 231 = 169$.
+*   **Step 3:** To make it divisible, we need $231 - 169 = 62$ more.
+*   **Step 4:** Number = $23500 + 62 = 23562$.
+*   **Comparison:** $x = 6$, $y = 2$.
+*   **Calculation:** $3(6) - 4(2) = 18 - 8 = 10$.
+*   **Answer:** **10**.
+
+**Q43. If 5-digit number $676xy$ is divisible by 3, 7, 11, find $(3x - 5y)$.**
+*   **Logic:** Divisible by 231.
+*   **Step 1:** Take $67600$. Divide by 231.
+*   **Step 2:** Remainder comes out to be **148**.
+*   **Step 3:** Add difference: $231 - 148 = 83$.
+*   **Step 4:** Number is $67683$.
+*   **Comparison:** $x = 8$, $y = 3$.
+*   **Calculation:** $3(8) - 5(3) = 24 - 15 = 9$.
+*   **Answer:** **9**.
+
+---
+
+### **Type 2: Divisibility by 7, 11, 13 (The $abcabc$ Method)**
+
+**Q44. If 6-digit number $5z3x4y$ is divisible by 7, 11, 13, find $(x + y - z)$.**
+*   **Logic:** Number must format as $abcabc$.
+*   **Analysis:** First 3 digits ($5z3$) must equal last 3 digits ($x4y$).
+    *   $x = 5$
+    *   $z = 4$ (middle digit)
+    *   $y = 3$
+*   **Calculation:** $5 + 3 - 4 = 4$.
+*   **Answer:** **4**.
+
+**Q45. If 6-digit number $479xyz$ is divisible by 7, 11, 13, find value of equation.**
+*   **Logic:** $abcabc$ format.
+*   **Values:** $479xyz \rightarrow 479479$. So, $x=4, y=7, z=9$.
+*   **Calculation:** $(y+z) \div x = (7+9) \div 4 = 16 \div 4 = 4$.
+*   **Answer:** **4**.
+
+---
+
+### **Type 3: Composite Numbers (Practice)**
+
+**Q46. Which number is divisible by 22?**
+*   **Rule:** Divisible by **2** AND **11**.
+*   **Check:**
+    *   All options are even (divisible by 2).
+    *   Check 11:
+        *   (c) $893002 \rightarrow (8+3+0) - (9+0+2) = 11 - 11 = 0$. (Divisible).
+*   **Answer:** **(c)**.
+
+**Q48. Find the maximum value of $pq$ if $11p9q4$ is divisible by 24.**
+*   **Rule:** Divisible by **3** AND **8**.
+*   **Maximum Value Logic:** Start checking from largest possible digits.
+*   **Check 8 (Last 3 digits $9q4$):**
+    *   Try $q=8 \rightarrow 984 \div 8$ (Yes). So $q=8$.
+*   **Check 3 (Sum of digits):** $1+1+p+9+8+4 = 23 + p$.
+    *   $23+p$ must be divisible by 3.
+    *   Max $p$: Try 9 ($32$ No), 8 ($31$ No), 7 ($30$ No), 6 ($29$ No), **4** ($27$ Yes).
+    *   So $p=4$ (Wait, re-checking sum in video: $1+1+p+9+8+4=23+p$. Next multiple of 3 is 24 ($p=1$), 27 ($p=4$), 30 ($p=7$)). *Correction: Max possible p is 7*.
+    *   *Correction in Logic:* If $q=8$, $p$ can be 7. $7 \times 8 = 56$.
+    *   *Instructor's re-eval:* Wait, q can be other values too. If $q=4 \rightarrow 944$ (div by 8). Sum $= 19+p$. Max $p=8$ ($27$). $8 \times 4 = 32$.
+    *   If $q=0 \rightarrow 904$ (div by 8). Sum $= 15+p$. Max $p=9$ ($24$). $9 \times 0 = 0$.
+    *   **Maximum Product:** With $q=8, p=7$, product is 56.
+*   **Answer:** **56**.
+
+**Q50. Find largest value of $y$ for $7x79251y8$ divisible by 36.**
+*   **Rule:** Divisible by **4** AND **9**.
+*   **Check 4 (Last 2 digits $y8$):**
+    *   Largest $y$: Try 9 ($98$ No), **8** ($88$ Yes). So **$y=8$**.
+*   **Check 9 (Sum of digits):**
+    *   $7+x+7+9+2+5+1+8+8 = 47 + x$.
+    *   Next multiple of 9 is 54. $47+x=54 \implies x=7$.
+*   **Equation:** $10x^2 - 3y^2 = 10(49) - 3(64) = 490 - 192 = 298$.
+*   **Answer:** **298**.
+
+**Q53. Divisibility by 56 (7 and 8). Find largest value of $y$.**
+*   **Number:** $x8942y4$.
+*   **Check 8 (Last 3 digits $2y4$):**
+    *   Try largest $y=9 \rightarrow 294$ (No).
+    *   Try $y=6 \rightarrow 264$ ($264 \div 8 = 33$ Yes). So **$y=6$**.
+*   **Check 7 (Grouping Method):**
+    *   Number: $x894264$.
+    *   Groups of 3 from right: $(264)$, $(894)$, $(x)$.
+    *   Logic: $(264 + x) - 894$ should be divisible by 7.
+    *   $x - 630$. Since 630 is div by 7, $x$ must be div by 7 (or 0).
+    *   $x$ can be 0 or 7. But $x$ is first digit, cannot be 0. So **$x=7$**.
+*   **Equation:** $x^2 + y = 49 + 6 = 55$.
+*   **Answer:** **55**.
+
+**Q54. Divisibility by 70 (7 and 10). Minimum value.**
+*   **Rule 10:** Last digit $Y$ must be **0**.
+*   **Rule 7:** Number becomes $732X0$.
+    *   Divide $732X0$ by 7.
+    *   $70000$ is div by 7. Remain with $32X0$.
+    *   $32X0 \div 7 \rightarrow$ $28$ (rem 4). $4X \div 7$.
+    *   Possibilities for $4X$: $42$ or $49$.
+    *   If $X=2 \rightarrow 420$ (Divisible). If $X=9 \rightarrow 490$ (Divisible).
+*   **Minimum value:** Asked for minimum, so take $X=2$.
+*   **Calculation:** $(x+y)/2 = (2+0)/2 = 1$.
+*   **Answer:** **1**.
+
+**Q56. Divisibility by 72. Condition $x=y$.**
+*   **Rule:** 8 and 9.
+*   **Check 8 (Last 3 digits $805x6$ is odd, wait... digits are $x6$. Last 3 are $5x6$. No wait, digit count 9).**
+    *   *Correction from board:* Number is $9386x378y$.
+    *   Given $x=y$.
+    *   Check 8 ($78y$): If $y=4 \rightarrow 784$ (Yes).
+    *   So $x=4, y=4$.
+    *   Check 9 (Sum): $9+3+8+6+4+3+7+8+4 = 52$ (Not div by 9). **Fail**.
+*   **Alternative:** Since $\sqrt{xy}$ asked and $x=y$, answer is $\sqrt{x^2}=x$. The answer must be an integer (from options).
+    *   Options: 3, 7.
+    *   If $x=y=3$: Last digits $783$ (Not div by 8).
+    *   If $x=y=7$: Last digits $787$ (Not div by 8).
+    *   *Re-evaluating problem:* Question asks value of $\sqrt{xy}$.
+    *   Sum of digits with $x, y$: $Sum = 44 + x + y$.
+    *   If $x=y$, $Sum = 44 + 2x$. Must be div by 9.
+    *   Possible sums: 54 ($2x=10, x=5$), 63 ($2x=19$ No).
+    *   Let's try $x=y=5$. Last digits $785$ (Not div by 8).
+    *   *Correction:* In video teacher realizes question error or specific logic check.
+    *   **Final Logic:** If $x=y$, sum of digits must satisfy 9 and last 3 digits satisfy 8.
+    *   Actually, finding $y$ via 8 rule for $78y$: $y=4$ is the only valid digit.
+    *   If $y=4$, then $x=4$. Sum $= 44+4+4 = 52$ (Not div by 9).
+    *   **Teacher conclusion:** There is likely an error in the question statement regarding $x=y$ or the digits. However, based on calculation flow, checked options like 7.
+    *   *Video Specific:* Teacher calculates sum as $44 + x + y$. If $y=4$, sum is $48+x$. For div by 9, $x=6$.
+    *   If $x=6, y=4$, then $\sqrt{24} = 2\sqrt{6}$. Not in options.
+    *   *Teacher's final move:* Skips to next due to potential typo in question source (ICAR).
+
+---
+
+## 🔑 **3. Summary of Key Learnings**
+1.  **Composite Rules:** Always break composite numbers into **co-prime** factors (e.g., $72 \rightarrow 8 \times 9$, $88 \rightarrow 8 \times 11$).
+2.  **Order of Checking:**
+    *   Start with rules that depend on specific positions (e.g., **2, 5, 10** for last digit).
+    *   Then check rules for last few digits (**4, 8, 16**).
+    *   Then check sum of digits (**3, 9**).
+    *   Finally check **7, 11, 13** if needed.
+3.  **Maximum/Minimum:** When asked for max value, start checking potential digits from 9 down to 0. For min, start from 0 up to 9.
+4.  **7-11-13 Rule:** Remember $abcabc$ is divisible by 7, 11, 13, and 1001.
+
+---
+**Next Class:** Number of Zeros (Topic Change). 
