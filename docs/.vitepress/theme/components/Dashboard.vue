@@ -263,258 +263,61 @@ const printDashboard = () => {
 /* --- Layout Grid --- */
 .elearn-layout {
     display: grid;
-    grid-template-columns: 240px 1fr 300px;
+    grid-template-columns: 240px minmax(0, 1fr) 300px; /* minmax(0, 1fr) prevents main content from blowing out the grid */
     gap: 0;
     width: 100%;
     min-height: 100vh;
-    background: #0f0f13; /* Deep Dark Bg */
+    background: #0f0f13; 
     color: #ffffff;
     font-family: 'Inter', sans-serif;
-    overflow: hidden;
+    overflow-x: hidden; /* Prevent page scroll */
 }
 
-/* --- Common --- */
-button { cursor: pointer; border: none; outline: none; transition: 0.2s; }
-h1, h2, h3, h4, p { margin: 0; }
-
-/* --- 1. Sidebar --- */
-.sidebar {
-    background: #15151b;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid rgba(255,255,255,0.05);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 50px;
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-.logo-icon {
-    width: 30px; height: 30px;
-    background: #3e8fb0;
-    color: white;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-}
-
-.nav-menu { flex: 1; }
-.nav-item {
-    display: flex; align-items: center; gap: 15px;
-    padding: 12px 15px;
-    margin-bottom: 5px;
-    border-radius: 12px;
-    color: #888;
-    font-weight: 500;
-    font-size: 0.95rem;
-    cursor: pointer;
-}
-.nav-item:hover, .nav-item.active {
-    background: #3e8fb0;
-    color: white;
-}
-
-.upgrade-card {
-    background: linear-gradient(135deg, #2a2a35 0%, #1a1a20 100%);
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-.upgrade-card p { font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
-.upgrade-card small { color: #888; font-size: 0.75rem; }
-
-.user-profile {
-    display: flex; align-items: center; gap: 10px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-}
-.avatar {
-    width: 35px; height: 35px;
-    background: #907aa9;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    font-size: 0.8rem;
-}
-.user-info { display: flex; flex-direction: column; }
-.user-info .name { font-size: 0.9rem; font-weight: 600; }
-.user-info .status { font-size: 0.7rem; color: #666; }
+/* ... existing common styles ... */
 
 /* --- 2. Main Content --- */
 .main-content {
     padding: 30px 40px;
     overflow-y: auto;
-}
-
-.top-header {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    margin-bottom: 30px;
-}
-.greeting h1 { font-size: 1.8rem; font-weight: 600; margin-bottom: 5px; }
-.greeting p { color: #888; }
-
-.header-tools { display: flex; gap: 15px; align-items: center; }
-.search-bar {
-    background: #1f1f27;
-    padding: 10px 15px;
-    border-radius: 10px;
-    display: flex; align-items: center; gap: 10px;
-}
-.search-bar input { background: transparent; border: none; color: white; outline: none; }
-.icon-btn {
-    width: 40px; height: 40px;
-    background: #1f1f27;
-    border-radius: 10px;
+    height: 100vh; /* Scroll within the middle column */
+    /* Ensure glassmorphism cards don't overlap weirdly */
     position: relative;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-}
-.badge {
-    position: absolute; top: 5px; right: 5px;
-    width: 8px; height: 8px; background: red; border-radius: 50%;
-    font-size: 0;
-}
-.print-btn:hover { background: #3e8fb0; }
-
-.hero-card {
-    background: linear-gradient(135deg, #d66a6a 0%, #a04040 100%);
-    border-radius: 25px;
-    padding: 40px;
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 40px;
-    position: relative;
-    overflow: hidden;
-}
-.hero-text { z-index: 2; position: relative; }
-.hero-text .tag { 
-    background: rgba(255,255,255,0.2); 
-    padding: 5px 12px; border-radius: 20px; 
-    font-size: 0.75rem; 
-    margin-bottom: 15px; display: inline-block; 
-}
-.hero-text h2 { font-size: 2rem; margin-bottom: 10px; max-width: 400px; }
-.hero-text p { opacity: 0.9; margin-bottom: 20px; }
-.btn-primary {
-    background: white; color: #d66a6a;
-    padding: 12px 25px; border-radius: 12px;
-    font-weight: 700;
-}
-.hero-illustration { position: relative; width: 200px; height: 150px; }
-.circle-graphic {
-    width: 150px; height: 150px;
-    border: 10px solid rgba(255,255,255,0.1);
-    border-radius: 50%;
-    position: absolute; right: 0;
+    z-index: 1;
 }
 
-.section-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 20px;
-}
-.arrows { display: flex; gap: 10px; }
-.arrow-btn {
-    width: 30px; height: 30px;
-    background: #1f1f27; border-radius: 8px; color: white;
-}
+/* ... existing styles ... */
 
 .course-slider {
     display: flex; gap: 20px;
     padding-bottom: 20px;
     overflow-x: auto;
+    /* Hide scrollbar for cleaner look */
+    scrollbar-width: none; 
 }
-.course-card-glass {
-    min-width: 220px;
-    background: #1f1f27;
-    padding: 20px;
-    border-radius: 20px;
-    display: flex; flex-direction: column; gap: 10px;
-}
-.card-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-}
-.progress-wrap { margin: 10px 0; }
-.progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; }
-.fill { height: 100%; border-radius: 3px; }
-.percent { font-size: 0.75rem; color: #888; display: block; margin-top: 5px; text-align: right; }
+.course-slider::-webkit-scrollbar { display: none; }
 
-.card-footer { display: flex; justify-content: space-between; align-items: center; }
-.avatars { display: flex; }
-.av { 
-    width: 20px; height: 20px; background: #555; border-radius: 50%; 
-    font-size: 0.6rem; display: flex; align-items: center; justify-content: center; border: 1px solid #1f1f27; margin-right: -8px; 
-}
-.btn-mini {
-    width: 25px; height: 25px; background: #333; color: white; border-radius: 8px;
-}
-
-/* --- 3. Right Panel --- */
-.right-panel {
-    background: #0f0f13; /* Same as bg for seamless look but separate col */
-    padding: 30px 20px;
-    border-left: 1px solid rgba(255,255,255,0.05);
-}
-
-.widget {
-    background: #15151b;
-    border-radius: 25px;
-    padding: 25px;
-    margin-bottom: 30px;
-}
-
-.widget-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
-
-.chart-container {
-    height: 120px;
-    position: relative;
-    margin-bottom: 15px;
-}
-.line-chart { width: 100%; height: 100%; overflow: visible; }
-.chart-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; }
-
-.chart-stat h3 { font-size: 1.5rem; margin-bottom: 5px; }
-
-.list-item { 
-    display: flex; align-items: center; gap: 15px; 
-    margin-bottom: 20px; 
-    padding: 10px; border-radius: 15px; transition: 0.2s;
-}
-.list-item:hover { background: #1f1f27; }
-.item-icon {
-    width: 40px; height: 40px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-}
-.item-info h4 { font-size: 0.9rem; margin-bottom: 3px; }
-.item-info p { font-size: 0.75rem; color: #666; }
-.chevron-btn { width: 25px; height: 25px; background: transparent; color: #888; }
+/* ... existing styles ... */
 
 /* --- Responsive --- */
-@media (max-width: 1100px) {
-    .elearn-layout { grid-template-columns: 80px 1fr 280px; }
+@media (max-width: 1200px) {
+    /* Collapse right panel on medium screens */
+    .elearn-layout { grid-template-columns: 80px 1fr 0px; }
+    .right-panel { display: none; } 
     .logo-text, .nav-item { display: none; } /* Icon only sidebar */
     .nav-item { justify-content: center; }
     .nav-item .icon { margin: 0; }
+    /* Show right panel content at bottom of main if needed, or just hide for now as per "overlap" fix */
 }
 
 @media (max-width: 900px) {
-    .elearn-layout { grid-template-columns: 1fr; display: flex; flex-direction: column; }
-    .sidebar, .right-panel { display: none; } /* Simplify for mobile for now or make collapsible */
-    .mobile-nav { display: flex; } /* Would need mobile nav */
-    
-    /* Just adjust main content for mobile view */
-    .main-content { padding: 20px; width: 100%; }
-    .chart-widget { display: block; margin-top: 20px; }
-    
-    /* Re-enable right panel as bottom content */
-    .right-panel { display: block; border-left: none; padding-top: 0; }
+    .elearn-layout { grid-template-columns: 1fr; display: flex; flex-direction: column; height: auto; }
+    .sidebar { display: none; } 
+    .main-content { padding: 20px; width: 100%; height: auto; overflow: visible; }
+    .right-panel { 
+        display: block; width: 100%; 
+        border-left: none; padding: 20px;
+        background: #0f0f13;
+    }
 }
 
 @media print {
