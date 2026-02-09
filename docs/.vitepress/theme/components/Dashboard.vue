@@ -127,15 +127,11 @@ const printDashboard = () => {
         </nav>
 
         <div class="sidebar-footer">
-            <div class="upgrade-card">
-                <p>Go Premium</p>
-                <small>Explore 50+ new courses</small>
-            </div>
             <div class="user-profile">
                 <div class="avatar">RM</div>
                 <div class="user-info">
                     <span class="name">Rakesh M.</span>
-                    <span class="status">Free Account</span>
+                    <span class="status">Student</span>
                 </div>
             </div>
         </div>
