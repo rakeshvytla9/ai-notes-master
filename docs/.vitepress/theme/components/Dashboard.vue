@@ -6,38 +6,48 @@ const courses = ref([
   { 
     id: 'maths', 
     name: 'Maths Foundation', 
+    category: 'Mathematics',
     instructor: 'Rahul Teotia Sir', 
     total: 300, 
     current: 0, 
     speed: 3.8, 
-    noteTime: 15, // mins per hour of content
-    color: '#3e8fb0' 
+    noteTime: 15, 
+    color: '#3e8fb0',
+    icon: '📐',
+    image: 'https://cdn-icons-png.flaticon.com/512/3771/3771278.png'
   },
   { 
     id: 'reasoning', 
     name: 'Reasoning Foundation', 
+    category: 'Logic & Reasoning',
     instructor: 'Shobhit Bhardwaj Sir', 
     total: 110, 
     current: 0, 
     speed: 3.0, 
     noteTime: 15,
-    color: '#907aa9' 
+    color: '#d66a6a',
+    icon: '🧩',
+    image: 'https://cdn-icons-png.flaticon.com/512/8148/8148942.png' 
   },
   { 
     id: 'english', 
     name: 'English Foundation', 
+    category: 'Language',
     instructor: 'Sanjeev Thakur Sir', 
     total: 150, 
     current: 0, 
     speed: 2.0, 
     noteTime: 15,
-    color: '#d66a6a' // Muted Red
+    color: '#907aa9',
+    icon: '📖',
+    image: 'https://cdn-icons-png.flaticon.com/512/3976/3976625.png'
   }
 ])
 
 const dailyTarget = ref(12)
 const completedToday = ref(0)
-const lastStudyDate = ref(new Date().toDateString())
+const activeTab = ref('home')
+const searchQuery = ref('')
 
 // --- Persistence ---
 const STORAGE_KEY = 'elearn-dashboard-data'
@@ -46,14 +56,13 @@ onMounted(() => {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
     const data = JSON.parse(saved)
-    courses.value = data.courses
-    // Reset daily counter if new day
+    courses.value = data.courses.map(c => ({...courses.value.find(def => def.id === c.id), ...c}))
+    
+    // Reset daily if new day
     if (data.lastStudyDate !== new Date().toDateString()) {
       completedToday.value = 0
-      lastStudyDate.value = new Date().toDateString()
     } else {
       completedToday.value = data.completedToday || 0
-      lastStudyDate.value = data.lastStudyDate
     }
   }
 })
@@ -75,259 +84,453 @@ const increment = (course) => {
   }
 }
 
-const decrement = (course) => {
-  if (course.current > 0) {
-    course.current--
-    if (completedToday.value > 0) completedToday.value--
-  }
-}
+const progressPercent = (course) => Math.round((course.current / course.total) * 100)
 
-// Calculate time required for one lecture (60 mins raw)
-const getTimeForLecture = (course) => {
-  // 60 mins content / speed + note taking time
-  const watchTime = 60 / course.speed
-  return Math.round(watchTime + course.noteTime)
-}
-
-const totalTimeToday = computed(() => {
-  // Assuming equal split of the 12 lectures across 3 subjects for simplicity in estimation,
-  // or just average correctly if user picks them. 
-  // For a planner, let's assume 4 of each for 12 total.
-  let totalMins = 0
-  courses.value.forEach(c => {
-    totalMins += (dailyTarget.value / 3) * getTimeForLecture(c) 
-  })
-  const hours = Math.floor(totalMins / 60)
-  const mins = Math.round(totalMins % 60)
-  return `${hours}h ${mins}m`
+const points = computed(() => {
+    // Generate a fake 'Learning Point' curve based on progress
+    // In a real app, this would be historical data
+    return [30, 45, 35, 55, 45, 65, 60, 75, 70, 90, 85, 100].map((y, i) => `${i * 30},${100 - y}`).join(' ')
 })
 
-const progressPercent = (course) => {
-  return Math.round((course.current / course.total) * 100)
+const printDashboard = () => {
+    window.print()
 }
-
-const dailyProgressPercent = computed(() => {
-  return Math.min(Math.round((completedToday.value / dailyTarget.value) * 100), 100)
-})
 
 </script>
 
 <template>
-  <div class="dashboard-container">
-    <div class="header-section">
-      <h1>🚀 Study Dashboard</h1>
-      <p class="subtitle">Track your 12-lecture daily goal</p>
-    </div>
+  <div class="elearn-layout">
+    
+    <!-- 1. Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-icon">E</span>
+            <span class="logo-text">Elearn</span>
+        </div>
 
-    <!-- Daily Progress -->
-    <div class="daily-card">
-      <div class="daily-header">
-        <div>
-          <h2>Daily Goal</h2>
-          <span class="date">{{ new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) }}</span>
-        </div>
-        <div class="daily-stat">
-          <span class="big-number">{{ completedToday }}</span>
-          <span class="total">/ {{ dailyTarget }}</span>
-        </div>
-      </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" :style="{ width: dailyProgressPercent + '%', backgroundColor: dailyProgressPercent >= 100 ? '#4ade80' : '#3e8fb0' }"></div>
-      </div>
-      <p class="est-time">⏱️ Est. Study Time: <strong>{{ totalTimeToday }}</strong> (at your speeds)</p>
-    </div>
+        <nav class="nav-menu">
+            <div class="nav-item" :class="{ active: activeTab === 'home' }" @click="activeTab = 'home'">
+                <span class="icon">🏠</span> Home
+            </div>
+            <div class="nav-item" :class="{ active: activeTab === 'courses' }" @click="activeTab = 'courses'">
+                <span class="icon">📚</span> My Courses
+            </div>
+            <div class="nav-item" :class="{ active: activeTab === 'favorite' }" @click="activeTab = 'favorite'">
+                <span class="icon">❤️</span> Favorite
+            </div>
+            <div class="nav-item" :class="{ active: activeTab === 'notes' }" @click="activeTab = 'notes'">
+                <span class="icon">📝</span> Notes
+            </div>
+            <div class="nav-item" :class="{ active: activeTab === 'settings' }" @click="activeTab = 'settings'">
+                <span class="icon">⚙️</span> Settings
+            </div>
+        </nav>
 
-    <!-- Course Cards -->
-    <div class="courses-grid">
-      <div v-for="course in courses" :key="course.id" class="course-card" :style="{ borderTop: `4px solid ${course.color}` }">
-        <div class="course-header">
-          <h3>{{ course.name }}</h3>
-          <p class="instructor">{{ course.instructor }}</p>
+        <div class="sidebar-footer">
+            <div class="upgrade-card">
+                <p>Go Premium</p>
+                <small>Explore 50+ new courses</small>
+            </div>
+            <div class="user-profile">
+                <div class="avatar">RM</div>
+                <div class="user-info">
+                    <span class="name">Rakesh M.</span>
+                    <span class="status">Free Account</span>
+                </div>
+            </div>
         </div>
+    </aside>
+
+    <!-- 2. Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="greeting">
+                <h1>Hi Rakesh,</h1>
+                <p>What will you learn today?</p>
+            </div>
+            
+            <div class="header-tools">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Search..." v-model="searchQuery">
+                </div>
+                <button class="icon-btn notification">🔔<span class="badge">2</span></button>
+                <button class="icon-btn print-btn" @click="printDashboard" title="Download/Print Dashboard">🖨️</button>
+            </div>
+        </header>
+
+        <!-- Hero Card -->
+        <div class="hero-card">
+            <div class="hero-text">
+                <span class="tag">In Progress</span>
+                <h2>Continue Learning: SSC Maths</h2>
+                <p>Lecture #{{ courses[0].current + 1}}: Number System & Divisibility</p>
+                <div class="hero-stats">
+                    <span>⏱️ {{ courses[0].speed }}x Speed</span>
+                    <span>🔥 {{ courses[0].current }} / {{ courses[0].total }} Completed</span>
+                </div>
+                <button class="btn-primary" @click="increment(courses[0])">Mark Watched (+1)</button>
+            </div>
+            <div class="hero-illustration">
+                <!-- Abstract Circle/Graphic -->
+                <div class="circle-graphic"></div>
+                <div class="floating-icon">Pre</div>
+            </div>
+        </div>
+
+        <!-- Your Learning Path (Horizontal Scroll) -->
+        <div class="section-header">
+            <h3>Your Learning Path</h3>
+            <div class="arrows">
+                <button class="arrow-btn">←</button>
+                <button class="arrow-btn">→</button>
+            </div>
+        </div>
+
+        <div class="course-slider">
+            <div v-for="course in courses" :key="course.id" class="course-card-glass">
+                <div class="card-icon" :style="{background: course.color}">{{ course.icon }}</div>
+                <h4>{{ course.name }}</h4>
+                <p>{{ course.total }} Lectures</p>
+                
+                <div class="progress-wrap">
+                    <div class="progress-bar-bg">
+                        <div class="fill" :style="{width: progressPercent(course) + '%', background: course.color}"></div>
+                    </div>
+                    <span class="percent">{{ progressPercent(course) }}%</span>
+                </div>
+
+                <div class="card-footer">
+                    <div class="students">
+                        <div class="avatars">
+                            <span class="av">A</span>
+                            <span class="av">B</span>
+                        </div>
+                        <small>+{{ Math.floor(Math.random() * 50) }} Students</small>
+                    </div>
+                    <button class="btn-mini" @click="increment(course)">+</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 3. Right Sidebar (Widgets) -->
+    <aside class="right-panel">
         
-        <div class="course-stats">
-          <div class="stat-row">
-            <span>Progress</span>
-            <span>{{ course.current }} / {{ course.total }}</span>
-          </div>
-          <div class="progress-bar-bg small">
-             <div class="progress-bar-fill" :style="{ width: progressPercent(course) + '%', backgroundColor: course.color }"></div>
-          </div>
-          <div class="stat-row speed-row">
-            <span>Speed: {{ course.speed }}x</span>
-            <span>~{{ getTimeForLecture(course) }}m / lec</span>
-          </div>
+        <!-- Learning Point Chart -->
+        <div class="widget chart-widget">
+            <div class="widget-header">
+                <h3>Learning Point</h3>
+                <span class="more">...</span>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 350 120" class="line-chart">
+                    <defs>
+                        <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#3e8fb0" stop-opacity="0.5"/>
+                            <stop offset="100%" stop-color="#3e8fb0" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <path :d="`M0,120 ` + points + ` L350,120 Z`" fill="url(#chartGradient)" />
+                    <polyline :points="points" fill="none" stroke="#3e8fb0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="chart-labels">
+                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                </div>
+            </div>
+            <div class="chart-stat">
+                <h3>{{ completedToday }} / {{ dailyTarget }}</h3>
+                <p>Lectures Today</p>
+            </div>
         </div>
 
-        <div class="actions">
-          <button @click="decrement(course)" class="btn-icon" title="Undo">-</button>
-          <button @click="increment(course)" class="btn-action" :style="{ backgroundColor: course.color }">
-            Mark Watched (+1)
-          </button>
+        <!-- Course in Progress -->
+        <div class="widget list-widget">
+            <h3>Courses in Progress</h3>
+            <div class="list-item" v-for="course in courses" :key="course.id + 'list'">
+                <div class="item-icon" :style="{border: `2px solid ${course.color}`}">{{ course.icon }}</div>
+                <div class="item-info">
+                    <h4>{{ course.name }}</h4>
+                    <p>{{ course.category }}</p>
+                </div>
+                <button class="chevron-btn" @click="increment(course)">></button>
+            </div>
         </div>
-      </div>
-    </div>
+
+    </aside>
+
   </div>
 </template>
 
 <style scoped>
-.dashboard-container {
-  padding: 20px 0;
-  max-width: 100%;
+/* --- Layout Grid --- */
+.elearn-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr 300px;
+    gap: 0;
+    width: 100%;
+    min-height: 100vh;
+    background: #0f0f13; /* Deep Dark Bg */
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
 }
 
-.header-section {
-  text-align: center;
-  margin-bottom: 30px;
+/* --- Common --- */
+button { cursor: pointer; border: none; outline: none; transition: 0.2s; }
+h1, h2, h3, h4, p { margin: 0; }
+
+/* --- 1. Sidebar --- */
+.sidebar {
+    background: #15151b;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.05);
 }
 
-h1 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 5px;
-  background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 50px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+.logo-icon {
+    width: 30px; height: 30px;
+    background: #3e8fb0;
+    color: white;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
 }
 
-.subtitle {
-  color: var(--vp-c-text-2);
-  font-size: 1.1rem;
+.nav-menu { flex: 1; }
+.nav-item {
+    display: flex; align-items: center; gap: 15px;
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    border-radius: 12px;
+    color: #888;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+.nav-item:hover, .nav-item.active {
+    background: #3e8fb0;
+    color: white;
 }
 
-/* Glassmorphism Cards */
-.daily-card, .course-card {
-  background: rgba(30, 30, 30, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 25px;
-  margin-bottom: 30px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease;
+.upgrade-card {
+    background: linear-gradient(135deg, #2a2a35 0%, #1a1a20 100%);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.upgrade-card p { font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
+.upgrade-card small { color: #888; font-size: 0.75rem; }
+
+.user-profile {
+    display: flex; align-items: center; gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.avatar {
+    width: 35px; height: 35px;
+    background: #907aa9;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+.user-info { display: flex; flex-direction: column; }
+.user-info .name { font-size: 0.9rem; font-weight: 600; }
+.user-info .status { font-size: 0.7rem; color: #666; }
+
+/* --- 2. Main Content --- */
+.main-content {
+    padding: 30px 40px;
+    overflow-y: auto;
 }
 
-.daily-card:hover, .course-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.2);
+.top-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 30px;
+}
+.greeting h1 { font-size: 1.8rem; font-weight: 600; margin-bottom: 5px; }
+.greeting p { color: #888; }
+
+.header-tools { display: flex; gap: 15px; align-items: center; }
+.search-bar {
+    background: #1f1f27;
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 10px;
+}
+.search-bar input { background: transparent; border: none; color: white; outline: none; }
+.icon-btn {
+    width: 40px; height: 40px;
+    background: #1f1f27;
+    border-radius: 10px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+}
+.badge {
+    position: absolute; top: 5px; right: 5px;
+    width: 8px; height: 8px; background: red; border-radius: 50%;
+    font-size: 0;
+}
+.print-btn:hover { background: #3e8fb0; }
+
+.hero-card {
+    background: linear-gradient(135deg, #d66a6a 0%, #a04040 100%);
+    border-radius: 25px;
+    padding: 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+}
+.hero-text { z-index: 2; position: relative; }
+.hero-text .tag { 
+    background: rgba(255,255,255,0.2); 
+    padding: 5px 12px; border-radius: 20px; 
+    font-size: 0.75rem; 
+    margin-bottom: 15px; display: inline-block; 
+}
+.hero-text h2 { font-size: 2rem; margin-bottom: 10px; max-width: 400px; }
+.hero-text p { opacity: 0.9; margin-bottom: 20px; }
+.btn-primary {
+    background: white; color: #d66a6a;
+    padding: 12px 25px; border-radius: 12px;
+    font-weight: 700;
+}
+.hero-illustration { position: relative; width: 200px; height: 150px; }
+.circle-graphic {
+    width: 150px; height: 150px;
+    border: 10px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    position: absolute; right: 0;
 }
 
-.daily-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+.section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+}
+.arrows { display: flex; gap: 10px; }
+.arrow-btn {
+    width: 30px; height: 30px;
+    background: #1f1f27; border-radius: 8px; color: white;
 }
 
-.date {
-  color: var(--vp-c-text-2);
-  font-size: 0.9rem;
+.course-slider {
+    display: flex; gap: 20px;
+    padding-bottom: 20px;
+    overflow-x: auto;
+}
+.course-card-glass {
+    min-width: 220px;
+    background: #1f1f27;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+}
+.progress-wrap { margin: 10px 0; }
+.progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; }
+.fill { height: 100%; border-radius: 3px; }
+.percent { font-size: 0.75rem; color: #888; display: block; margin-top: 5px; text-align: right; }
+
+.card-footer { display: flex; justify-content: space-between; align-items: center; }
+.avatars { display: flex; }
+.av { 
+    width: 20px; height: 20px; background: #555; border-radius: 50%; 
+    font-size: 0.6rem; display: flex; align-items: center; justify-content: center; border: 1px solid #1f1f27; margin-right: -8px; 
+}
+.btn-mini {
+    width: 25px; height: 25px; background: #333; color: white; border-radius: 8px;
 }
 
-.daily-stat {
-  font-weight: 800;
-  color: #fff;
+/* --- 3. Right Panel --- */
+.right-panel {
+    background: #0f0f13; /* Same as bg for seamless look but separate col */
+    padding: 30px 20px;
+    border-left: 1px solid rgba(255,255,255,0.05);
 }
 
-.big-number {
-  font-size: 2.5rem;
-  color: #3e8fb0;
+.widget {
+    background: #15151b;
+    border-radius: 25px;
+    padding: 25px;
+    margin-bottom: 30px;
 }
 
-.total {
-  font-size: 1.2rem;
-  color: var(--vp-c-text-2);
+.widget-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+
+.chart-container {
+    height: 120px;
+    position: relative;
+    margin-bottom: 15px;
+}
+.line-chart { width: 100%; height: 100%; overflow: visible; }
+.chart-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: #666; }
+
+.chart-stat h3 { font-size: 1.5rem; margin-bottom: 5px; }
+
+.list-item { 
+    display: flex; align-items: center; gap: 15px; 
+    margin-bottom: 20px; 
+    padding: 10px; border-radius: 15px; transition: 0.2s;
+}
+.list-item:hover { background: #1f1f27; }
+.item-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+}
+.item-info h4 { font-size: 0.9rem; margin-bottom: 3px; }
+.item-info p { font-size: 0.75rem; color: #666; }
+.chevron-btn { width: 25px; height: 25px; background: transparent; color: #888; }
+
+/* --- Responsive --- */
+@media (max-width: 1100px) {
+    .elearn-layout { grid-template-columns: 80px 1fr 280px; }
+    .logo-text, .nav-item { display: none; } /* Icon only sidebar */
+    .nav-item { justify-content: center; }
+    .nav-item .icon { margin: 0; }
 }
 
-.progress-bar-bg {
-  width: 100%;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 15px;
+@media (max-width: 900px) {
+    .elearn-layout { grid-template-columns: 1fr; display: flex; flex-direction: column; }
+    .sidebar, .right-panel { display: none; } /* Simplify for mobile for now or make collapsible */
+    .mobile-nav { display: flex; } /* Would need mobile nav */
+    
+    /* Just adjust main content for mobile view */
+    .main-content { padding: 20px; width: 100%; }
+    .chart-widget { display: block; margin-top: 20px; }
+    
+    /* Re-enable right panel as bottom content */
+    .right-panel { display: block; border-left: none; padding-top: 0; }
 }
 
-.progress-bar-bg.small {
-  height: 6px;
-  margin: 10px 0;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  border-radius: 6px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.est-time {
-  font-size: 0.9rem;
-  color: var(--vp-c-text-2);
-  text-align: right;
-  margin: 0;
-}
-
-/* Course Grid */
-.courses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.course-header h3 {
-  margin: 0;
-  font-size: 1.4rem;
-}
-
-.instructor {
-  font-size: 0.9rem;
-  color: var(--vp-c-text-2);
-  margin: 5px 0 15px 0;
-}
-
-.stat-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  margin-bottom: 5px;
-}
-
-.speed-row {
-  font-size: 0.8rem;
-  opacity: 0.8;
-  margin-top: 5px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.btn-action {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: filter 0.2s;
-}
-
-.btn-action:hover {
-  filter: brightness(1.2);
-}
-
-.btn-icon {
-  width: 40px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
-  color: var(--vp-c-text-1);
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.btn-icon:hover {
-  background: rgba(255,255,255,0.05);
+@media print {
+    .sidebar, .top-header, .arrows { display: none !important; }
+    .elearn-layout { display: block; background: white; color: black; }
+    .hero-card, .course-card-glass, .widget { 
+        background: white; border: 1px solid #ddd; color: black; box-shadow: none; 
+        page-break-inside: avoid;
+    }
+    .main-content { overflow: visible; }
+    .btn-primary, .btn-mini, .chevron-btn { display: none; }
+    /* Force text colors for print */
+    h1, h2, h3, h4, p, span { color: black !important; -webkit-text-fill-color: black !important; }
 }
 </style>
