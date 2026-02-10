@@ -46,14 +46,36 @@ const pomodoroTimer = ref(null)
 // --- Courses State ---
 const courses = ref([])
 
-// Real Site Notes Integration
-const siteNotes = ref([
-  { title: 'Number System', category: 'Maths', link: '/maths/Number%20System' },
-  { title: 'Algebra', category: 'Maths', link: '/maths/Algebra' },
-  { title: 'Syllogism', category: 'Reasoning', link: '/reasoning/Syllogism' },
-  { title: 'Blood Relation', category: 'Reasoning', link: '/reasoning/Blood%20Relation' },
-  { title: 'Tenses', category: 'English', link: '/english/Tenses' }
-])
+// --- Dynamic Notes Discovery ---
+const modules = import.meta.glob('../../../*/*.md')
+const discoveredNotes = Object.keys(modules)
+  .filter(path => {
+    const parts = path.split('/')
+    const subject = parts[parts.length - 2]
+    const filename = parts[parts.length - 1]
+    return ['maths', 'reasoning', 'english', 'ga'].includes(subject) && filename !== 'index.md'
+  })
+  .map(path => {
+    const parts = path.split('/')
+    const subject = parts[parts.length - 2]
+    const filename = parts[parts.length - 1].replace('.md', '')
+    
+    // Format category for display
+    const categoryMap = {
+      'maths': 'Maths',
+      'reasoning': 'Reasoning',
+      'english': 'English',
+      'ga': 'GA'
+    }
+    
+    return {
+      title: filename.replace(/%20/g, ' '),
+      category: categoryMap[subject] || subject.toUpperCase(),
+      link: `/${subject}/${filename}`
+    }
+  })
+
+const siteNotes = ref(discoveredNotes)
 
 // Study History (Heatmap)
 const studyHistory = ref([]) 
@@ -284,6 +306,45 @@ const openCourse = (course) => {
     activeTab.value = 'courses'
 }
 
+// --- Enhanced Analytics Logic ---
+const weeklyTrend = computed(() => {
+    const days = []
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date()
+        d.setDate(d.getDate() - i)
+        const dateStr = d.toISOString().split('T')[0]
+        const count = studyHistory.value.find(h => h.date === dateStr)?.count || 0
+        days.push({ 
+            date: dateStr, 
+            dayName: d.toLocaleDateString('en-US', { weekday: 'short' }),
+            count 
+        })
+    }
+    return days
+})
+
+const subjectStats = computed(() => {
+    const subjects = ['Maths', 'Reasoning', 'English', 'GA']
+    return subjects.map(sub => {
+        const subCourses = courses.value.filter(c => c.category === sub || (c.category === 'Imported' && c.name.toLowerCase().includes(sub.toLowerCase())))
+        const total = subCourses.reduce((acc, c) => acc + c.lectures.length, 0)
+        const completed = subCourses.reduce((acc, c) => acc + getCompletedCount(c), 0)
+        return {
+            name: sub,
+            percent: total > 0 ? Math.round((completed / total) * 100) : 0,
+            color: sub === 'Maths' ? '#3e8fb0' : sub === 'Reasoning' ? '#d66a6a' : sub === 'English' ? '#a3be8c' : '#b48ead'
+        }
+    })
+})
+
+const totalStudyTime = computed(() => {
+    const totalLectures = courses.value.reduce((acc, c) => acc + getCompletedCount(c), 0)
+    const minutes = totalLectures * 45 // Estimating 45 mins per lecture
+    const h = Math.floor(minutes / 60)
+    const m = minutes % 60
+    return `${h}h ${m}m`
+})
+
 const closeCourse = () => {
     selectedCourse.value = null
     selectedLecture.value = null
@@ -390,12 +451,41 @@ const streak = computed(() => {
                     <span class="value">{{ courses.reduce((acc, c) => acc + c.lectures.length, 0) }}</span>
                 </div>
                 <div class="stat-card">
-                    <span class="label">Completed</span>
-                    <span class="value">{{ courses.reduce((acc, c) => acc + getCompletedCount(c), 0) }}</span>
+                    <span class="label">Total Study Time</span>
+                    <span class="value">{{ totalStudyTime }}</span>
                 </div>
                 <div class="stat-card">
                     <span class="label">Prep Level</span>
                     <span class="value">{{ courses.length > 0 ? Math.round((courses.reduce((acc, c) => acc + getCompletedCount(c), 0) / Math.max(1, courses.reduce((acc, c) => acc + c.lectures.length, 0))) * 100) : 0 }}%</span>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <!-- Weekly Trend Bar Chart -->
+                <div class="analysis-card weekly-trend">
+                    <h3>Weekly Completion Trend</h3>
+                    <div class="bar-chart">
+                        <div v-for="day in weeklyTrend" :key="day.date" class="bar-wrapper">
+                            <div class="bar-fill" :style="{ height: Math.min(100, (day.count / 10) * 100) + '%' }" :title="`${day.count} lectures`"></div>
+                            <span class="day-label">{{ day.dayName }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject Mastery -->
+                <div class="analysis-card subject-mastery">
+                    <h3>Subject Mastery</h3>
+                    <div class="mastery-list">
+                        <div v-for="stat in subjectStats" :key="stat.name" class="mastery-item">
+                            <div class="m-info">
+                                <span>{{ stat.name }}</span>
+                                <span>{{ stat.percent }}%</span>
+                            </div>
+                            <div class="m-bar-bg">
+                                <div class="m-bar-fill" :style="{ width: stat.percent + '%', background: stat.color }"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -680,16 +770,34 @@ const streak = computed(() => {
 .elearn-layout .stat-card .label { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
 .elearn-layout .stat-card .value { font-size: 1.8rem; font-weight: 700; }
 
+.elearn-layout .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+.elearn-layout .analysis-card { background: #050505; padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.03); }
+.elearn-layout .analysis-card h3 { font-size: 0.9rem; color: #666; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Weekly Trend Bar Chart */
+.elearn-layout .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 150px; padding: 0 10px; }
+.elearn-layout .bar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
+.elearn-layout .bar-fill { width: 12px; background: linear-gradient(to top, #3e8fb0, #a3be8c); border-radius: 6px; transition: height 1s ease; cursor: pointer; }
+.elearn-layout .bar-fill:hover { filter: brightness(1.2); transform: scaleX(1.1); }
+.elearn-layout .day-label { font-size: 0.7rem; color: #444; }
+
+/* Subject Mastery */
+.elearn-layout .mastery-list { display: flex; flex-direction: column; gap: 15px; }
+.elearn-layout .mastery-item { display: flex; flex-direction: column; gap: 8px; }
+.elearn-layout .m-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; }
+.elearn-layout .m-bar-bg { width: 100%; height: 6px; background: #000; border-radius: 3px; overflow: hidden; }
+.elearn-layout .m-bar-fill { height: 100%; transition: width 1s ease; }
+
 .elearn-layout .heat-section { background: #050505; padding: 25px; border-radius: 25px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.03); }
 .elearn-layout .heat-grid { display: flex; gap: 4px; margin-top: 15px; flex-wrap: wrap; }
 .elearn-layout .heat-cell { width: 14px; height: 14px; border-radius: 3px; cursor: help; transition: 0.2s; }
 .elearn-layout .heat-cell:hover { transform: scale(1.2); outline: 1px solid white; }
 
 .elearn-layout .hero-card.study { background: linear-gradient(135deg, #3e8fb044 0%, #050505 100%); cursor: pointer; border: 1px solid rgba(62,143,176,0.2); }
-.elearn-layout .hero-card { border-radius: 30px; padding: 40px; position: relative; overflow: hidden; display: flex; margin-bottom: 40px; }
-.elearn-layout .hero-text { flex: 1; z-index: 2; }
-.elearn-layout .tag { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-bottom: 10px; display: inline-block; }
-.elearn-layout .hero-text h2 { font-size: 2rem; margin-bottom: 10px; }
+.elearn-layout .hero-card { border-radius: 30px; padding: 40px; position: relative; display: flex; margin-bottom: 40px; min-height: 280px; height: auto; }
+.elearn-layout .hero-text { flex: 1; z-index: 2; display: flex; flex-direction: column; justify-content: center; }
+.elearn-layout .tag { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-bottom: 10px; align-self: flex-start; }
+.elearn-layout .hero-text h2 { font-size: 1.8rem; margin-bottom: 10px; line-height: 1.2; }
 .elearn-layout .btn-primary { background: white; color: #3e8fb0; padding: 12px 25px; border-radius: 12px; font-weight: 700; margin-top: 20px; border: none; cursor: pointer; }
 
 /* Notes Tab */
@@ -775,7 +883,10 @@ const streak = computed(() => {
 .elearn-layout .status-icon { font-size: 1.2rem; }
 
 /* Right Panel */
-.elearn-layout .right-panel { background: #050505; padding: 40px 25px; border-left: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; gap: 30px; }
+.elearn-layout .right-panel { 
+    background: #050505; padding: 40px 25px; border-left: 1px solid rgba(255,255,255,0.03); 
+    display: flex; flex-direction: column; gap: 30px; overflow-y: auto; height: 100%;
+}
 .elearn-layout .widget { background: #0a0a0e; padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.03); }
 .elearn-layout .widget h3 { margin-bottom: 20px; font-size: 1rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
 

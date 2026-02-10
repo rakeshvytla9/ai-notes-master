@@ -1387,3 +1387,183 @@ If a number is divisible by **7, 11, and 13**, it must be divisible by their LCM
 
 ---
 **Next Class:** Number of Zeros (Topic Change). 
+
+---
+
+# 📚 **SSC Foundation Nayak Batch 2025 - Mathematics**
+**Topic:** Number System
+**Sub-Topic:** Number of Zeros (Part 1)
+**Instructor:** Rahul Teotia Sir
+**Date:** 12-12-2024
+
+---
+
+## 0️⃣ **1. Basic Concept of Number of Zeros**
+
+### **Definition**
+*   "Number of Zeros" refers to counting the **consecutive zeros at the end** of a product or expression.
+*   **Important:** Zeros in the middle of a number (e.g., in 5203004000, the zero between 5 and 3 or between 3 and 4) are **NOT** counted. We only count the trailing zeros after the last non-zero digit.
+    *   **Example 1:** $5203004000$ $\rightarrow$ Trailing Zeros = **3**.
+    *   **Example 2:** $14930000$ $\rightarrow$ Trailing Zeros = **4**.
+
+### **How is a Zero Formed?**
+*   A zero is formed by the multiplication of **2 and 5**.
+*   **Pair Rule:** One pair of $(2 \times 5)$ creates one zero. Two pairs create two zeros, and so on.
+*   **Limiting Factor Rule:** The number of zeros depends on whichever factor (2 or 5) is **present in fewer quantity**.
+    *   If you have two 5s and one 2, you can only form **one** pair, so **one** zero.
+    *   If you have three 2s and two 5s, you can form **two** pairs, so **two** zeros.
+
+**Examples:**
+*   $5 \times 2 = 10$ (1 pair $\rightarrow$ 1 Zero)
+*   $5 \times 4 = 5 \times (2 \times 2) = 20$ (1 pair of 5 & 2 $\rightarrow$ 1 Zero)
+*   $5 \times 5 \times 2 = 50$ (1 pair $\rightarrow$ 1 Zero)
+*   $5 \times 5 \times 2 \times 2 = 100$ (2 pairs $\rightarrow$ 2 Zeros)
+
+---
+
+## 🧮 **2. Number of Zeros in Factorials**
+
+### **Concept**
+In a factorial ($n! = 1 \times 2 \times 3 \times \dots \times n$), the number of 2s is always greater than the number of 5s. Therefore, the **number of zeros is determined by the number of 5s**.
+
+### **Method (Successive Division)**
+To find the number of zeros in $n!$:
+1.  Divide $n$ by 5. Note the quotient.
+2.  Divide that quotient by 5 again.
+3.  Continue until the quotient is less than 5.
+4.  **Add all the quotients.**
+
+**Example 1: Number of Zeros in 129!**
+*   $129 \div 5 = 25$
+*   $25 \div 5 = 5$
+*   $5 \div 5 = 1$
+*   Total Zeros = $25 + 5 + 1 = \mathbf{31}$.
+
+**Example 2: Number of Zeros in 50!**
+*   $50 \div 5 = 10$
+*   $10 \div 5 = 2$
+*   Total Zeros = $10 + 2 = \mathbf{12}$.
+
+**Example 3: Number of Zeros in 475! (UPSI Question)**
+*   $475 \div 5 = 95$
+*   $95 \div 5 = 19$
+*   $19 \div 5 = 3$
+*   Total Zeros = $95 + 19 + 3 = \mathbf{117}$.
+
+---
+
+## ➕ **3. Number of Zeros in Addition/Subtraction Expressions**
+
+### **Rule for Addition (+)**
+*   If we add numbers with different numbers of trailing zeros (e.g., $1000 + 100$), the result's trailing zeros are determined by the **number with the FEWEST zeros**.
+    *   $10000 + 1000 = 11000$ (3 zeros, determined by 1000).
+    *   $10000 + 10 = 10010$ (1 zero, determined by 10).
+*   **Formula:** $\text{Zeros}(A + B + \dots) = \min(\text{Zeros}(A), \text{Zeros}(B), \dots)$.
+
+**Example:**
+Find zeros in $18! + 279! + 3183! + 511!$
+*   This is an addition series. We look for the term with the **least zeros**.
+*   The smallest factorial has the fewest zeros. Here, **18!** is the smallest.
+*   Calculate zeros in 18!:
+    *   $18 \div 5 = 3$
+*   **Answer:** **3** Zeros.
+
+### **Rule for Subtraction (-)**
+*   Similar to addition, the number of trailing zeros in $A - B$ is usually determined by the term with fewer zeros.
+    *   $10000 - 1000 = 9000$ (3 zeros).
+    *   $10000 - 90 = 9910$ (1 zero).
+
+**Example:**
+Find zeros in $789! - 243!$
+*   This is subtraction. The result depends on the smaller term, **243!**.
+*   Calculate zeros in 243!:
+    *   $243 \div 5 = 48$
+    *   $48 \div 5 = 9$
+    *   $9 \div 5 = 1$
+*   Total Zeros = $48 + 9 + 1 = \mathbf{58}$.
+
+---
+
+## ✖️ **4. Number of Zeros in Multiplication Expressions**
+
+### **Rule for Multiplication (×)**
+*   When numbers are multiplied, their trailing zeros get **added**.
+    *   $10 \times 100 = 1000$ (1 zero + 2 zeros = 3 zeros).
+*   **Formula:** $\text{Zeros}(A \times B) = \text{Zeros}(A) + \text{Zeros}(B)$.
+
+**Example:**
+Find zeros in $12! \times 38!$
+*   Find zeros in 12!:
+    *   $12 \div 5 = 2$.
+*   Find zeros in 38!:
+    *   $38 \div 5 = 7$
+    *   $7 \div 5 = 1$. Total = 8.
+*   **Total Zeros:** $2 + 8 = \mathbf{10}$.
+
+---
+
+## 🔢 **5. Advanced Series Questions**
+
+### **A. Prime Number Series (Less than 100)**
+*   **Series:** $2 \times 3 \times 5 \times 7 \times \dots \times 97$.
+*   **Analysis:**
+    *   To make a zero, we need a 2 and a 5.
+    *   In prime numbers, **2** appears only **once** (it is the only even prime).
+    *   **5** appears only **once**.
+    *   Since there is only one pair of (2, 5), there is only **one zero**.
+*   **Answer:** **1**.
+
+### **B. Odd Number Series**
+*   **Series:** $1 \times 3 \times 5 \times \dots \times 99$.
+*   **Analysis:**
+    *   The series contains plenty of 5s (5, 15, 25, etc.).
+    *   However, it contains **NO even numbers** (no 2s).
+    *   Without a 2, a 5 cannot form a zero.
+*   **Answer:** **0** (No zeros).
+
+### **C. Power Series ($1^1 \times 2^2 \times 3^3 \times \dots \times n^n$)**
+Find zeros in $1^1 \times 2^2 \times 3^3 \times \dots \times 100^{100}$.
+
+**Logic:**
+1.  Number of zeros depends on pairs of (2, 5). In this series, 2s are abundant, so we count **5s**.
+2.  Where do 5s appear? At multiples of 5 (5, 10, 15... 100).
+3.  The power is equal to the base (e.g., $5^5, 10^{10}, 15^{15}$).
+4.  **Count the powers of 5:**
+    *   $5^5 \rightarrow 5$
+    *   $10^{10} \rightarrow 10$
+    *   ...
+    *   $100^{100} \rightarrow 100$
+    *   This is an Arithmetic Progression (AP): $5, 10, 15, \dots 100$.
+    *   Sum of AP = $\frac{n}{2}(a+l)$. Here terms = 20.
+    *   Sum = $\frac{20}{2}(5 + 100) = 10 \times 105 = 1050$.
+5.  **Extra 5s:** Numbers like 25, 50, 75, 100 contain an **extra** factor of 5 (since $25 = 5 \times 5$).
+    *   $25^{25}$ has 25 extra 5s.
+    *   $50^{50}$ has 50 extra 5s.
+    *   $75^{75}$ has 75 extra 5s.
+    *   $100^{100}$ has 100 extra 5s.
+    *   Sum of extras = $25 + 50 + 75 + 100 = 250$.
+6.  **Total Zeros:** $1050 + 250 = \mathbf{1300}$.
+
+*Note: The instructor covered specific examples from this pattern (e.g., up to $25^{25}$, up to $50^{50}$) to build up to this.*
+
+### **D. Consecutive Series with Missing Start**
+**Question:** Find zeros in $15 \times 16 \times 17 \times \dots \times 188$.
+*   **Method:** This is equivalent to $\frac{188!}{14!}$. Or logically, Zeros in (1 to 188) minus Zeros in (1 to 14).
+*   **Step 1 (1 to 188):**
+    *   $188 \div 5 = 37$
+    *   $37 \div 5 = 7$
+    *   $7 \div 5 = 1$
+    *   Total = $37 + 7 + 1 = 45$.
+*   **Step 2 (1 to 14):**
+    *   $14 \div 5 = 2$. Total = 2.
+*   **Step 3 (Difference):** $45 - 2 = \mathbf{43}$.
+
+---
+
+## ⚡ **6. Important Summary Points**
+
+1.  **Count 5s:** In almost all factorial/consecutive series, calculating $n/5$ gives the answer because 5 is less frequent than 2.
+2.  **Factorial Addition:** Answer is based on the smallest factorial.
+3.  **Factorial Multiplication:** Answer is the sum of individual zeros.
+4.  **No Zeros:** If a series has no 5s or no 2s (like odd numbers), the number of zeros is 0.
+
