@@ -2,11 +2,11 @@
 
 /* Aesthetic Deep Black Theme Variables */
 :root {
-  --vp-c-brand: #3e8fb0;
-  --vp-c-brand-light: #52a1c2;
-  --vp-c-brand-lighter: #66b3d4;
-  --vp-c-brand-dark: #2a7d9e;
-  --vp-c-brand-darker: #166b8c;
+  --vp-c-brand: #ffd700;
+  --vp-c-brand-light: #ffdb4d;
+  --vp-c-brand-lighter: #ffeead;
+  --vp-c-brand-dark: #b39700;
+  --vp-c-brand-darker: #806c00;
 }
 
 .dark {
@@ -20,7 +20,7 @@
   --vp-c-default-3: rgba(255, 255, 255, 0.5);
 
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(135deg, #3e8fb0 0%, #907aa9 100%);
+  --vp-home-hero-name-background: linear-gradient(135deg, #ffd700 0%, #ffdb4d 100%);
 
   --vp-c-divider-light: rgba(255, 255, 255, 0.03);
   --vp-c-divider-dark: rgba(255, 255, 255, 0.08);
@@ -39,6 +39,18 @@
 }
 
 /* Header Actions */
+/* Main Dashboard Layout (Restored Grid + Scrollable Page) */
+.elearn-layout .home-content-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 30px;
+  align-items: start;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+  /* Improve bottom spacing */
+}
+
 .header-actions {
   display: flex;
   gap: 10px;
@@ -111,9 +123,9 @@
 }
 
 .ai-button-mini {
-  background: linear-gradient(135deg, #3e8fb0 0%, #907aa9 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(62, 143, 176, 0.2);
+  background: linear-gradient(135deg, #ffd700 0%, #b39700 100%);
+  color: #000;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
 }
 
 .print-button-mini:hover,

@@ -7,3 +7,7 @@ docs/.vitepress/dist
 docs/.vitepress/cache
 .env
 .env.local
+
+# VitePress cache and temp files
+docs/.vitepress/config.mts.timestamp-*
+npm_cache_temp/

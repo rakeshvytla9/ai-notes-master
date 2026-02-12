@@ -13,7 +13,10 @@
   "license": "ISC",
   "devDependencies": {
     "markdown-it-mathjax3": "^4.3.2",
-    "vitepress": "^1.0.0-rc.31",
-    "vue": "^3.0.0"
+    "vitepress": "^1.0.0-rc.45",
+    "vue": "^3.4.0"
+  },
+  "dependencies": {
+    "firebase": "^12.9.0"
   }
 }
