@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { auth, db, googleProvider } from '../lib/firebase'
 import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth'
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
 
 // --- Constants ---
 const STORAGE_KEY = 'elearn-dashboard-data-v2'
@@ -24,6 +24,13 @@ const isImporting = ref(false)
 const user = ref(null)
 const isSyncing = ref(false)
 const lastSyncTime = ref(null)
+
+// --- Personal Notes State ---
+const activeNoteTab = ref('public') // 'public' | 'private'
+const userNotes = ref([])
+const isNoteModalOpen = ref(false)
+const currentNote = ref({ id: null, title: '', content: '' })
+const isSavingNote = ref(false)
 let syncTimeout = null
 
 // Daily Planner State
@@ -257,12 +264,88 @@ const syncToCloud = async () => {
         }, { merge: true })
         
         lastSyncTime.value = new Date().toLocaleTimeString()
-    } catch (e) {
-        console.error('Sync failed:', e)
     } finally {
         isSyncing.value = false
     }
 }
+
+// --- Personal Notes Logic ---
+let notesUnsubscribe = null
+
+const fetchNotes = () => {
+    if (!user.value || !db) return
+    
+    // Unsubscribe previous listener if exists
+    if (notesUnsubscribe) notesUnsubscribe()
+    
+    const notesRef = collection(db, 'users', user.value.uid, 'notes')
+    const q = query(notesRef, orderBy('updatedAt', 'desc'))
+    
+    notesUnsubscribe = onSnapshot(q, (snapshot) => {
+        userNotes.value = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }))
+    }, (error) => {
+        console.error("Error fetching notes:", error)
+    })
+}
+
+const openNoteModal = (note = null) => {
+    if (note) {
+        currentNote.value = { ...note } // Clone to avoid direct mutation
+    } else {
+        currentNote.value = { id: null, title: '', content: '' }
+    }
+    isNoteModalOpen.value = true
+}
+
+const saveNote = async () => {
+    if (!user.value || !currentNote.value.title.trim()) return
+    isSavingNote.value = true
+    
+    try {
+        const noteData = {
+            title: currentNote.value.title,
+            content: currentNote.value.content,
+            updatedAt: serverTimestamp()
+        }
+        
+        if (currentNote.value.id) {
+            // Update existing
+            await setDoc(doc(db, 'users', user.value.uid, 'notes', currentNote.value.id), noteData, { merge: true })
+        } else {
+            // Create new
+            noteData.createdAt = serverTimestamp()
+            await addDoc(collection(db, 'users', user.value.uid, 'notes'), noteData)
+        }
+        isNoteModalOpen.value = false
+    } catch (e) {
+        console.error("Error saving note:", e)
+        alert("Failed to save note: " + e.message)
+    } finally {
+        isSavingNote.value = false
+    }
+}
+
+const deleteNote = async (noteId) => {
+    if (!confirm("Are you sure you want to delete this note?")) return
+    try {
+        await deleteDoc(doc(db, 'users', user.value.uid, 'notes', noteId))
+    } catch (e) {
+        console.error("Error deleting note:", e)
+    }
+}
+
+// Watch user state to Init/Cleanup Notes listener
+watch(user, (newUser) => {
+    if (newUser) {
+        fetchNotes()
+    } else {
+        if (notesUnsubscribe) notesUnsubscribe()
+        userNotes.value = []
+    }
+})
 
 const fetchFromCloud = async () => {
     if (!user.value || !db) return
@@ -1178,8 +1261,18 @@ const scrollToCalculator = () => {
         </div>
 
         <!-- AI NOTES TAB -->
+        <!-- AI NOTES TAB -->
         <div v-if="activeTab === 'notes'" class="tab-content notes-tab">
-            <div class="notes-grid">
+            <div class="notes-header-row">
+                <div class="notes-toggle">
+                    <button :class="{ active: activeNoteTab === 'public' }" @click="activeNoteTab = 'public'">Public Notes</button>
+                    <button :class="{ active: activeNoteTab === 'private' }" @click="activeNoteTab = 'private'">My Notebook</button>
+                </div>
+                <button v-if="activeNoteTab === 'private'" class="btn-primary btn-sm" @click="openNoteModal()">+ New Note</button>
+            </div>
+
+            <!-- Public Notes -->
+            <div v-if="activeNoteTab === 'public'" class="notes-grid">
                 <a v-for="note in siteNotes" :key="note.link" :href="'/ai-notes-master' + note.link" class="note-card-glass">
                     <div class="note-meta">
                         <span class="category">{{ note.category }}</span>
@@ -1187,6 +1280,25 @@ const scrollToCalculator = () => {
                     </div>
                     <span class="arrow">↗</span>
                 </a>
+            </div>
+
+            <!-- Private Notes -->
+            <div v-if="activeNoteTab === 'private'" class="private-notes-grid">
+                <div v-for="note in userNotes" :key="note.id" class="note-card-private" @click="openNoteModal(note)">
+                    <div class="note-content-preview">
+                        <h3>{{ note.title }}</h3>
+                        <p>{{ note.content.slice(0, 100) }}...</p>
+                    </div>
+                    <div class="note-actions">
+                         <span class="note-date">{{ note.updatedAt ? new Date(note.updatedAt.seconds * 1000).toLocaleDateString() : 'Just now' }}</span>
+                        <button class="btn-icon-delete" @click.stop="deleteNote(note.id)">🗑️</button>
+                    </div>
+                </div>
+                <div v-if="userNotes.length === 0" class="empty-state">
+                    <span class="icon">📝</span>
+                    <h3>Your notebook is empty.</h3>
+                    <p>Create your first private note to track your thoughts.</p>
+                </div>
             </div>
         </div>
 
@@ -1334,6 +1446,26 @@ const scrollToCalculator = () => {
             </div>
         </div>
     </div>
+
+        <!-- Note Editor Modal -->
+        <div v-if="isNoteModalOpen" class="modal-overlay" @click.self="isNoteModalOpen = false">
+            <div class="modal-content note-modal">
+                <div class="modal-header">
+                    <h3>{{ currentNote.id ? 'Edit Note' : 'New Note' }}</h3>
+                    <button class="close-btn" @click="isNoteModalOpen = false">×</button>
+                </div>
+                <div class="modal-body">
+                    <input v-model="currentNote.title" placeholder="Note Title" class="note-title-input" />
+                    <textarea v-model="currentNote.content" placeholder="Write your notes here using Markdown..." class="note-content-input"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-text" @click="isNoteModalOpen = false">Cancel</button>
+                    <button class="btn-primary" @click="saveNote" :disabled="isSavingNote">
+                        {{ isSavingNote ? 'Saving...' : 'Save Note' }}
+                    </button>
+                </div>
+            </div>
+        </div>
 
   </div>
 </template>
@@ -2553,4 +2685,173 @@ const scrollToCalculator = () => {
 .elearn-layout .pace-status-badge.track { background: rgba(163, 190, 140, 0.1); color: #a3be8c; }
 .elearn-layout .pace-status-badge.behind { background: rgba(214, 106, 106, 0.1); color: #d66a6a; }
 .elearn-layout .pace-status-badge.neutral { background: rgba(255, 255, 255, 0.05); color: #888; }
+/* --- Personal Notes CSS --- */
+.notes-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.notes-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.notes-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.notes-toggle button.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffd700;
+    font-weight: 600;
+}
+
+.private-notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.note-card-private {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 180px;
+}
+
+.note-card-private:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.note-content-preview h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.note-content-preview p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.note-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.note-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.btn-icon-delete {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.btn-icon-delete:hover {
+    opacity: 1;
+}
+
+/* Modal CSS */
+.note-modal {
+    max-width: 800px;
+    width: 90%;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.note-modal .modal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.note-title-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.note-title-input:focus {
+    outline: none;
+    border-color: #ffd700;
+}
+
+.note-content-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 15px;
+    resize: none;
+    line-height: 1.6;
+}
+
+.note-content-input:focus {
+    outline: none;
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .notes-header-row {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .notes-toggle {
+        justify-content: center;
+    }
+}
 </style>
