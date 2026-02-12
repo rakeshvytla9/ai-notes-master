@@ -1164,7 +1164,7 @@ const scrollToCalculator = () => {
                             <h4>{{ lecture.title }}</h4>
                             <span class="duration">Lecture • SSC Prep</span>
                         </div>
-                        <div class="lecture-check">
+                        <div class="lecture-check" @click.stop="toggleLecture(selectedCourse.id, lecture.id)">
                             <div class="status-icon">{{ lecture.completed ? '✅' : '⬜' }}</div>
                         </div>
                     </div>
