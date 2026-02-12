@@ -205,6 +205,10 @@ onMounted(() => {
     if (u) {
         console.log('[Firebase] User logged in:', u.displayName)
         await fetchFromCloud()
+        // Auto-backup if local data exists but cloud was empty/new
+        if (courses.value.length > 0) {
+            syncToCloud()
+        }
     } else {
         console.log('[Firebase] No user logged in')
     }
