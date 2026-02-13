@@ -12,11 +12,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "markdown-it-mathjax3": "^4.3.2",
     "vitepress": "^1.0.0-rc.45",
     "vue": "^3.4.0"
   },
   "dependencies": {
-    "firebase": "^12.9.0"
+    "firebase": "^12.9.0",
+    "markdown-it": "^14.1.1"
   }
 }

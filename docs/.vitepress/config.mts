@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitepress'
 import fs from 'fs'
 import path from 'path'
-import mathjax3 from 'markdown-it-mathjax3'
 
 // Standard subjects we know about to enforce order/naming if present
 const KNOWN_SUBJECTS = {
@@ -68,10 +67,30 @@ export default defineConfig({
   appearance: 'dark',
   lastUpdated: true,
 
+  head: [
+    ['script', {
+      src: "https://polyfill.io/v3/polyfill.min.js?features=es6"
+    }],
+    ['script', {
+      id: "MathJax-script",
+      async: true,
+      src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    }],
+    ['script', {}, `
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+          displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+          processEscapes: true
+        }
+      };
+    `]
+  ],
+
   markdown: {
-    config: (md) => {
-      md.use(mathjax3)
-    }
+    // config: (md) => {
+    //   md.use(mathjax3)
+    // }
   },
 
   themeConfig: {
@@ -100,6 +119,41 @@ export default defineConfig({
   },
 
   vite: {
-    envDir: process.cwd()
+    envDir: process.cwd(),
+    plugins: [
+      {
+        name: 'write-file-server',
+        configureServer(server) {
+          server.middlewares.use('/__api/write-file', async (req, res, next) => {
+            if (req.method === 'POST') {
+              let body = ''
+              req.on('data', chunk => body += chunk)
+              req.on('end', () => {
+                try {
+                  const { path: filePath, content } = JSON.parse(body)
+                  const fullPath = path.join(process.cwd(), 'docs', filePath)
+
+                  // Ensure directory exists
+                  const dir = path.dirname(fullPath)
+                  if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, { recursive: true })
+                  }
+
+                  fs.writeFileSync(fullPath, content)
+                  res.statusCode = 200
+                  res.end(JSON.stringify({ success: true }))
+                } catch (e) {
+                  console.error('File write error:', e)
+                  res.statusCode = 500
+                  res.end(JSON.stringify({ error: e.message }))
+                }
+              })
+            } else {
+              next()
+            }
+          })
+        }
+      }
+    ]
   }
 })

@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { auth, db, googleProvider } from '../lib/firebase'
 import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth'
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, writeBatch } from "firebase/firestore";
+import MarkdownIt from 'markdown-it';
 
 // --- Constants ---
 const STORAGE_KEY = 'elearn-dashboard-data-v2'
@@ -25,11 +26,15 @@ const user = ref(null)
 const isSyncing = ref(false)
 const lastSyncTime = ref(null)
 
-// --- Personal Notes State ---
-const activeNoteTab = ref('public') // 'public' | 'private'
+// --- Personal Notes State (Overhauled) ---
+const folders = ref(['Maths', 'Reasoning', 'English', 'GS', 'General']) // Default folders
+const activeFolder = ref('Maths')
 const userNotes = ref([])
 const isNoteModalOpen = ref(false)
-const currentNote = ref({ id: null, title: '', content: '' })
+const isPreviewMode = ref(false) // Toggle for Markdown Preview
+const isMaximized = ref(true) // Default to Full Screen
+const currentNote = ref({ id: null, title: '', content: '', folder: '' })
+
 const isSavingNote = ref(false)
 let syncTimeout = null
 
@@ -293,31 +298,65 @@ const fetchNotes = () => {
 
 const openNoteModal = (note = null) => {
     if (note) {
-        currentNote.value = { ...note } // Clone to avoid direct mutation
+        currentNote.value = { ...note } // Clone
+        if (!currentNote.value.folder) currentNote.value.folder = 'General' // Default for legacy notes
     } else {
-        currentNote.value = { id: null, title: '', content: '' }
+        currentNote.value = { id: null, title: '', content: '', folder: activeFolder.value === 'All' ? 'General' : activeFolder.value }
     }
     isNoteModalOpen.value = true
 }
 
 const saveNote = async () => {
-    if (!user.value || !currentNote.value.title.trim()) return
+    if (!currentNote.value.title.trim()) return
     isSavingNote.value = true
     
     try {
         const noteData = {
             title: currentNote.value.title,
             content: currentNote.value.content,
-            updatedAt: serverTimestamp()
+            folder: currentNote.value.folder || 'General',
+            updatedAt: user.value ? serverTimestamp() : new Date().toISOString()
         }
         
-        if (currentNote.value.id) {
-            // Update existing
-            await setDoc(doc(db, 'users', user.value.uid, 'notes', currentNote.value.id), noteData, { merge: true })
+        // 1. Local Filesystem Save (Dev Mode Only - for "Beautiful Folders")
+        if (import.meta.env.DEV) {
+            const fileName = currentNote.value.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md'
+            const filePath = `${noteData.folder.toLowerCase()}/${fileName}`
+            
+            await fetch('/__api/write-file', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    path: filePath,
+                    content: noteData.content // Save pure markdown as requested
+                })
+            })
+        }
+
+        // 2. Database/Local Storage Save (Existing Logic)
+        if (user.value) {
+            // Cloud Save
+            if (currentNote.value.id) {
+                await setDoc(doc(db, 'users', user.value.uid, 'notes', currentNote.value.id), noteData, { merge: true })
+            } else {
+                noteData.createdAt = serverTimestamp()
+                await addDoc(collection(db, 'users', user.value.uid, 'notes'), noteData)
+            }
         } else {
-            // Create new
-            noteData.createdAt = serverTimestamp()
-            await addDoc(collection(db, 'users', user.value.uid, 'notes'), noteData)
+            // Guest/Local Save
+            const notes = [...userNotes.value]
+            if (currentNote.value.id) {
+                const index = notes.findIndex(n => n.id === currentNote.value.id)
+                if (index !== -1) {
+                    notes[index] = { ...notes[index], ...noteData }
+                }
+            } else {
+                noteData.id = 'local-' + Date.now()
+                noteData.createdAt = new Date().toISOString()
+                notes.push(noteData)
+            }
+            userNotes.value = notes
+            localStorage.setItem(GUEST_NOTES_KEY, JSON.stringify(notes))
         }
         isNoteModalOpen.value = false
     } catch (e) {
@@ -328,12 +367,157 @@ const saveNote = async () => {
     }
 }
 
+const viewNote = (note) => {
+    // Navigate to note viewer
+    window.location.assign(`/note.html?id=${note.id}`);
+}
+
 const deleteNote = async (noteId) => {
     if (!confirm("Are you sure you want to delete this note?")) return
     try {
-        await deleteDoc(doc(db, 'users', user.value.uid, 'notes', noteId))
+        if (user.value) {
+            await deleteDoc(doc(db, 'users', user.value.uid, 'notes', noteId))
+        } else {
+            const notes = userNotes.value.filter(n => n.id !== noteId)
+            userNotes.value = notes
+            localStorage.setItem(GUEST_NOTES_KEY, JSON.stringify(notes))
+        }
     } catch (e) {
         console.error("Error deleting note:", e)
+    }
+}
+
+// --- Import & Print Logic ---
+const triggerFileInput = () => {
+    document.getElementById('noteFileInput').click()
+}
+
+const handleFileUpload = (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+    
+    const reader = new FileReader()
+    reader.onload = (e) => {
+        currentNote.value.content = e.target.result
+        if (!currentNote.value.title) {
+            currentNote.value.title = file.name.replace(/\.[^/.]+$/, "") // Remove extension
+        }
+    }
+    reader.readAsText(file)
+}
+
+const printNote = () => {
+    const printContent = isPreviewMode.value ? document.getElementById('note-preview-content').innerHTML : `<pre>${currentNote.value.content}</pre>`
+    const printWindow = window.open('', '_blank')
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>${currentNote.value.title}</title>
+            <style>
+                body { font-family: 'Inter', sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; line-height: 1.6; color: #000; }
+                h1 { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 30px; }
+                img { max-width: 100%; }
+                ul, ol { padding-left: 20px; }
+                li { margin-bottom: 5px; }
+                blockquote { border-left: 4px solid #ccc; padding-left: 15px; color: #555; }
+                /* Checkbox styling for print */
+                input[type="checkbox"] { transform: scale(1.2); margin-right: 8px; }
+            </style>
+        </head>
+        <body>
+            <h1>${currentNote.value.title}</h1>
+            <div class="markdown-body">${printContent}</div>
+            <script>window.print(); window.close();<\/script>
+        </body>
+        </html>
+    `)
+    printWindow.document.close()
+}
+
+// --- Folder Management ---
+const newFolderName = ref('')
+const isAddingFolder = ref(false)
+
+const addFolder = async () => {
+    const name = newFolderName.value.trim()
+    if (!name || folders.value.includes(name)) return
+    
+    // Optimistic update
+    folders.value.push(name)
+    newFolderName.value = ''
+    isAddingFolder.value = false
+    
+    // Persist to Firestore (Settings)
+    try {
+        await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: folders.value }, { merge: true })
+    } catch (e) {
+        console.error("Error saving folders:", e)
+    }
+}
+
+const deleteFolder = async (folderName) => {
+    if (folderName === 'General') return // Protect default
+    if (!confirm(`Delete folder "${folderName}"? Notes in it will move to General.`)) return
+
+    folders.value = folders.value.filter(f => f !== folderName)
+    if (activeFolder.value === folderName) activeFolder.value = 'General'
+
+    try {
+        await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: folders.value }, { merge: true })
+        // Move notes to General
+        const notesToMove = userNotes.value.filter(n => n.folder === folderName)
+        const batch = writeBatch(db)
+        notesToMove.forEach(note => {
+            const ref = doc(db, 'users', user.value.uid, 'notes', note.id)
+            batch.update(ref, { folder: 'General' })
+        })
+        await batch.commit()
+    } catch (e) {
+        console.error("Error deleting folder:", e)
+    }
+}
+
+const fetchFolders = () => {
+   if (!user.value) return
+   onSnapshot(doc(db, 'users', user.value.uid, 'settings', 'folders'), (doc) => {
+       if (doc.exists() && doc.data().list) {
+           folders.value = doc.data().list
+       }
+   })
+}
+
+// --- Markdown Rendering (Simple) ---
+// --- Markdown Rendering (Advanced) ---
+const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+    typographer: true
+})
+
+const compiledMarkdown = computed(() => {
+    if (!currentNote.value.content) return ''
+    return md.render(currentNote.value.content)
+})
+
+// Trigger MathJax Typesetting on Content Change
+watch(compiledMarkdown, () => {
+    if (typeof window !== 'undefined' && window.MathJax && isPreviewMode.value) {
+        nextTick(() => {
+            window.MathJax.typesetPromise && window.MathJax.typesetPromise()
+        })
+    }
+})
+
+// Local Storage Key for Guest Notes
+const GUEST_NOTES_KEY = 'guest_user_notes'
+
+const fetchLocalNotes = () => {
+    try {
+        const local = localStorage.getItem(GUEST_NOTES_KEY)
+        userNotes.value = local ? JSON.parse(local) : []
+    } catch (e) {
+        console.error("Error loading local notes:", e)
+        userNotes.value = []
     }
 }
 
@@ -341,15 +525,17 @@ const deleteNote = async (noteId) => {
 watch(user, (newUser) => {
     if (newUser) {
         fetchNotes()
+        fetchFolders()
+        // Optional: Merge local notes to cloud here if desired
     } else {
         if (notesUnsubscribe) notesUnsubscribe()
-        userNotes.value = []
+        fetchLocalNotes() // Load guest notes instead of clearing
     }
 })
 
 const fetchFromCloud = async () => {
     if (!user.value || !db) return
-
+    
     isSyncing.value = true
     try {
         const docSnap = await getDoc(doc(db, 'users', user.value.uid))
@@ -372,11 +558,15 @@ const fetchFromCloud = async () => {
             }
             if (data.studyHistory) studyHistory.value = data.studyHistory
             if (data.dailySchedule) dailySchedule.value = data.dailySchedule
-            if (data.targetDate) targetDate.value = data.targetDate
             if (data.youtubeApiKey) {
                 manualApiKey.value = data.youtubeApiKey
                 localStorage.setItem('user_youtube_api_key', data.youtubeApiKey)
             }
+        }
+        
+        // Init Local Notes if no user logged in immediately
+        if (!user.value) {
+            fetchLocalNotes()
         }
     } catch (e) {
         console.error('Fetch failed:', e)
@@ -1264,40 +1454,53 @@ const scrollToCalculator = () => {
         <!-- AI NOTES TAB -->
         <div v-if="activeTab === 'notes'" class="tab-content notes-tab">
             <div class="notes-header-row">
-                <div class="notes-toggle">
-                    <button :class="{ active: activeNoteTab === 'public' }" @click="activeNoteTab = 'public'">Public Notes</button>
-                    <button :class="{ active: activeNoteTab === 'private' }" @click="activeNoteTab = 'private'">My Notebook</button>
-                </div>
-                <button v-if="activeNoteTab === 'private'" class="btn-primary btn-sm" @click="openNoteModal()">+ New Note</button>
-            </div>
-
-            <!-- Public Notes -->
-            <div v-if="activeNoteTab === 'public'" class="notes-grid">
-                <a v-for="note in siteNotes" :key="note.link" :href="'/ai-notes-master' + note.link" class="note-card-glass">
-                    <div class="note-meta">
-                        <span class="category">{{ note.category }}</span>
-                        <h3>{{ note.title }}</h3>
+                <!-- Dynamic Folder Filters -->
+                <div class="folder-filters">
+                    <button v-for="folder in folders" 
+                            :key="folder"
+                            :class="{ active: activeFolder === folder }"
+                            @click="activeFolder = folder"
+                            class="folder-btn">
+                        {{ folder }}
+                        <span v-if="folder !== 'General' && folder !== 'Maths' && folder !== 'Reasoning' && folder !== 'English' && folder !== 'GS'" 
+                              class="delete-folder-x" 
+                              @click.stop="deleteFolder(folder)">×</span>
+                    </button>
+                    
+                    <!-- Add Folder Input -->
+                    <div v-if="isAddingFolder" class="add-folder-input">
+                        <input v-model="newFolderName" @keyup.enter="addFolder" @blur="isAddingFolder = false" placeholder="Name..." autoFocus />
                     </div>
-                    <span class="arrow">↗</span>
-                </a>
+                    <button v-else class="btn-icon-add-folder" @click="isAddingFolder = true" title="New Folder">+</button>
+                </div>
+                
+                <div class="notes-controls">
+                    <input type="file" id="noteFileInput" accept=".txt,.md" style="display: none" @change="handleFileUpload">
+                    <button class="btn-secondary btn-sm" @click="triggerFileInput">Import</button>
+                    <button class="btn-primary btn-sm" @click="openNoteModal()">+ New Note</button>
+                </div>
             </div>
 
-            <!-- Private Notes -->
-            <div v-if="activeNoteTab === 'private'" class="private-notes-grid">
-                <div v-for="note in userNotes" :key="note.id" class="note-card-private" @click="openNoteModal(note)">
+            <!-- Private Notes Grid -->
+            <div class="private-notes-grid">
+                <div v-for="note in userNotes.filter(n => n.folder === activeFolder || (!n.folder && activeFolder === 'General'))" 
+                     :key="note.id" class="note-card-private" @click="openNoteModal(note)">
                     <div class="note-content-preview">
+                        <span class="note-folder-badge">{{ note.folder || 'General' }}</span>
                         <h3>{{ note.title }}</h3>
                         <p>{{ note.content.slice(0, 100) }}...</p>
                     </div>
                     <div class="note-actions">
                          <span class="note-date">{{ note.updatedAt ? new Date(note.updatedAt.seconds * 1000).toLocaleDateString() : 'Just now' }}</span>
+                        <button class="btn-icon-read" @click.stop="viewNote(note)" title="Read Full Note">👁️</button>
                         <button class="btn-icon-delete" @click.stop="deleteNote(note.id)">🗑️</button>
                     </div>
                 </div>
-                <div v-if="userNotes.length === 0" class="empty-state">
-                    <span class="icon">📝</span>
-                    <h3>Your notebook is empty.</h3>
-                    <p>Create your first private note to track your thoughts.</p>
+                
+                <div v-if="userNotes.filter(n => n.folder === activeFolder).length === 0" class="empty-state">
+                    <span class="icon">📂</span>
+                    <h3>{{ activeFolder }} is empty</h3>
+                    <p>Create a new note or import a file to get started.</p>
                 </div>
             </div>
         </div>
@@ -1449,18 +1652,43 @@ const scrollToCalculator = () => {
 
         <!-- Note Editor Modal -->
         <div v-if="isNoteModalOpen" class="modal-overlay" @click.self="isNoteModalOpen = false">
-            <div class="modal-content note-modal">
+            <div class="modal-content note-modal" :class="{ 'full-screen': isMaximized }">
                 <div class="modal-header">
                     <h3>{{ currentNote.id ? 'Edit Note' : 'New Note' }}</h3>
-                    <button class="close-btn" @click="isNoteModalOpen = false">×</button>
+                    <div class="modal-tools">
+                        <!-- View Toggles -->
+                        <div class="view-toggle">
+                            <button :class="{ active: !isPreviewMode }" @click="isPreviewMode = false">Write</button>
+                            <button :class="{ active: isPreviewMode }" @click="isPreviewMode = true">Preview</button>
+                        </div>
+                        
+                        <div class="divider-v"></div>
+
+                        <!-- Actions -->
+                        <button class="btn-icon-tool" @click="printNote" v-if="currentNote.content" title="Print">🖨️</button>
+                        <button class="close-btn" @click="isNoteModalOpen = false">×</button>
+                    </div>
                 </div>
                 <div class="modal-body">
-                    <input v-model="currentNote.title" placeholder="Note Title" class="note-title-input" />
-                    <textarea v-model="currentNote.content" placeholder="Write your notes here using Markdown..." class="note-content-input"></textarea>
+                    <div class="note-meta-row">
+                        <input v-model="currentNote.title" placeholder="Note Title" class="note-title-input" />
+                        <select v-model="currentNote.folder" class="note-folder-select" :class="{ 'invalid': !currentNote.folder }">
+                            <option disabled value="">Select Subject...</option>
+                            <option v-for="opt in folders" :key="opt" :value="opt">{{ opt }}</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Write Mode -->
+                    <textarea v-if="!isPreviewMode" v-model="currentNote.content" placeholder="Write your notes here using Markdown...
+- [ ] Todo item
+**Bold Text**" class="note-content-input"></textarea>
+                    
+                    <!-- Preview Mode -->
+                    <div v-else class="note-preview-pane markdown-body" id="note-preview-content" v-html="compiledMarkdown"></div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn-text" @click="isNoteModalOpen = false">Cancel</button>
-                    <button class="btn-primary" @click="saveNote" :disabled="isSavingNote">
+                    <button class="btn-primary" @click="saveNote" :disabled="isSavingNote || !currentNote.folder || !currentNote.title">
                         {{ isSavingNote ? 'Saving...' : 'Save Note' }}
                     </button>
                 </div>
@@ -2528,13 +2756,32 @@ const scrollToCalculator = () => {
     .elearn-layout .nav-item span {
         display: none;
     }
-    .elearn-layout .nav-item {
-        justify-content: center;
-        padding: 15px 5px;
-    }
-    .elearn-layout .right-panel {
-        display: none; /* Hide right panel for now */
-    }
+/* Mobile Nav Items */
+.elearn-layout .nav-item {
+    justify-content: flex-start;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.note-actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 6px; /* Larger touch target */
+    border-radius: 6px;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.btn-icon-read:hover {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.btn-icon-edit:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
 }
 
 @media (max-width: 768px) {
@@ -2823,6 +3070,14 @@ const scrollToCalculator = () => {
     height: 80vh;
     display: flex;
     flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.note-modal.full-screen {
+    max-width: 95vw;
+    width: 95vw;
+    height: 95vh;
+    border-radius: 8px;
 }
 
 .note-modal .modal-body {
@@ -2868,6 +3123,257 @@ const scrollToCalculator = () => {
     border-color: rgba(255, 215, 0, 0.3);
 }
 
+.folder-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center; /* Fix alignment */
+}
+
+.folder-btn {
+    position: relative;
+    padding: 6px 14px 6px 14px; /* Balanced padding */
+    padding-right: 24px; /* Space for x */
+    display: flex;
+    align-items: center;
+    height: 32px; /* Fixed height for consistency */
+}
+
+.delete-folder-x {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #d66a6a;
+    color: white;
+    font-size: 0.65rem;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.btn-icon-add-folder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.btn-icon-add-folder:hover {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    border-color: #ffd700;
+}
+
+.add-folder-input input {
+    background: #000;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    width: 100px;
+    outline: none;
+}
+
+.add-folder-input input:focus {
+    border-color: #ffd700;
+}
+
+/* View Toggle (Write/Preview) */
+.view-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 3px;
+}
+
+.view-toggle button {
+    background: transparent;
+    border: none;
+    color: #888;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.view-toggle button.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Markdown Preview Styles */
+.note-preview-pane {
+    flex: 1;
+    background: #0a0a0e; /* Slightly different from editor bg */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-y: auto;
+    color: #ffffff; /* FORCE WHITE TEXT */
+    line-height: 1.6;
+}
+
+.note-folder-select.invalid {
+    border-color: #d66a6a;
+}
+
+.markdown-body h1 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: #ffd700;
+}
+
+.markdown-body h2 {
+    font-size: 1.3rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.markdown-body h3 {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    color: #ddd;
+}
+
+.markdown-body b {
+    color: #ffd700;
+}
+
+.markdown-body ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.markdown-body li {
+    margin-bottom: 5px;
+}
+
+.chk-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.chk-item input[type="checkbox"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #555;
+    border-radius: 4px;
+    cursor: default;
+    position: relative;
+}
+
+.chk-item input[type="checkbox"]:checked {
+    background: #ffd700;
+    border-color: #ffd700;
+}
+
+.chk-item input[type="checkbox"]:checked::after {
+    content: '✔';
+    font-size: 10px;
+    color: #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.notes-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.notes-controls button {
+    margin: 0 !important;
+    height: 36px !important;
+    display: flex;
+    align-items: center;
+}
+
+.note-folder-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Modal Enhancements */
+.modal-tools {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-icon-print {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.btn-icon-print:hover {
+    opacity: 1;
+}
+
+.note-meta-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.note-title-input {
+    flex: 1;
+    border-bottom: none !important; /* Remove old border */
+    padding: 0 !important;
+}
+
+.note-folder-select {
+    background: #0a0a0e;
+    color: #ccc;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    outline: none;
+}
+
 @media (max-width: 768px) {
     .notes-header-row {
         flex-direction: column;
@@ -2875,8 +3381,28 @@ const scrollToCalculator = () => {
         align-items: stretch;
     }
     
-    .notes-toggle {
-        justify-content: center;
+    .folder-filters {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+    
+    .notes-controls {
+        justify-content: space-between;
     }
 }
+/* Maximized Modal Fixes */
+.note-modal.full-screen .modal-body {
+    height: calc(100vh - 120px);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px; /* Increased spacing */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+    margin-top: auto;
+}
+
 </style>
