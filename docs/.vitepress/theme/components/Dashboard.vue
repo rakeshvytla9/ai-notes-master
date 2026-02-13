@@ -1799,6 +1799,31 @@ const scrollToCalculator = () => {
 .elearn-layout .duration { font-size: 0.8rem; color: #444; }
 .elearn-layout .status-icon { font-size: 1.2rem; }
 
+.elearn-layout .lecture-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px; /* Space for scrollbar */
+}
+
+/* Custom Scrollbar for Video List */
+.elearn-layout .lecture-list::-webkit-scrollbar {
+    width: 6px;
+}
+.elearn-layout .lecture-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+.elearn-layout .lecture-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+.elearn-layout .lecture-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 /* Right Panel */
 .elearn-layout .right-panel { 
     background: #050505; padding: 40px 25px; border-left: 1px solid rgba(255,255,255,0.03); 

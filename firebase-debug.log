@@ -1,0 +1,160 @@
+[debug] [2026-02-13T03:00:25.388Z] ----------------------------------------------------------------------
+[debug] [2026-02-13T03:00:25.395Z] Command:       /opt/homebrew/Cellar/node/25.6.0/bin/node /opt/homebrew/bin/firebase deploy --only hosting
+[debug] [2026-02-13T03:00:25.395Z] CLI Version:   15.5.1
+[debug] [2026-02-13T03:00:25.395Z] Platform:      darwin
+[debug] [2026-02-13T03:00:25.395Z] Node Version:  v25.6.0
+[debug] [2026-02-13T03:00:25.395Z] Time:          Fri Feb 13 2026 08:30:25 GMT+0530 (India Standard Time)
+[debug] [2026-02-13T03:00:25.395Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-02-13T03:00:25.396Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-02-13T03:00:26.272Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-13T03:00:26.272Z] > authorizing via signed-in user (rakeshmohan4922251@gmail.com)
+[debug] [2026-02-13T03:00:26.272Z] [iam] checking project study-app-496e9 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-02-13T03:00:26.273Z] Checked if tokens are valid: false, expires at: 1770908399195
+[debug] [2026-02-13T03:00:26.273Z] Checked if tokens are valid: false, expires at: 1770908399195
+[debug] [2026-02-13T03:00:26.273Z] > refreshing access token with scopes: []
+[debug] [2026-02-13T03:00:26.273Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-02-13T03:00:26.273Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-02-13T03:00:26.545Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-02-13T03:00:26.545Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-02-13T03:00:26.561Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/study-app-496e9:testIamPermissions [none]
+[debug] [2026-02-13T03:00:26.561Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/study-app-496e9:testIamPermissions  x-goog-user-project=study-app-496e9
+[debug] [2026-02-13T03:00:26.561Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/study-app-496e9:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-02-13T03:00:26.895Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-02-13T03:00:26.895Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-02-13T03:00:28.083Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/study-app-496e9:testIamPermissions 200
+[debug] [2026-02-13T03:00:28.084Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/study-app-496e9:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-02-13T03:00:28.086Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:28.086Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:28.087Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/study-app-496e9 [none]
+[debug] [2026-02-13T03:00:28.609Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/study-app-496e9 200
+[debug] [2026-02-13T03:00:28.610Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/study-app-496e9 {"projectId":"study-app-496e9","projectNumber":"884373582171","displayName":"study app","name":"projects/study-app-496e9","resources":{"hostingSite":"study-app-496e9"},"state":"ACTIVE","etag":"1_a1db0123-adfa-4a10-9f62-f784c151bb2c"}
+[info] 
+[info] === Deploying to 'study-app-496e9'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-02-13T03:00:28.614Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:28.614Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:28.614Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/study-app-496e9/versions [none]
+[debug] [2026-02-13T03:00:28.614Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/study-app-496e9/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-02-13T03:00:30.846Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/study-app-496e9/versions 200
+[debug] [2026-02-13T03:00:30.846Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/study-app-496e9/versions {"name":"projects/884373582171/sites/study-app-496e9/versions/3e307a1045dec88a","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[study-app-496e9]: beginning deploy... 
+[info] i  hosting[study-app-496e9]: found 44 files in docs/.vitepress/dist 
+[debug] [2026-02-13T03:00:30.875Z] [hosting] uploading with 200 concurrency
+[debug] [2026-02-13T03:00:31.028Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.028Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.029Z] [hosting] hash cache [ZG9jcy8udml0ZXByZXNzL2Rpc3Q] stored for 44 files
+[debug] [2026-02-13T03:00:31.029Z] [hosting][hash queue][FINAL] {"max":140,"min":36,"avg":52.54545454545453,"active":0,"complete":44,"success":44,"errored":0,"retried":0,"total":44,"elapsed":149}
+[debug] [2026-02-13T03:00:31.029Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/884373582171/sites/study-app-496e9/versions/3e307a1045dec88a:populateFiles [none]
+[debug] [2026-02-13T03:00:31.029Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/884373582171/sites/study-app-496e9/versions/3e307a1045dec88a:populateFiles {"files":{"/vp-icons.css":"83d0261c6253214295e1481fe933673fdaeaf9fde107fe81da6df3521912de48","/hashmap.json":"c4561402f2949eca3c163156fc8e245db9f9d08b93494502b84383143b539a21","/ga/index.html":"4870e1d3beaace63405cdb802d987b87305c62af9b8a47f7b671dfe843544bb7","/assets/reasoning_index.md.CXQxAw82.lean.js":"40c7f897f53cd4f778d0deb4109469b153bc19f8c76614d04f12f29eeb832854","/assets/maths_index.md.DcvR3IJw.lean.js":"8a2a058cdb60c70cc37951fb1bb1e15938326b67baf1d3354817a01f39780c89","/dashboard.html":"2047ed17a70cacd3dd4374aab58d33829fd8757553f447dbfbe47b5c7a0ec810","/reasoning/index.html":"6032e391aee78d3b77e361f9b0e232c0fe07f97bc2eed90e7d444a0a6742ac24","/index.html":"8a930ef5aa3b3cca9ecf782ef5c84e319ae6ff378aac754f5ebb90fa899a8e39","/assets/maths_index.md.DcvR3IJw.js":"8a2a058cdb60c70cc37951fb1bb1e15938326b67baf1d3354817a01f39780c89","/assets/reasoning_index.md.CXQxAw82.js":"40c7f897f53cd4f778d0deb4109469b153bc19f8c76614d04f12f29eeb832854","/english/index.html":"44d06f34b7e73431bb952c98e249c7ab3cc09288428658b7a3e9858446d428f1","/404.html":"d654701b7275dc3ab0c67b9542f63fe141b4c04140f1ce57898070d722c12335","/assets/inter-roman-vietnamese.BjW4sHH5.woff2":"a9aed89de43e564f05a6e152c3074ef61de0f6add400084aae325274081b6223","/assets/inter-roman-greek-ext.CqjqNYQ-.woff2":"b913f277d4f709cb78f86d3ce239919f92d8856525634b5ad8e9c751375f9690","/maths/index.html":"8d0c3746bbc63b6a94afcf8a105ca18a56393331225a1f410483f5313c27b3bb","/assets/index.md.C5TlYwAG.lean.js":"81231359720610e08df33d1e3b6c160d4bbc696eab4cbfae5b968bbd954db8a9","/assets/inter-italic-vietnamese.BSbpV94h.woff2":"d36ab8c6804f88a5c767302c05b71d075f542445086a491225dd62f2c7d818d0","/assets/english_index.md.DhaOm8-v.lean.js":"1835fa43dbefa462d1bda488e9ee67f68ca73a0bc8d8b7d2b2dd9576e9d91189","/assets/english_index.md.DhaOm8-v.js":"1835fa43dbefa462d1bda488e9ee67f68ca73a0bc8d8b7d2b2dd9576e9d91189","/assets/ga_index.md.BUCIojlS.js":"ca1ecb79610e0a7a0220ba8e8f9bc7c9e3c126152fad3447befe4fbb71da93cd","/assets/app.Ce49ZTzg.js":"7680d87f9e3c0541cf7d123c8989aba86412e16550054b0d269d3ae93c52d827","/assets/dashboard.md.yZOBwq0B.lean.js":"9819e84485f1d8c5b9706c93d5330eabd2de78d82573ae97a44e72ecbb578998","/assets/dashboard.md.yZOBwq0B.js":"9819e84485f1d8c5b9706c93d5330eabd2de78d82573ae97a44e72ecbb578998","/assets/index.md.C5TlYwAG.js":"81231359720610e08df33d1e3b6c160d4bbc696eab4cbfae5b968bbd954db8a9","/assets/ga_index.md.BUCIojlS.lean.js":"ca1ecb79610e0a7a0220ba8e8f9bc7c9e3c126152fad3447befe4fbb71da93cd","/assets/inter-roman-greek.BBVDIX6e.woff2":"e08f72838a38c8bd3ec21438be37193e82840d2d4f5c4f07c4a73e263346cdc2","/assets/inter-roman-cyrillic.C5lxZ8CY.woff2":"647b22fc718f97508448e57a86fcaabf040e98bef451524631d7f1e52d107e9b","/assets/inter-italic-greek-ext.1u6EdAuj.woff2":"5ccdd9b52f4b67dc40940d94b627d0c5befbba4b9cc4e56bf2d5db1867f78129","/assets/inter-italic-greek.DJ8dCoTZ.woff2":"42cf8ade4156b8aa35fbbf17d55d7fe1e390ff07b602c6d8a3e6d6ce66ce2077","/assets/inter-italic-cyrillic.By2_1cv3.woff2":"24c8fee801c67aea58826358ebfd8b8b62dcd0b78e04c5cbe52291ff707fe286","/assets/inter-italic-cyrillic-ext.r48I6akx.woff2":"b4a38d3ffa596a4518acecdfa3dc591a0d4e9379008efe920c03abd579851ee7","/assets/chunks/VPLocalSearchBox.Qmoz2Niz.js":"215fb23754f931716f87942ac6c0596ffcd6f2ea5c68b34662035d9e735de52b","/assets/inter-roman-cyrillic-ext.BBPuwvHQ.woff2":"f32908165f8d582d744fbb1591b393ae89146aac4ca5af8b3b205a454815dede","/maths/Number System.html":"81c44121290484a899a9df6ae5962e1888ad45d3e1d5b46577fd60dadb24d901","/assets/style.CfaZg9S5.css":"c48aa5e8fc63cb1175b843cfcea8416baf3e322aeef26e02ec49f6cc0c59bbdf","/assets/chunks/framework.BGulJ_4C.js":"06148a93cb26113e564e35365289528a0b1d994c3a0eac27b6177af49e04b6bd","/assets/inter-roman-latin.Di8DUHzh.woff2":"5028e9cc0404aa219fac91bb8889162cd06f49c1f40eebeaf4b65b643dc924db","/assets/inter-italic-latin.C2AdPX0b.woff2":"e508a69824ea7d7df087676460f535ab05d86cdc9dff74b1a88f13ef29a0eb10","/assets/inter-roman-latin-ext.4ZJIpNVo.woff2":"625f740a8e10a81a347107d29733e81eb487a20a64c6cc5bc181396739f241d3","/assets/inter-italic-latin-ext.CN1xVJS-.woff2":"58cdaa9526d84c4bf6d2301c688cef68f93bdead2f22e9082d945761bd5da744","/assets/chunks/@localSearchIndexroot.YhKrHfLk.js":"5d5818a7cf1e33734cbaf4cba6b5227332c991f21bd137e921c4b4d5a26bd1fb","/assets/chunks/theme.DBrF-NA2.js":"9df31410ff6a4c06b6f784e2ebe241c805dbf708c3077282de9809296c5a2719","/assets/maths_Number System.md.C7TXED9o.js":"91e6849cb17640fe1f02eb729a92620092e40c100c2804d88f2872538fe3a9f7","/assets/maths_Number System.md.C7TXED9o.lean.js":"4507a24a916891110042d6d321ad5b90191d624509254d022b0ea5ef25077e1d"}}
+[debug] [2026-02-13T03:00:31.774Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/884373582171/sites/study-app-496e9/versions/3e307a1045dec88a:populateFiles 200
+[debug] [2026-02-13T03:00:31.774Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/884373582171/sites/study-app-496e9/versions/3e307a1045dec88a:populateFiles {"uploadRequiredHashes":["4870e1d3beaace63405cdb802d987b87305c62af9b8a47f7b671dfe843544bb7","c48aa5e8fc63cb1175b843cfcea8416baf3e322aeef26e02ec49f6cc0c59bbdf","2047ed17a70cacd3dd4374aab58d33829fd8757553f447dbfbe47b5c7a0ec810","7680d87f9e3c0541cf7d123c8989aba86412e16550054b0d269d3ae93c52d827","8a930ef5aa3b3cca9ecf782ef5c84e319ae6ff378aac754f5ebb90fa899a8e39","d654701b7275dc3ab0c67b9542f63fe141b4c04140f1ce57898070d722c12335","8d0c3746bbc63b6a94afcf8a105ca18a56393331225a1f410483f5313c27b3bb","6032e391aee78d3b77e361f9b0e232c0fe07f97bc2eed90e7d444a0a6742ac24","215fb23754f931716f87942ac6c0596ffcd6f2ea5c68b34662035d9e735de52b","81c44121290484a899a9df6ae5962e1888ad45d3e1d5b46577fd60dadb24d901","5d5818a7cf1e33734cbaf4cba6b5227332c991f21bd137e921c4b4d5a26bd1fb","44d06f34b7e73431bb952c98e249c7ab3cc09288428658b7a3e9858446d428f1","9df31410ff6a4c06b6f784e2ebe241c805dbf708c3077282de9809296c5a2719"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files"}
+[debug] [2026-02-13T03:00:31.776Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.776Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.776Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.777Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.777Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.777Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.777Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.777Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.777Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.777Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.778Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.778Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.778Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.778Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.778Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.778Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.779Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.780Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.780Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:31.780Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/4870e1d3beaace63405cdb802d987b87305c62af9b8a47f7b671dfe843544bb7 [none]
+[debug] [2026-02-13T03:00:31.780Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/4870e1d3beaace63405cdb802d987b87305c62af9b8a47f7b671dfe843544bb7 [stream]
+[debug] [2026-02-13T03:00:31.782Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/c48aa5e8fc63cb1175b843cfcea8416baf3e322aeef26e02ec49f6cc0c59bbdf [none]
+[debug] [2026-02-13T03:00:31.782Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/c48aa5e8fc63cb1175b843cfcea8416baf3e322aeef26e02ec49f6cc0c59bbdf [stream]
+[debug] [2026-02-13T03:00:31.783Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/2047ed17a70cacd3dd4374aab58d33829fd8757553f447dbfbe47b5c7a0ec810 [none]
+[debug] [2026-02-13T03:00:31.783Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/2047ed17a70cacd3dd4374aab58d33829fd8757553f447dbfbe47b5c7a0ec810 [stream]
+[debug] [2026-02-13T03:00:31.785Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/7680d87f9e3c0541cf7d123c8989aba86412e16550054b0d269d3ae93c52d827 [none]
+[debug] [2026-02-13T03:00:31.785Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/7680d87f9e3c0541cf7d123c8989aba86412e16550054b0d269d3ae93c52d827 [stream]
+[debug] [2026-02-13T03:00:31.786Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8a930ef5aa3b3cca9ecf782ef5c84e319ae6ff378aac754f5ebb90fa899a8e39 [none]
+[debug] [2026-02-13T03:00:31.786Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8a930ef5aa3b3cca9ecf782ef5c84e319ae6ff378aac754f5ebb90fa899a8e39 [stream]
+[debug] [2026-02-13T03:00:31.787Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/d654701b7275dc3ab0c67b9542f63fe141b4c04140f1ce57898070d722c12335 [none]
+[debug] [2026-02-13T03:00:31.787Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/d654701b7275dc3ab0c67b9542f63fe141b4c04140f1ce57898070d722c12335 [stream]
+[debug] [2026-02-13T03:00:31.788Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8d0c3746bbc63b6a94afcf8a105ca18a56393331225a1f410483f5313c27b3bb [none]
+[debug] [2026-02-13T03:00:31.788Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8d0c3746bbc63b6a94afcf8a105ca18a56393331225a1f410483f5313c27b3bb [stream]
+[debug] [2026-02-13T03:00:31.789Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/6032e391aee78d3b77e361f9b0e232c0fe07f97bc2eed90e7d444a0a6742ac24 [none]
+[debug] [2026-02-13T03:00:31.789Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/6032e391aee78d3b77e361f9b0e232c0fe07f97bc2eed90e7d444a0a6742ac24 [stream]
+[debug] [2026-02-13T03:00:31.789Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/215fb23754f931716f87942ac6c0596ffcd6f2ea5c68b34662035d9e735de52b [none]
+[debug] [2026-02-13T03:00:31.789Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/215fb23754f931716f87942ac6c0596ffcd6f2ea5c68b34662035d9e735de52b [stream]
+[debug] [2026-02-13T03:00:31.790Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/81c44121290484a899a9df6ae5962e1888ad45d3e1d5b46577fd60dadb24d901 [none]
+[debug] [2026-02-13T03:00:31.790Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/81c44121290484a899a9df6ae5962e1888ad45d3e1d5b46577fd60dadb24d901 [stream]
+[debug] [2026-02-13T03:00:31.791Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/5d5818a7cf1e33734cbaf4cba6b5227332c991f21bd137e921c4b4d5a26bd1fb [none]
+[debug] [2026-02-13T03:00:31.791Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/5d5818a7cf1e33734cbaf4cba6b5227332c991f21bd137e921c4b4d5a26bd1fb [stream]
+[debug] [2026-02-13T03:00:31.792Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/44d06f34b7e73431bb952c98e249c7ab3cc09288428658b7a3e9858446d428f1 [none]
+[debug] [2026-02-13T03:00:31.792Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/44d06f34b7e73431bb952c98e249c7ab3cc09288428658b7a3e9858446d428f1 [stream]
+[debug] [2026-02-13T03:00:31.793Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/9df31410ff6a4c06b6f784e2ebe241c805dbf708c3077282de9809296c5a2719 [none]
+[debug] [2026-02-13T03:00:31.793Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/9df31410ff6a4c06b6f784e2ebe241c805dbf708c3077282de9809296c5a2719 [stream]
+[debug] [2026-02-13T03:00:31.793Z] [hosting][populate queue][FINAL] {"max":752,"min":752,"avg":752,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":765}
+[debug] [2026-02-13T03:00:31.793Z] [hosting] uploads queued: 13
+[debug] [2026-02-13T03:00:34.221Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8d0c3746bbc63b6a94afcf8a105ca18a56393331225a1f410483f5313c27b3bb 200
+[debug] [2026-02-13T03:00:34.222Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8d0c3746bbc63b6a94afcf8a105ca18a56393331225a1f410483f5313c27b3bb [stream]
+[debug] [2026-02-13T03:00:34.372Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/6032e391aee78d3b77e361f9b0e232c0fe07f97bc2eed90e7d444a0a6742ac24 200
+[debug] [2026-02-13T03:00:34.372Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/6032e391aee78d3b77e361f9b0e232c0fe07f97bc2eed90e7d444a0a6742ac24 [stream]
+[debug] [2026-02-13T03:00:34.373Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/5d5818a7cf1e33734cbaf4cba6b5227332c991f21bd137e921c4b4d5a26bd1fb 200
+[debug] [2026-02-13T03:00:34.374Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/5d5818a7cf1e33734cbaf4cba6b5227332c991f21bd137e921c4b4d5a26bd1fb [stream]
+[debug] [2026-02-13T03:00:34.392Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/2047ed17a70cacd3dd4374aab58d33829fd8757553f447dbfbe47b5c7a0ec810 200
+[debug] [2026-02-13T03:00:34.392Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/2047ed17a70cacd3dd4374aab58d33829fd8757553f447dbfbe47b5c7a0ec810 [stream]
+[debug] [2026-02-13T03:00:34.397Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/c48aa5e8fc63cb1175b843cfcea8416baf3e322aeef26e02ec49f6cc0c59bbdf 200
+[debug] [2026-02-13T03:00:34.398Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/c48aa5e8fc63cb1175b843cfcea8416baf3e322aeef26e02ec49f6cc0c59bbdf [stream]
+[debug] [2026-02-13T03:00:34.545Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/215fb23754f931716f87942ac6c0596ffcd6f2ea5c68b34662035d9e735de52b 200
+[debug] [2026-02-13T03:00:34.546Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/215fb23754f931716f87942ac6c0596ffcd6f2ea5c68b34662035d9e735de52b [stream]
+[debug] [2026-02-13T03:00:34.579Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8a930ef5aa3b3cca9ecf782ef5c84e319ae6ff378aac754f5ebb90fa899a8e39 200
+[debug] [2026-02-13T03:00:34.579Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/8a930ef5aa3b3cca9ecf782ef5c84e319ae6ff378aac754f5ebb90fa899a8e39 [stream]
+[debug] [2026-02-13T03:00:34.639Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/44d06f34b7e73431bb952c98e249c7ab3cc09288428658b7a3e9858446d428f1 200
+[debug] [2026-02-13T03:00:34.639Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/44d06f34b7e73431bb952c98e249c7ab3cc09288428658b7a3e9858446d428f1 [stream]
+[debug] [2026-02-13T03:00:34.766Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/9df31410ff6a4c06b6f784e2ebe241c805dbf708c3077282de9809296c5a2719 200
+[debug] [2026-02-13T03:00:34.767Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/9df31410ff6a4c06b6f784e2ebe241c805dbf708c3077282de9809296c5a2719 [stream]
+[debug] [2026-02-13T03:00:34.824Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/4870e1d3beaace63405cdb802d987b87305c62af9b8a47f7b671dfe843544bb7 200
+[debug] [2026-02-13T03:00:34.824Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/4870e1d3beaace63405cdb802d987b87305c62af9b8a47f7b671dfe843544bb7 [stream]
+[debug] [2026-02-13T03:00:35.160Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/81c44121290484a899a9df6ae5962e1888ad45d3e1d5b46577fd60dadb24d901 200
+[debug] [2026-02-13T03:00:35.160Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/81c44121290484a899a9df6ae5962e1888ad45d3e1d5b46577fd60dadb24d901 [stream]
+[debug] [2026-02-13T03:00:35.443Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/7680d87f9e3c0541cf7d123c8989aba86412e16550054b0d269d3ae93c52d827 200
+[debug] [2026-02-13T03:00:35.444Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/7680d87f9e3c0541cf7d123c8989aba86412e16550054b0d269d3ae93c52d827 [stream]
+[debug] [2026-02-13T03:00:35.564Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/d654701b7275dc3ab0c67b9542f63fe141b4c04140f1ce57898070d722c12335 200
+[debug] [2026-02-13T03:00:35.565Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/study-app-496e9/versions/3e307a1045dec88a/files/d654701b7275dc3ab0c67b9542f63fe141b4c04140f1ce57898070d722c12335 [stream]
+[debug] [2026-02-13T03:00:35.565Z] [hosting][upload queue][FINAL] {"max":3788,"min":2444,"avg":2936.5384615384614,"active":0,"complete":13,"success":13,"errored":0,"retried":0,"total":13,"elapsed":3790}
+[info] ✔  hosting[study-app-496e9]: file upload complete 
+[debug] [2026-02-13T03:00:35.565Z] [hosting] deploy completed after 4715ms
+[debug] [2026-02-13T03:00:35.566Z] [
+  {
+    "config": {
+      "public": "docs/.vitepress/dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "study-app-496e9"
+    },
+    "version": "projects/884373582171/sites/study-app-496e9/versions/3e307a1045dec88a"
+  }
+]
+[info] i  hosting[study-app-496e9]: finalizing version... 
+[debug] [2026-02-13T03:00:35.567Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:35.567Z] Checked if tokens are valid: true, expires at: 1770955225545
+[debug] [2026-02-13T03:00:35.567Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/study-app-496e9/versions/3e307a1045dec88a updateMask=status%2Cconfig
+[debug] [2026-02-13T03:00:35.567Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/study-app-496e9/versions/3e307a1045dec88a {"status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]}}
