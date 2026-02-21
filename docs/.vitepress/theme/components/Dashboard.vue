@@ -27,8 +27,37 @@ const isSyncing = ref(false)
 const lastSyncTime = ref(null)
 
 // --- Personal Notes State (Overhauled) ---
-const folders = ref(['Maths', 'Reasoning', 'English', 'GS', 'General']) // Default folders
-const activeFolder = ref('Maths')
+// --- Personal Notes State (Overhauled) ---
+const defaultFolders = [] // No defaults in AI Notes tab as requested
+const customFolders = ref([]) // From Firestore users/uid/settings/folders
+const activeFolder = ref('All') // Change to 'All' or first folder
+
+const physModules = import.meta.glob('../../../*/*.md')
+const folders = computed(() => {
+    const list = []
+    
+    // 1. Auto-discover physical subjects from workspace layout
+    Object.keys(physModules).forEach(path => {
+        const parts = path.split('/')
+        if (parts.length > 3) {
+            const subjectVal = parts[parts.length - 2]
+            if (subjectVal && !subjectVal.startsWith('.') && subjectVal !== 'public') {
+                const displayName = subjectVal === 'ga' ? 'General Awareness' : 
+                                    subjectVal === 'gs' ? 'GS' :
+                                    subjectVal.charAt(0).toUpperCase() + subjectVal.slice(1).replace(/-/g, ' ')
+                if (!list.includes(displayName)) list.push(displayName)
+            }
+        }
+    })
+
+    // 2. Add custom folders fetched from Firestore
+    customFolders.value.forEach(f => {
+        if (!list.includes(f)) list.push(f)
+    })
+    
+    if (list.length === 0) list.push('General') // Emergency fallback
+    return list
+})
 const userNotes = ref([])
 const isNoteModalOpen = ref(false)
 const isPreviewMode = ref(false) // Toggle for Markdown Preview
@@ -177,10 +206,18 @@ onMounted(() => {
       if (saved) {
         const data = JSON.parse(saved)
         
-        // Load imported courses safely
+        // Load imported courses safely and sanitize defaults
         if (data.importedCourses && Array.isArray(data.importedCourses)) {
-            importedCourses.value = data.importedCourses
+            const defaultsToRemove = ['Maths', 'English', 'Reasoning', 'General Awareness', 'GA']
+            importedCourses.value = data.importedCourses.filter(c => !defaultsToRemove.includes(c.name))
             courses.value = [...importedCourses.value]
+            
+            // Re-save if we cleaned up defaults
+            if (importedCourses.value.length !== data.importedCourses.length) {
+                 data.courses = courses.value
+                 data.importedCourses = importedCourses.value
+                 localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+            }
         }
     
         // Sync completion status safely
@@ -323,6 +360,14 @@ const saveNote = async () => {
             const fileName = currentNote.value.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md'
             const filePath = `${noteData.folder.toLowerCase()}/${fileName}`
             
+            // Auto-add folder to custom folders if it's new and not an imported course
+            if (!folders.value.includes(noteData.folder)) {
+                customFolders.value.push(noteData.folder)
+                if (user.value) {
+                    await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: customFolders.value }, { merge: true })
+                }
+            }
+
             await fetch('/__api/write-file', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -367,9 +412,68 @@ const saveNote = async () => {
     }
 }
 
+const createNewEmptyNote = async (folder) => {
+    const title = prompt(`Enter a title for your new note in '${folder}':`)
+    if (!title || !title.trim()) return;
+
+    isSavingNote.value = true;
+    try {
+        const noteData = {
+            title: title.trim(),
+            content: `# ${title.trim()}\n\nStart writing your notes here...`, // Blank template
+            folder: folder,
+            updatedAt: user.value ? serverTimestamp() : new Date().toISOString()
+        }
+
+        // 1. Local Filesystem Save (Dev Mode Only - for VitePress Routing)
+        if (import.meta.env.DEV) {
+            const fileName = noteData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.md'
+            const filePath = `${noteData.folder.toLowerCase()}/${fileName}`
+
+            await fetch('/__api/write-file', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    path: filePath,
+                    content: noteData.content
+                })
+            })
+        }
+
+        // 2. Database/Local Storage Save
+        if (user.value) {
+            // Cloud Save
+            noteData.createdAt = serverTimestamp()
+            await addDoc(collection(db, 'users', user.value.uid, 'notes'), noteData)
+        } else {
+            // Guest/Local Save
+            const notes = [...userNotes.value]
+            noteData.id = 'local-' + Date.now()
+            noteData.createdAt = new Date().toISOString()
+            notes.push(noteData)
+            userNotes.value = notes
+            localStorage.setItem(GUEST_NOTES_KEY, JSON.stringify(notes))
+        }
+
+        // 3. Immediately redirect to the VitePress view for editing
+        viewNote(noteData)
+
+    } catch (e) {
+        console.error("Error creating note:", e)
+        alert("Failed to create note: " + e.message)
+    } finally {
+        isSavingNote.value = false;
+    }
+}
+
+const navigateTo = (url) => {
+    window.location.href = url
+}
+
 const viewNote = (note) => {
-    // Navigate to note viewer
-    window.location.assign(`/note.html?id=${note.id}`);
+    const fileName = note.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()
+    const folder = (note.folder || 'general').toLowerCase()
+    window.location.href = `/${folder}/${fileName}.html`
 }
 
 const deleteNote = async (noteId) => {
@@ -440,36 +544,55 @@ const isAddingFolder = ref(false)
 
 const addFolder = async () => {
     const name = newFolderName.value.trim()
+    // Don't add if empty or already exists in the computed folders
     if (!name || folders.value.includes(name)) return
     
-    // Optimistic update
-    folders.value.push(name)
+    // Update local custom list
+    customFolders.value.push(name)
     newFolderName.value = ''
     isAddingFolder.value = false
     
-    // Persist to Firestore (Settings)
+    // Create physical folder in DEV mode so it appears in VitePress Navbar
+    if (import.meta.env.DEV) {
+        try {
+            await fetch('/__api/create-folder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ folder: name })
+            })
+        } catch (e) {
+            console.error("Failed to create physical folder:", e)
+        }
+    }
+    
+    // Persist custom part to Firestore
     try {
-        await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: folders.value }, { merge: true })
+        await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: customFolders.value }, { merge: true })
     } catch (e) {
         console.error("Error saving folders:", e)
     }
 }
 
 const deleteFolder = async (folderName) => {
-    if (folderName === 'General') return // Protect default
+    if (defaultFolders.includes(folderName)) return // Protect defaults
+    if (courses.value.find(c => c.name === folderName)) {
+        alert("This folder is linked to an active course. Remove the course to delete this folder.")
+        return
+    }
+    
     if (!confirm(`Delete folder "${folderName}"? Notes in it will move to General.`)) return
 
-    folders.value = folders.value.filter(f => f !== folderName)
+    customFolders.value = customFolders.value.filter(f => f !== folderName)
     if (activeFolder.value === folderName) activeFolder.value = 'General'
 
     try {
-        await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: folders.value }, { merge: true })
+        await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: customFolders.value }, { merge: true })
         // Move notes to General
         const notesToMove = userNotes.value.filter(n => n.folder === folderName)
         const batch = writeBatch(db)
         notesToMove.forEach(note => {
-            const ref = doc(db, 'users', user.value.uid, 'notes', note.id)
-            batch.update(ref, { folder: 'General' })
+            const nodeRef = doc(db, 'users', user.value.uid, 'notes', note.id)
+            batch.update(nodeRef, { folder: 'General' })
         })
         await batch.commit()
     } catch (e) {
@@ -479,9 +602,20 @@ const deleteFolder = async (folderName) => {
 
 const fetchFolders = () => {
    if (!user.value) return
-   onSnapshot(doc(db, 'users', user.value.uid, 'settings', 'folders'), (doc) => {
-       if (doc.exists() && doc.data().list) {
-           folders.value = doc.data().list
+   onSnapshot(doc(db, 'users', user.value.uid, 'settings', 'folders'), async (docSnap) => {
+       if (docSnap.exists() && docSnap.data().list) {
+           const legacyDefaults = ['Maths', 'English', 'Reasoning', 'General Awareness', 'GA', 'GS']
+           const list = docSnap.data().list
+           const filtered = list.filter(f => !legacyDefaults.includes(f))
+           
+           customFolders.value = filtered
+           
+           // Clean up cloud storage if legacy defaults existed
+           if (filtered.length !== list.length) {
+                try {
+                    await setDoc(doc(db, 'users', user.value.uid, 'settings', 'folders'), { list: filtered }, { merge: true })
+                } catch(e) { console.error("Error sanitizing folders:", e) }
+           }
        }
    })
 }
@@ -543,7 +677,8 @@ const fetchFromCloud = async () => {
             const data = docSnap.data()
             if (data.courses) {
                 // Merge cloud courses with local, preferring cloud progress
-                const cloudCourses = data.courses
+                const legacyDefaults = ['Maths', 'English', 'Reasoning', 'General Awareness', 'GA', 'GS']
+                const cloudCourses = data.courses.filter(c => !legacyDefaults.includes(c.name))
                 courses.value = courses.value.map(localC => {
                     const cloudC = cloudCourses.find(cc => cc.id === localC.id)
                     return cloudC ? cloudC : localC
@@ -1064,12 +1199,12 @@ const scrollToCalculator = () => {
   <div class="elearn-layout">
     
     <!-- 1. Left Sidebar -->
-    <aside class="sidebar" :class="{ 'mobile-open': isMobileMenuOpen }">
-        <div class="logo">
-            <div class="logo-icon">AI</div>
-            <span>AI Notes Master</span>
-            <button class="close-sidebar-btn" @click="isMobileMenuOpen = false">×</button>
-        </div>
+    <aside class="sidebar" :class="{ open: isMobileMenuOpen }">
+        <div class="logo" @click="navigateTo('/')" style="cursor: pointer">
+            <div class="logo-icon">M</div>
+            <span class="logo-text">STUDY NEXUS</span>
+        </div><button class="close-sidebar-btn" @click="isMobileMenuOpen = false">×</button>
+        
 
         <nav class="nav-menu">
             <div class="nav-item" :class="{ active: activeTab === 'home' }" @click="activeTab = 'home'; closeCourse()">
@@ -1085,7 +1220,7 @@ const scrollToCalculator = () => {
                 <span class="icon">📅</span> Planner
             </div>
             <div class="nav-item" :class="{ active: activeTab === 'notes' }" @click="activeTab = 'notes'">
-                <span class="icon">📝</span> AI Notes
+                <span class="icon">📝</span> Notes
             </div>
             <div class="nav-item" :class="{ active: activeTab === 'settings' }" @click="activeTab = 'settings'">
                 <span class="icon">⚙️</span> Settings
@@ -1447,60 +1582,101 @@ const scrollToCalculator = () => {
                     </div>
                     </div>
                 </div>
+
+                <!-- NEW: Course-specific Notes -->
+                <div class="course-notes-section">
+                    <div class="section-header">
+                        <h3>Personal Notes</h3>
+                        <button class="btn-mini-add" @click="createNewEmptyNote(selectedCourse.name)">+ New Note</button>
+                    </div>
+                    <div class="notes-grid-mini">
+                        <div v-for="note in userNotes.filter(n => n.folder === selectedCourse.name)" :key="note.id" 
+                             class="note-card-private mini" @click="viewNote(note)">
+                            <div class="note-content-preview">
+                                <h4>{{ note.title }}</h4>
+                                <p>{{ note.content.slice(0, 60) }}...</p>
+                            </div>
+                            <div class="note-actions">
+                                <button class="btn-icon-read" @click.stop="viewNote(note)">👁️</button>
+                                <button class="btn-icon-delete" @click.stop="deleteNote(note.id)">🗑️</button>
+                            </div>
+                        </div>
+                        <div v-if="userNotes.filter(n => n.folder === selectedCourse.name).length === 0" class="empty-notes-prompt">
+                            No notes for this course yet. Create your first one!
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- AI NOTES TAB -->
-        <!-- AI NOTES TAB -->
+        <!-- AI NOTES TAB: Redesigned as Master-Detail View -->
         <div v-if="activeTab === 'notes'" class="tab-content notes-tab">
-            <div class="notes-header-row">
-                <!-- Dynamic Folder Filters -->
-                <div class="folder-filters">
-                    <button v-for="folder in folders" 
-                            :key="folder"
-                            :class="{ active: activeFolder === folder }"
-                            @click="activeFolder = folder"
-                            class="folder-btn">
-                        {{ folder }}
-                        <span v-if="folder !== 'General' && folder !== 'Maths' && folder !== 'Reasoning' && folder !== 'English' && folder !== 'GS'" 
-                              class="delete-folder-x" 
-                              @click.stop="deleteFolder(folder)">×</span>
-                    </button>
-                    
-                    <!-- Add Folder Input -->
-                    <div v-if="isAddingFolder" class="add-folder-input">
-                        <input v-model="newFolderName" @keyup.enter="addFolder" @blur="isAddingFolder = false" placeholder="Name..." autoFocus />
-                    </div>
-                    <button v-else class="btn-icon-add-folder" @click="isAddingFolder = true" title="New Folder">+</button>
-                </div>
-                
-                <div class="notes-controls">
-                    <input type="file" id="noteFileInput" accept=".txt,.md" style="display: none" @change="handleFileUpload">
-                    <button class="btn-secondary btn-sm" @click="triggerFileInput">Import</button>
-                    <button class="btn-primary btn-sm" @click="openNoteModal()">+ New Note</button>
-                </div>
+            <div class="notes-tab-header">
+                <h2>My Notebooks</h2>
             </div>
 
-            <!-- Private Notes Grid -->
-            <div class="private-notes-grid">
-                <div v-for="note in userNotes.filter(n => n.folder === activeFolder || (!n.folder && activeFolder === 'General'))" 
-                     :key="note.id" class="note-card-private" @click="openNoteModal(note)">
-                    <div class="note-content-preview">
-                        <span class="note-folder-badge">{{ note.folder || 'General' }}</span>
-                        <h3>{{ note.title }}</h3>
-                        <p>{{ note.content.slice(0, 100) }}...</p>
+            <div class="master-detail-container">
+                <!-- Master Column: Subjects -->
+                <div class="master-column">
+                    <div class="master-header">
+                        <h3>Subjects</h3>
+                        <button class="btn-icon-add" @click="isAddingFolder = true" title="New Subject">➕</button>
                     </div>
-                    <div class="note-actions">
-                         <span class="note-date">{{ note.updatedAt ? new Date(note.updatedAt.seconds * 1000).toLocaleDateString() : 'Just now' }}</span>
-                        <button class="btn-icon-read" @click.stop="viewNote(note)" title="Read Full Note">👁️</button>
-                        <button class="btn-icon-delete" @click.stop="deleteNote(note.id)">🗑️</button>
+                    
+                    <div v-if="isAddingFolder" class="add-subject-row">
+                        <input v-model="newFolderName" 
+                               @keyup.enter="addFolder" 
+                               @blur="isAddingFolder = false" 
+                               placeholder="Subject Name..." 
+                               autoFocus 
+                               class="mini-input" />
+                    </div>
+
+                    <div class="subject-list">
+                        <div v-for="folder in folders" :key="folder" 
+                             class="subject-list-item" 
+                             :class="{ active: activeFolder === folder }"
+                             @click="activeFolder = folder">
+                            <span class="subject-name">{{ folder }}</span>
+                            <div class="subject-actions">
+                                <span class="note-count">{{ userNotes.filter(n => n.folder === folder).length }}</span>
+                                <button v-if="folder !== 'General' && !courses.find(c => c.name === folder)" 
+                                        class="btn-icon-delete-mini" 
+                                        @click.stop="deleteFolder(folder)"
+                                        title="Delete Subject">🗑️</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div v-if="userNotes.filter(n => n.folder === activeFolder).length === 0" class="empty-state">
-                    <span class="icon">📂</span>
-                    <h3>{{ activeFolder }} is empty</h3>
-                    <p>Create a new note or import a file to get started.</p>
+
+                <!-- Detail Column: Notes -->
+                <div class="detail-column">
+                    <div v-if="activeFolder" class="detail-header">
+                        <h3>{{ activeFolder }} Notes</h3>
+                        <button class="btn-primary" @click="createNewEmptyNote(activeFolder)">+ New Note</button>
+                    </div>
+                    <div v-else class="detail-header empty">
+                        <h3>Select a subject to view notes</h3>
+                    </div>
+
+                    <div v-if="activeFolder" class="notes-list-view">
+                        <div v-if="userNotes.filter(n => n.folder === activeFolder).length === 0" class="empty-state-mini">
+                            <p>No notes in this subject yet.</p>
+                            <button class="btn-secondary" @click="createNewEmptyNote(activeFolder)">Create your first note</button>
+                        </div>
+                        
+                        <div v-for="note in userNotes.filter(n => n.folder === activeFolder)" :key="note.id" 
+                             class="note-list-card" @click="viewNote(note)">
+                            <div class="note-info">
+                                <h4>{{ note.title }}</h4>
+                                <span class="note-date">Updated: {{ typeof note.updatedAt === 'string' ? new Date(note.updatedAt).toLocaleDateString() : (note.updatedAt?.toDate ? note.updatedAt.toDate().toLocaleDateString() : 'Just now') }}</span>
+                            </div>
+                            <div class="note-actions">
+                                <button class="btn-icon-read" @click.stop="viewNote(note)" title="Open Note">📖 Open</button>
+                                <button class="btn-icon-delete" @click.stop="deleteNote(note.id)" title="Delete Note">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1650,50 +1826,8 @@ const scrollToCalculator = () => {
         </div>
     </div>
 
-        <!-- Note Editor Modal -->
-        <div v-if="isNoteModalOpen" class="modal-overlay" @click.self="isNoteModalOpen = false">
-            <div class="modal-content note-modal" :class="{ 'full-screen': isMaximized }">
-                <div class="modal-header">
-                    <h3>{{ currentNote.id ? 'Edit Note' : 'New Note' }}</h3>
-                    <div class="modal-tools">
-                        <!-- View Toggles -->
-                        <div class="view-toggle">
-                            <button :class="{ active: !isPreviewMode }" @click="isPreviewMode = false">Write</button>
-                            <button :class="{ active: isPreviewMode }" @click="isPreviewMode = true">Preview</button>
-                        </div>
-                        
-                        <div class="divider-v"></div>
-
-                        <!-- Actions -->
-                        <button class="btn-icon-tool" @click="printNote" v-if="currentNote.content" title="Print">🖨️</button>
-                        <button class="close-btn" @click="isNoteModalOpen = false">×</button>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="note-meta-row">
-                        <input v-model="currentNote.title" placeholder="Note Title" class="note-title-input" />
-                        <select v-model="currentNote.folder" class="note-folder-select" :class="{ 'invalid': !currentNote.folder }">
-                            <option disabled value="">Select Subject...</option>
-                            <option v-for="opt in folders" :key="opt" :value="opt">{{ opt }}</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Write Mode -->
-                    <textarea v-if="!isPreviewMode" v-model="currentNote.content" placeholder="Write your notes here using Markdown...
-- [ ] Todo item
-**Bold Text**" class="note-content-input"></textarea>
-                    
-                    <!-- Preview Mode -->
-                    <div v-else class="note-preview-pane markdown-body" id="note-preview-content" v-html="compiledMarkdown"></div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-text" @click="isNoteModalOpen = false">Cancel</button>
-                    <button class="btn-primary" @click="saveNote" :disabled="isSavingNote || !currentNote.folder || !currentNote.title">
-                        {{ isSavingNote ? 'Saving...' : 'Save Note' }}
-                    </button>
-                </div>
-            </div>
-        </div>
+        <!-- Note Editing/Creation Modal has been removed. 
+             Users now create blank notes via Prompt and edit them In-Place on the VitePress page. -->
 
   </div>
 </template>
@@ -3405,4 +3539,149 @@ const scrollToCalculator = () => {
     margin-top: auto;
 }
 
+/* Course Specific Notes Styling */
+.course-notes-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.course-notes-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.course-notes-section .section-header h3 {
+    margin: 0;
+    color: #ffd700;
+}
+
+.notes-grid-mini {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.note-card-private.mini {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.note-card-private.mini:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #ffd700;
+    transform: translateY(-2px);
+}
+
+.note-card-private.mini h4 {
+    margin: 0 0 10px 0;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.note-card-private.mini p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+    margin: 0;
+}
+
+.empty-notes-prompt {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 2px dashed rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.4);
+}
+.home-section-header {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.home-section-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #ffd700;
+}
+
+/* Quick Subjects Home Grid */
+.quick-subjects-home {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.subject-card-mini {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.subject-card-mini:hover {
+    background: rgba(255, 215, 0, 0.08);
+    border-color: #ffd700;
+    transform: translateY(-2px);
+}
+
+.subject-card-mini .s-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.subject-card-mini h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+.subject-card-mini p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.subject-select-wrapper {
+    flex: 0 0 200px;
+}
+
+.note-folder-select-input {
+    width: 100%;
+    background: #0a0a0e;
+    color: #ccc;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+@media (max-width: 768px) {
+    .quick-subjects-home {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 </style>

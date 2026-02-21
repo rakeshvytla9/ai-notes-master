@@ -1,6 +1,6 @@
-# 📚 AI Notes Master
+# 📚 Study Nexus
 
-A modern, fast, and aesthetic notes maker and study platform built with [VitePress](https://vitepress.dev/). Designed for comprehensive study material with AI-assisted practice and print-optimized layouts.
+A modern, fast, and aesthetic study platform built with [VitePress](https://vitepress.dev/). Designed for importing YouTube courses, taking AI-assisted notes, and managing comprehensive study material with print-optimized layouts.
 
 ## 🌐 Official Website
 **Live at:** [https://rakeshvytla9.github.io/ai-notes-master/](https://rakeshvytla9.github.io/ai-notes-master/)

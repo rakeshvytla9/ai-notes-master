@@ -1,9 +1,10 @@
 import { defineConfig } from 'vitepress'
 import fs from 'fs'
 import path from 'path'
+import mathjax3 from 'markdown-it-mathjax3'
 
 // Standard subjects we know about to enforce order/naming if present
-const KNOWN_SUBJECTS = {
+const KNOWN_SUBJECTS: Record<string, string> = {
   'maths': 'Mathematics',
   'reasoning': 'Reasoning',
   'english': 'English',
@@ -41,7 +42,7 @@ const navItems = [
   { text: 'Dashboard', link: '/dashboard' }
 ]
 
-const sidebarConfig = {}
+const sidebarConfig: Record<string, any> = {}
 
 subjects.forEach(sub => {
   const displayName = KNOWN_SUBJECTS[sub] || sub.charAt(0).toUpperCase() + sub.slice(1)
@@ -58,9 +59,11 @@ subjects.forEach(sub => {
   ]
 })
 
-export default defineConfig({
-  title: "AI Notes Master",
-  description: "Comprehensive study material with AI-assisted practice for SSC Exams",
+import { withMermaid } from 'vitepress-plugin-mermaid'
+
+export default withMermaid(defineConfig({
+  title: "Study Nexus",
+  description: "A centralized platform to import YouTube courses and manage your AI-assisted study notes",
   base: "/",
 
   // High-end aesthetic defaults
@@ -69,11 +72,8 @@ export default defineConfig({
 
   head: [
     ['script', {
-      src: "https://polyfill.io/v3/polyfill.min.js?features=es6"
-    }],
-    ['script', {
       id: "MathJax-script",
-      async: true,
+      async: "",
       src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
     }],
     ['script', {}, `
@@ -88,9 +88,19 @@ export default defineConfig({
   ],
 
   markdown: {
-    // config: (md) => {
-    //   md.use(mathjax3)
-    // }
+    config: (md) => {
+      md.use(mathjax3)
+    }
+  },
+
+  vue: {
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag) => {
+          return tag.startsWith('mjx-') || tag.startsWith('math')
+        }
+      }
+    }
   },
 
   themeConfig: {
@@ -124,6 +134,35 @@ export default defineConfig({
       {
         name: 'write-file-server',
         configureServer(server) {
+          server.middlewares.use('/__api/read-file', async (req, res, next) => {
+            if (req.method === 'GET') {
+              const url = new URL(req.url!, `http://${req.headers.host}`)
+              const filePath = url.searchParams.get('path')
+              if (!filePath) {
+                res.statusCode = 400
+                res.end(JSON.stringify({ error: 'Missing path' }))
+                return
+              }
+              const fullPath = path.join(process.cwd(), 'docs', filePath.endsWith('.md') ? filePath : filePath + '.md')
+              try {
+                if (fs.existsSync(fullPath)) {
+                  const content = fs.readFileSync(fullPath, 'utf-8')
+                  res.statusCode = 200
+                  res.setHeader('Content-Type', 'application/json')
+                  res.end(JSON.stringify({ content }))
+                } else {
+                  res.statusCode = 404
+                  res.end(JSON.stringify({ error: 'File not found: ' + fullPath }))
+                }
+              } catch (err: any) {
+                res.statusCode = 500
+                res.end(JSON.stringify({ error: err.message }))
+              }
+            } else {
+              next()
+            }
+          })
+
           server.middlewares.use('/__api/write-file', async (req, res, next) => {
             if (req.method === 'POST') {
               let body = ''
@@ -142,10 +181,55 @@ export default defineConfig({
                   fs.writeFileSync(fullPath, content)
                   res.statusCode = 200
                   res.end(JSON.stringify({ success: true }))
-                } catch (e) {
-                  console.error('File write error:', e)
+                } catch (err: any) {
+                  console.error('File write error:', err)
                   res.statusCode = 500
-                  res.end(JSON.stringify({ error: e.message }))
+                  res.end(JSON.stringify({ error: err.message }))
+                }
+              })
+            } else {
+              next()
+            }
+          })
+          server.middlewares.use('/__api/create-folder', async (req, res, next) => {
+            if (req.method === 'POST') {
+              let body = ''
+              req.on('data', chunk => body += chunk)
+              req.on('end', () => {
+                try {
+                  const { folder } = JSON.parse(body)
+                  if (!folder) throw new Error("Folder name is required")
+
+                  const dirPath = path.join(process.cwd(), 'docs', folder.toLowerCase())
+                  if (!fs.existsSync(dirPath)) {
+                    fs.mkdirSync(dirPath, { recursive: true })
+                  }
+
+                  const indexPath = path.join(dirPath, 'index.md')
+                  let created = false
+                  if (!fs.existsSync(indexPath)) {
+                    const title = folder.charAt(0).toUpperCase() + folder.slice(1).replace(/-/g, ' ')
+                    fs.writeFileSync(indexPath, `# ${title}\n\nYour notes for this subject will appear here.`)
+                    created = true
+                  }
+
+                  // Force VitePress to reload config and regenerate Navbar
+                  if (created) {
+                    const configPath = path.join(process.cwd(), 'docs', '.vitepress', 'config.mts')
+                    const time = new Date()
+                    try {
+                      fs.utimesSync(configPath, time, time)
+                    } catch (e) {
+                      // ignore if utimes fails
+                    }
+                  }
+
+                  res.statusCode = 200
+                  res.end(JSON.stringify({ success: true }))
+                } catch (err: any) {
+                  console.error('Folder create error:', err)
+                  res.statusCode = 500
+                  res.end(JSON.stringify({ error: err.message }))
                 }
               })
             } else {
@@ -156,4 +240,4 @@ export default defineConfig({
       }
     ]
   }
-})
+}))

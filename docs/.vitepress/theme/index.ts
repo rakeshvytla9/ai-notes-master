@@ -1,19 +1,22 @@
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
-import { h, onMounted, watch } from 'vue'
+import { h, onMounted, watch, ref, computed } from 'vue'
 import { useData, useRouter } from 'vitepress'
 import Dashboard from './components/Dashboard.vue'
 import NoteViewer from './components/NoteViewer.vue'
+import EditModal from './components/EditModal.vue'
 
 export default {
     extends: DefaultTheme,
-    enhanceApp({ app }) {
+    enhanceApp({ app }: { app: any }) {
         app.component('Dashboard', Dashboard)
         app.component('NoteViewer', NoteViewer)
+        app.component('EditModal', EditModal)
     },
     Layout() {
         const { page, frontmatter } = useData()
         const router = useRouter()
+        const isEditModalOpen = ref(false)
 
         // Custom Layout for Dashboard
         if (frontmatter.value.layout === 'dashboard') {
@@ -22,13 +25,26 @@ export default {
 
         const injectCheckboxes = () => {
             try {
-                // Target both desktop and mobile (local nav) outline links
-                const tocLinks = document.querySelectorAll('.outline-link, .VPLocalNav .outline-link, .VPLocalNav a[href^="#"]');
-                if (tocLinks.length === 0) return;
+                // Explicitly target the Right TOC
+                const tocLinks = document.querySelectorAll('.VPDocAsideOutline .outline-link, .VPLocalNav .outline-link');
 
-                tocLinks.forEach((link, index) => {
+                console.log(`[TOC Debug] Found ${tocLinks.length} TOC links on ${window.location.pathname}`);
+                if (tocLinks.length === 0) {
+                    return;
+                }
+
+                const linksArray = Array.from(tocLinks);
+                // console.log(`[TOC Debug] Found ${linksArray.length} TOC links`);
+
+                let injectedCount = 0;
+                linksArray.forEach((link, index) => {
+                    const href = link.getAttribute('href');
+                    if (!href || !href.startsWith('#')) return;
+
                     const parent = link.parentElement;
-                    if (!parent || parent.querySelector('.toc-checkbox')) return;
+                    if (!parent || parent.hasAttribute('data-cb-injected')) return;
+
+                    // Removed .VPSidebar check as selector is specific enough
 
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
@@ -40,16 +56,18 @@ export default {
                         checkbox.dataset.targetHash = link.hash;
                     }
 
-                    checkbox.onclick = null; // Remove individual handler in favor of delegation
-
                     const label = document.createElement('label');
                     label.htmlFor = checkbox.id;
                     label.className = 'toc-checkbox-label';
                     label.appendChild(checkbox);
-                    parent.prepend(label);
-                });
 
-                document.querySelectorAll('.section-checkbox, .section-checkbox-label, .sidebar-checkbox').forEach(el => el.remove());
+                    parent.style.display = 'flex';
+                    parent.style.alignItems = 'center';
+                    parent.dataset.cbInjected = 'true';
+                    parent.prepend(label);
+
+                    injectedCount++;
+                });
             } catch (e) {
                 console.error("TOC Injection Error:", e);
             }
@@ -65,9 +83,12 @@ export default {
             // Target body to catch mobile TOC and other dynamic changes
             observer.observe(document.body, { childList: true, subtree: true });
 
-            // Fallback for initial load
-            setTimeout(injectCheckboxes, 1000);
-            setTimeout(injectCheckboxes, 3000);
+            // Aggressive polling for 5 seconds to handle hydration race conditions
+            const poller = setInterval(injectCheckboxes, 500);
+            setTimeout(() => clearInterval(poller), 5000);
+
+            // Initial call
+            injectCheckboxes();
 
             // Global Event Delegation for Checkboxes
             // This handles clicks on cloned elements (like mobile TOC) where listeners are lost
@@ -85,6 +106,24 @@ export default {
         })
 
         return h(DefaultTheme.Layout, null, {
+            'doc-footer-before': () => {
+                if (page.value.relativePath === 'index.md' || frontmatter.value.layout === 'dashboard') return null
+
+                return h('div', { class: 'doc-edit-section' }, [
+                    h('button', {
+                        class: 'btn-edit-inplace',
+                        onClick: () => { isEditModalOpen.value = true }
+                    }, [
+                        h('span', { class: 'edit-icon' }, '✏️'),
+                        h('span', {}, 'Edit this page In-Place')
+                    ]),
+                    h(EditModal, {
+                        path: page.value.relativePath,
+                        isOpen: isEditModalOpen.value,
+                        onClose: () => { isEditModalOpen.value = false }
+                    })
+                ])
+            },
             'nav-bar-content-after': () => {
                 if (page.value.relativePath === 'index.md') return null
 

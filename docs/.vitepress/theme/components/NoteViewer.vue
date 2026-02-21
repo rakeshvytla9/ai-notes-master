@@ -118,10 +118,17 @@ const checkLocalNote = (noteId, renderMath) => {
 </script>
 
 <template>
-  <div class="note-viewer-container">
+  <div class="note-viewer-page">
+    <!-- Breadcrumb / Header -->
+    <div class="note-breadcrumb">
+       <a href="/dashboard.html" class="back-btn">← Dashboard</a>
+       <span class="sep">/</span>
+       <span class="folder-name">{{ note?.folder || 'Notes' }}</span>
+    </div>
+
     <div v-if="loading" class="loading-state">
       <div class="spinner"></div>
-      <p>Loading note...</p>
+      <p>Opening notebook...</p>
     </div>
 
     <div v-else-if="error" class="error-state">
@@ -129,84 +136,118 @@ const checkLocalNote = (noteId, renderMath) => {
       <a href="/dashboard.html" class="back-link">Return to Dashboard</a>
     </div>
 
-    <div v-else class="note-content">
-      <div class="note-header">
-        <h1>{{ note.title }}</h1>
-        <div class="meta">
-          <span class="badge">{{ note.folder || 'General' }}</span>
-          <span class="date">Updated: {{ new Date(note.updatedAt).toLocaleDateString() }}</span>
+    <div v-else class="note-container">
+      <header class="note-header">
+        <h1 class="note-title">{{ note.title }}</h1>
+        <div class="note-meta">
+          <span class="badge">{{ note.folder }}</span>
+          <span class="dot">•</span>
+          <span class="date">{{ note.updatedAt && note.updatedAt.seconds ? new Date(note.updatedAt.seconds * 1000).toLocaleDateString() : (note.updatedAt ? new Date(note.updatedAt).toLocaleDateString() : 'Just now') }}</span>
         </div>
-      </div>
+      </header>
       
-      <div class="vp-doc" v-html="note.renderedContent"></div>
+      <!-- Immersive Content Area -->
+      <div class="vp-doc note-body">
+        <div v-html="note.renderedContent"></div>
+      </div>
+
+      <footer class="note-footer">
+          <button class="btn-print" @click="window.print()">Print Note</button>
+      </footer>
     </div>
   </div>
 </template>
 
-<style scoped>
-.note-viewer-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px 20px;
+<style>
+/* Global styles for NoteViewer to match VitePress */
+.note-viewer-page {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 40px;
+}
+
+.note-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+    color: var(--vp-c-text-2);
+}
+
+.note-breadcrumb .back-btn {
+    color: var(--vp-c-brand);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.note-breadcrumb .sep {
+    opacity: 0.3;
+}
+
+.note-header {
+    margin-bottom: 40px;
+}
+
+.note-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: -0.02em;
+    color: var(--vp-c-text-1);
+}
+
+.note-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--vp-c-text-2);
+}
+
+.note-meta .badge {
+    background: var(--vp-c-brand-soft);
+    color: var(--vp-c-brand);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.note-body {
+    background: transparent;
+    line-height: 1.7;
+}
+
+.note-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--vp-c-divider);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-print {
+    background: var(--vp-c-brand);
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .loading-state, .error-state {
     text-align: center;
     padding: 100px 0;
-    color: var(--vp-c-text-2);
 }
 
-.spinner {
-    border: 4px solid var(--vp-c-bg-soft);
-    border-top: 4px solid var(--vp-c-brand);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.note-header {
-    margin-bottom: 40px;
-    border-bottom: 1px solid var(--vp-c-divider);
-    padding-bottom: 20px;
-}
-
-.note-header h1 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    line-height: 1.3;
-    color: var(--vp-c-text-1);
-}
-
-.meta {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    font-size: 0.9rem;
-    color: var(--vp-c-text-2);
-}
-
-.badge {
-    background: var(--vp-c-brand-soft);
-    color: var(--vp-c-brand);
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.back-link {
-    display: inline-block;
-    margin-top: 15px;
-    color: var(--vp-c-brand);
-    text-decoration: none;
-    font-weight: 500;
+@media (max-width: 768px) {
+    .note-viewer-page {
+        padding: 20px;
+        margin: 20px auto;
+    }
+    .note-title {
+        font-size: 2rem;
+    }
 }
 </style>

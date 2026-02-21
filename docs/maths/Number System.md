@@ -1567,3 +1567,6 @@ Find zeros in $1^1 \times 2^2 \times 3^3 \times \dots \times 100^{100}$.
 3.  **Factorial Multiplication:** Answer is the sum of individual zeros.
 4.  **No Zeros:** If a series has no 5s or no 2s (like odd numbers), the number of zeros is 0.
 
+
+
+ - In-place Edit Worked!
