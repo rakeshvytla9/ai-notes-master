@@ -64,7 +64,7 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 export default withMermaid(defineConfig({
   title: "Study Nexus",
   description: "A centralized platform to import YouTube courses and manage your AI-assisted study notes",
-  base: "/",
+  base: "/ai-notes-master/",
 
   // High-end aesthetic defaults
   appearance: 'dark',
