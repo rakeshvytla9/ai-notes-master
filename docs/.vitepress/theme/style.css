@@ -558,3 +558,146 @@
 .VPDocFooter .edit-link {
   display: none !important;
 }
+
+/* =========================================================================
+   PHASE 55: RESPONSIVE DESIGN UPGRADES
+   ========================================================================= */
+
+/* TABLET & SMALL DESKTOP */
+@media (max-width: 900px) {
+
+  /* Let sidebar stay visible, but shrink main layout gaps */
+  .home-content-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .home-main-col {
+    padding-right: 0;
+    border-right: none;
+  }
+
+  /* When the right column drops down, give it breathing room */
+  .home-side-col {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 215, 0, 0.1);
+  }
+}
+
+/* MOBILE PHONES & TABLETS (iPad Air is 820px) */
+@media (max-width: 1024px) {
+
+  /* 1. Sidebar goes off-canvas */
+  .elearn-layout .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    width: 280px;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .elearn-layout .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* 2. Main content expands completely */
+  .elearn-layout .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .top-header {
+    padding: 10px 15px;
+  }
+
+  /* Show hamburger menu */
+  .mobile-menu-btn {
+    display: block !important;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 15px;
+  }
+
+  .close-sidebar-btn {
+    display: block !important;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* 3. Stack Grids vertically */
+  .analytics-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Stats flex wrapping to prevent horizontal squish */
+  .stats-overview {
+    flex-wrap: wrap;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .overview-item {
+    flex: 1 1 40%;
+    margin-bottom: 0;
+  }
+
+  .overview-divider {
+    display: none;
+  }
+
+  /* 4. AI Notes Master-Detail flows vertically */
+  .master-detail-container {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .master-column {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    max-height: 40vh;
+    /* Allow it to be scrollable but leave room */
+  }
+
+  .detail-column {
+    min-height: 50vh;
+    padding: 15px;
+  }
+
+  /* 5. Typography and Touch */
+  .nav-item {
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notes-tab-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .notes-tab-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
